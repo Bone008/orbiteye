@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Timeline from './components/Timeline';
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           Learn React
         </a>
       </header>
+
+      <Timeline minDate={new Date('1980-01-01')} maxDate={new Date()} />
     </div>
   );
 }
