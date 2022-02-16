@@ -1,9 +1,28 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Timeline from './components/Timeline';
+import { fetchSatellitesAsync } from './model/data_loader';
+import { Satellite } from './model/satellite';
+import { FilterSettings } from './model/filter_settings';
 
 function App() {
+  const [allSatellites, setAllSatellites] = useState<Satellite[]>([]);
+  const [filterSettings, setFilterSettings] = useState(new FilterSettings());
+
+  // Applies the current filter settings, executed whenever necessary.
+  const filteredSatellites = useMemo(() => {
+    const result = allSatellites.filter(sat => filterSettings.matchesSatellite(sat));
+    console.log(`Filtered ${result.length} of ${allSatellites.length} rows!`);
+    return result;
+  }, [allSatellites, filterSettings]);
+
+  const initialize = async () => {
+    setAllSatellites(await fetchSatellitesAsync());
+  };
+
+  useEffect(() => { initialize(); }, []);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -11,17 +30,10 @@ function App() {
         <p>
           OrbitEye
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        DEBUG: {filteredSatellites.length} filtered satellites
       </header>
 
-      <Timeline minDate={new Date('1980-01-01')} maxDate={new Date()} />
+      <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
     </div>
   );
 }
