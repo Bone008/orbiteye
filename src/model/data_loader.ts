@@ -30,5 +30,8 @@ export async function fetchSatellitesAsync(): Promise<Satellite[]> {
   }));
 
   console.log(new Date(), `Loaded ${data.length} rows!\nExample entry:`, data[0]);
+  // For easy debug access from dev tools, expose also as global variable.
+  (window as any)['DEBUG_SATELLITES'] = data;
+
   return data;
 }
