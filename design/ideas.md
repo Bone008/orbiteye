@@ -1,4 +1,4 @@
-# Design meating
+# Design meeting
 
 ## Problems we want to solve (things we should not do)
 1. Overcrowd "earth"
@@ -26,4 +26,5 @@
 5. How should we select obits/statellites? 
 6. Show when loading data to give feedback on that everything is working in the background
    1. Maybe have a tutorial while you are looking at the loading side
+
 
