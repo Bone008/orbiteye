@@ -139,7 +139,8 @@ def merge(ucs_std, satcat_std):
   satcat_std["dataSource"] = "SATCAT"
   df = pd.concat([satcat_std, ucs_std])
 
-  # TODO: Filter out Cislunar orbits
+  # Filter out certain rows
+  df = df[df["orbitType"] != "Cislunar"]
 
   groups = df.groupby("id")
   final = groups.apply(merge_group)
@@ -157,4 +158,5 @@ satcat_std = satcat_to_standard(satcat)
 # std.to_csv("test.csv")
 
 final = merge(ucs_std, satcat_std)
-final.to_csv("test.csv") # TODO: save to JSON instead of CSV
+# final.to_csv("test.csv")
+final.to_json("test.json", orient="records")
