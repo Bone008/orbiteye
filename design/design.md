@@ -63,3 +63,7 @@ A(Loading view) -->B(Previw modes)
        1.  heat map inoformation about a specific country/lounch place
 
 
+![first](./img1-1.jpg)
+![third](./img3-1.jpg)
+![second](./img2-1.jpg)
+![fourth](./img4-1.jpg)
