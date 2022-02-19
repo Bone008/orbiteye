@@ -57,7 +57,7 @@ async function fetchTLEsAsync(): Promise<Map<string, [string, string]>> {
   const rawData = await response.text();
 
   const lines = rawData.split(/\r\n|\n|\r/).filter(str =>
-    str !== "" && str.indexOf("Format invalid for") == -1
+    str !== "" && str.indexOf("Format invalid for") === -1
   );
 
   console.log(`${lines.length / 3} TLEs found`);
