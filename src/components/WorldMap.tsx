@@ -29,26 +29,13 @@ export default function WorldMap(props: WorldMapProps) {
     .center([0, 0])
     .translate([props.width / 2, props.height / 2]);
 
-  // Projections path generator
-  const pathGenerator = d3.geoPath().projection(mapProjection)
-
 
   // Render world map (runs just once)
   useEffect(() => {
-    const mapLayer = d3.select(svgRef.current).select("g.mapLayer")
+    const mapLayer = d3.select(svgRef.current).select("g.mapLayer");
 
-    const svg = d3.select(svgRef.current)
-
-    const containerWM = d3.select(".WorldMap")
-
-    /*     const zoom = d3.zoom()
-          .scaleExtent([1, 2])
-          .translateExtent([[-500, -300], [1500, 1000]])
-          .on('zoom', (event, _) => {
-            svg.attr('transform', event.transform)
-          });
-    
-        containerWM.call(zoom as any); */
+    // Projections path generator
+    const pathGenerator = d3.geoPath().projection(mapProjection);
 
     // Loading the world map
     fetch('data/world.json').then(resp => {
@@ -63,17 +50,10 @@ export default function WorldMap(props: WorldMapProps) {
           .attr("stroke", "grey")
           .attr("stroke-width", "1px")
           .attr("fill", "burlywood")
-          .attr("width", "100%")
-          .attr("height", "100%")
-        // .on('mouseover', (d) => {
-        //   //console.log(d3.select(d.srcElement))
-        //   d3.select(d.srcElement).attr("fill", "red")
-        //   console.log(d.srcElement.__data__.properties.ADMIN)
-        // })
       });
     });
 
-  }, []);
+  }, [mapProjection]);
 
 
   // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
@@ -85,7 +65,6 @@ export default function WorldMap(props: WorldMapProps) {
 
     // Filter to satellites with orbital data
     const satellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.traceLimit);
-    // const satellites = props.filteredSatellites.filter(sat => !!sat.tle && sat.id === "1998-067A");
 
 
     // Calculate all traces
@@ -101,34 +80,27 @@ export default function WorldMap(props: WorldMapProps) {
       })
       .attr("fill", "none")
       .attr("stroke", "red") // TODO: base on something else
-      .attr("width", "100%")
-      .attr("height", "100%")
-      .on('mouseover', (d) => {
-        d3.select(d.srcElement).attr("stroke-width", "10px")
-        console.log(d.srcElement.__data__)
+      .on('mouseover', d => {
+        d3.select(d.srcElement).attr("stroke-width", "10px");
       })
-      .on('mouseout', (d) => {
-        d3.select(d.srcElement).attr("stroke-width", "1px")
+      .on('mouseout', d => {
+        d3.select(d.srcElement).attr("stroke-width", "1px");
       })
 
-  }, [props.filteredSatellites]);
+  }, [props.filteredSatellites, props.traceLimit, mapProjection]);
 
+  // Set up zoom and pan
   const zoom = d3.zoom()
     .scaleExtent([1, 4])
     .translateExtent([[0, 0], [props.width, props.height]])
-    .on('zoom', handleZoom);
+    .on('zoom', e => {
+      d3.select(svgRef.current).selectAll('g')
+        .attr('transform', e.transform);
+    });
 
-  function handleZoom(e: any) {
-    d3.select(svgRef.current).selectAll('g')
-      .attr('transform', e.transform);
-  }
+  d3.select(svgRef.current)
+    .call(zoom as any);
 
-  function initZoom() {
-    d3.select(svgRef.current)
-      .call(zoom as any);
-  }
-
-  initZoom()
 
   return (
     <div className="WorldMap">
@@ -137,8 +109,7 @@ export default function WorldMap(props: WorldMapProps) {
         height={props.height}
         viewBox={`0 0 ${props.width}, ${props.height}`}
         preserveAspectRatio="xMidYMid meet"
-        className="WorldMap" style={{ backgroundColor: "lightblue" }}
-
+        className="WorldMap" style={{ backgroundColor: "lightblue", padding: "0" }}
       >
         <g className="mapLayer"></g>
         <g className="traceLayer"></g>
