@@ -49,6 +49,9 @@ export interface Satellite {
   /** Orbit's perigee (closest point of the ellipse) in kilometers. */
   perigeeKm: number;
 
+  /** Two-line element format of orbital parameters */
+  tle?: [string, string];
+
   /** Orbit's high-level categorization. */
   orbitClass: OrbitClass;
 
