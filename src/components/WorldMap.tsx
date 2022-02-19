@@ -84,6 +84,12 @@ export default function WorldMap(props: WorldMapProps) {
       })
       .attr("fill", "none")
       .attr("stroke", "red") // TODO: base on something else
+      .on('mouseover', (d) => {
+        d3.select(d.srcElement).attr("stroke-width", "10px")
+      })
+      .on('mouseout', (d) => {
+        d3.select(d.srcElement).attr("stroke-width", "1px")
+      })
 
   }, [props.filteredSatellites]);
 
