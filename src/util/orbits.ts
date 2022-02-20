@@ -1,5 +1,5 @@
 import { Satellite } from "../model/satellite";
-import { getAverageOrbitTimeMS, getLastAntemeridianCrossingTimeMS, getOrbitTrack, getOrbitTrackSync, LngLat } from 'tle.js';
+import { getLastAntemeridianCrossingTimeMS, getOrbitTrack, getOrbitTrackSync, LngLat } from 'tle.js';
 
 const _MS_IN_A_MINUTE = 60000;
 const _MS_IN_A_DAY = 1440000;
@@ -17,9 +17,7 @@ export async function groundTraceAsync(sat: Satellite, stepMS: number = 1000): P
   if (!sat.tle) throw Error(`TLE doesn't exist for satellite ${sat.id}`);
 
   // Copied from tle.js getGroundTracks but returns just current orbit
-
   const startTimeMS = Date.now();
-  const orbitStartMS = getAverageOrbitTimeMS(sat.tle);
   const curOrbitStartMS = getLastAntemeridianCrossingTimeMS(
     { name: sat.name, tle: sat.tle }, // For some reason this method requires a name
     startTimeMS

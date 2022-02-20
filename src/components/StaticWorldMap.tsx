@@ -21,7 +21,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
   const props = { ...defaultProps, ...__props } as Required<StaticWorldMapProps>; // Use defaults where necessary
 
   // Reference to the main SVG element
-  const svgRef = useRef<SVGSVGElement | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null!);
 
   // Projector to Lat/Long to equirectangular to match NASA image
   const mapProjection = d3.geoEquirectangular()

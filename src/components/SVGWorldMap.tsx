@@ -23,7 +23,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
   const props = { ...defaultProps, ...reqProps } as Required<WorldMapProps>; // Use defaults where necessary
 
   // Reference to the main SVG element
-  const svgRef = useRef<SVGSVGElement | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null!);
 
   // Projector to Lat/Long to Mercator
   const mapProjection = props.projection
