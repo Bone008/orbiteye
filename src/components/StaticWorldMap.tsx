@@ -36,7 +36,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
       .attr("width", props.width)
       .attr("height", props.height)
 
-  }, [mapProjection]);
+  }, [mapProjection, props.width, props.height]);
 
 
   // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
