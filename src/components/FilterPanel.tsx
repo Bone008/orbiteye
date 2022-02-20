@@ -3,6 +3,10 @@ import * as d3 from 'd3';
 import React from 'react';
 import { ALL_ORBIT_CLASSES, OrbitClass, Satellite } from '../model/satellite';
 import { FilterProps, FilterSettings, SetFilterCallback } from '../model/filter_settings';
+import Select, { components } from "react-select";
+import ValueType from "react-select"
+
+
 
 export interface FilterPanelProps {
   allSatellites: Satellite[];
@@ -23,12 +27,19 @@ export default function FilterPanel(props: FilterPanelProps) {
   }
 
   /** Updates the global filter. */
-  const filterByOrbitClass = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const filterByOrbitClass2 = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const orbitClass: OrbitClass | undefined = (e.target.value as OrbitClass) || undefined;
     const newFilter = props.filterSettings.update({ orbitClass });
     props.onUpdateFilter(newFilter);
   };
 
+  const filterByOrbitClass = (options: any) => {
+    console.log(options)
+  };
+
+  const orbitOptions = [undefined, ...ALL_ORBIT_CLASSES].map(orbitClass => (
+    { value: orbitClass, label: (orbitClass || 'All orbit classes') + " (" + countWithUpdatedFilter({ orbitClass }) + ")" }
+  ));
 
   const orbitClassOptions = [undefined, ...ALL_ORBIT_CLASSES].map(orbitClass => (
     <option key={orbitClass || ''} value={orbitClass || ''}>
@@ -38,7 +49,7 @@ export default function FilterPanel(props: FilterPanelProps) {
 
   return (
     <div className="FilterPanel">
-      Placeholder: FilterPanel
+      FILTER
       <p>TESTING: Currently the filter includes {props.filteredSatellites.length} of {props.allSatellites.length} results.</p>
       <p>
         Filter by orbit class:&nbsp;
@@ -46,6 +57,15 @@ export default function FilterPanel(props: FilterPanelProps) {
           {orbitClassOptions}
         </select>
       </p>
+
+      <Select
+        options={orbitOptions}
+        isMulti
+        closeMenuOnSelect={false}
+        hideSelectedOptions={false}
+        onChange={filterByOrbitClass}
+      />
+
     </div>
   );
 }
