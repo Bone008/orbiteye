@@ -31,7 +31,7 @@ export default function FilterPanel(props: FilterPanelProps) {
 
 
   const orbitClassOptions = [undefined, ...ALL_ORBIT_CLASSES].map(orbitClass => (
-    <option value={orbitClass || ''}>
+    <option key={orbitClass || ''} value={orbitClass || ''}>
       {orbitClass || 'All'} ({countWithUpdatedFilter({ orbitClass })})
     </option>
   ));

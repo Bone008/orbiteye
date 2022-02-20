@@ -49,7 +49,6 @@ export function groundTraceSync(sat: Satellite, stepMS: number = 1000): LngLat[]
   // Copied from tle.js getGroundTracks but returns just current orbit
 
   const startTimeMS = Date.now();
-  const orbitStartMS = getAverageOrbitTimeMS(sat.tle);
   const curOrbitStartMS = getLastAntemeridianCrossingTimeMS(
     { name: sat.name, tle: sat.tle }, // For some reason this method requires a name
     startTimeMS
