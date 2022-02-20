@@ -1,57 +1,40 @@
-import './WorldMap.css';
+import './StaticWorldMap.css';
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { Satellite } from '../model/satellite';
 import { groundTraceSync } from '../util/orbits';
+import { DefaultValues } from '../util/optional_props';
 
-export interface WorldMapProps {
+export interface StaticWorldMapProps {
   filteredSatellites: Satellite[];
   width: number,
   height: number,
   traceLimit?: number,
 }
 
-const defaultProps: Partial<WorldMapProps> = {
+const defaultProps: DefaultValues<StaticWorldMapProps> = {
   traceLimit: 10,
 }
 
 /** React component to render 2D world map with visualizations on top. */
-export default function WorldMap(props: WorldMapProps) {
-  props = { ...defaultProps, ...props }; // Use defaults where necessary
+export default function WorldMap(__props: StaticWorldMapProps) {
+  const props = { ...defaultProps, ...__props } as Required<StaticWorldMapProps>; // Use defaults where necessary
 
   // Reference to the main SVG element
   const svgRef = useRef<SVGSVGElement | null>(null);
 
-  // Projector to Lat/Long to Mercator
-  const mapProjection = d3.geoMercator()
-    .scale(props.width / 2.5 / Math.PI)
-    .rotate([0, 0])
-    .center([0, 0])
+  // Projector to Lat/Long to equirectangular to match NASA image
+  const mapProjection = d3.geoEquirectangular()
+    .scale(props.width / (2 * Math.PI))
     .translate([props.width / 2, props.height / 2]);
-
 
   // Render world map (runs just once)
   useEffect(() => {
     const mapLayer = d3.select(svgRef.current).select("g.mapLayer");
-
-    // Projections path generator
-    const pathGenerator = d3.geoPath().projection(mapProjection);
-
-    // Loading the world map
-    fetch('data/world.json').then(resp => {
-      resp.json().then(json => {
-
-        // Creating the path to make the map
-        mapLayer.selectAll("path")
-          .data(json.features)
-          .enter()
-          .append("path")
-          .attr("d", function (d: any) { return pathGenerator(d) })
-          .attr("stroke", "grey")
-          .attr("stroke-width", "1px")
-          .attr("fill", "burlywood")
-      });
-    });
+    mapLayer.append("svg:image")
+      .attr("xlink:href", "assets/NASA-Visible-Earth-September-2004.jpg")
+      .attr("width", props.width)
+      .attr("height", props.height)
 
   }, [mapProjection]);
 
@@ -80,6 +63,8 @@ export default function WorldMap(props: WorldMapProps) {
       })
       .attr("fill", "none")
       .attr("stroke", "red") // TODO: base on something else
+      .attr("border-width", "2px")
+      .attr("border-color", "blue")
       .on('mouseover', d => {
         d3.select(d.srcElement).attr("stroke-width", "10px");
       })
@@ -109,7 +94,7 @@ export default function WorldMap(props: WorldMapProps) {
         height={props.height}
         viewBox={`0 0 ${props.width}, ${props.height}`}
         preserveAspectRatio="xMidYMid meet"
-        className="WorldMap" style={{ backgroundColor: "lightblue", padding: "0" }}
+        className="WorldMap" style={{ padding: "0" }}
       >
         <g className="mapLayer"></g>
         <g className="traceLayer"></g>

@@ -6,7 +6,8 @@ import { Satellite } from './model/satellite';
 import { FilterSettings } from './model/filter_settings';
 import FilterPanel from './components/FilterPanel';
 import Timeline from './components/Timeline';
-import WorldMap from './components/WorldMap';
+import StaticWorldMap from './components/StaticWorldMap';
+import SVGWorldMap from './components/SVGWorldMap';
 
 function App() {
   const [allSatellites, setAllSatellites] = useState<Satellite[]>([]);
@@ -38,7 +39,7 @@ function App() {
         DEBUG: {filteredSatellites.length} filtered satellites
       </header>
 
-      <WorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />
+      <StaticWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />
       <FilterPanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
       <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
     </div>
