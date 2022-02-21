@@ -6,7 +6,10 @@ export type SetFilterCallback = (newSettings: FilterSettings) => void;
 export interface FilterProps {
   minDate?: Date;
   maxDate?: Date;
-  orbitClass?: OrbitClass;
+  orbitClass?: OrbitClass[];
+  userType?: String[];
+  owner?: String[];
+  purpose?: String[];
 }
 
 /** Contains main logic for applying filter criteria to the satellite dataset. */
@@ -31,7 +34,7 @@ export class FilterSettings {
     if (this.filter.maxDate && satellite.launchDate > this.filter.maxDate) {
       return false;
     }
-    if (this.filter.orbitClass && satellite.orbitClass !== this.filter.orbitClass) {
+    if (this.filter.orbitClass && this.filter.orbitClass.indexOf(satellite.orbitClass) != -1) {
       return false;
     }
     return true;

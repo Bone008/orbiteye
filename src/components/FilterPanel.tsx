@@ -3,8 +3,7 @@ import * as d3 from 'd3';
 import React from 'react';
 import { ALL_ORBIT_CLASSES, OrbitClass, Satellite } from '../model/satellite';
 import { FilterProps, FilterSettings, SetFilterCallback } from '../model/filter_settings';
-import Select, { components } from "react-select";
-import ValueType from "react-select"
+import Select, { MultiValue } from "react-select";
 
 
 
@@ -27,45 +26,39 @@ export default function FilterPanel(props: FilterPanelProps) {
   }
 
   /** Updates the global filter. */
-  const filterByOrbitClass2 = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const orbitClass: OrbitClass | undefined = (e.target.value as OrbitClass) || undefined;
-    const newFilter = props.filterSettings.update({ orbitClass });
+  const filterByOrbitClass = (options: MultiValue<{ value: "LEO" | "GEO" | "MEO" | "Elliptical" | undefined; label: string; }>) => {
+    console.log(options)
+
+    const orbitClass: OrbitClass[] | undefined = options.map(option => {
+      return option.value as OrbitClass
+    })
+
+    const newFilter = props.filterSettings.update({ orbitClass })
     props.onUpdateFilter(newFilter);
   };
 
-  const filterByOrbitClass = (options: any) => {
-    console.log(options)
-  };
-
-  const orbitOptions = [undefined, ...ALL_ORBIT_CLASSES].map(orbitClass => (
-    { value: orbitClass, label: (orbitClass || 'All orbit classes') + " (" + countWithUpdatedFilter({ orbitClass }) + ")" }
-  ));
-
-  const orbitClassOptions = [undefined, ...ALL_ORBIT_CLASSES].map(orbitClass => (
-    <option key={orbitClass || ''} value={orbitClass || ''}>
-      {orbitClass || 'All'} ({countWithUpdatedFilter({ orbitClass })})
-    </option>
-  ));
+  const orbitOptions = [undefined, ...ALL_ORBIT_CLASSES].map(orbitClass => {
+    const orbitClassList: OrbitClass[] | undefined = [orbitClass as OrbitClass]
+    return {
+      value: orbitClass, label: (orbitClass || 'All orbit classes')
+      /* Add to see rows that row that matches with countWithUpdatedFilter() */
+    }
+  });
 
   return (
     <div className="FilterPanel">
       FILTER
       <p>TESTING: Currently the filter includes {props.filteredSatellites.length} of {props.allSatellites.length} results.</p>
-      <p>
-        Filter by orbit class:&nbsp;
-        <select onChange={filterByOrbitClass} value={currentFilter.orbitClass}>
-          {orbitClassOptions}
-        </select>
+
+      <p> Filter by Orbit type: 
+        <Select
+          options={orbitOptions}
+          isMulti
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          onChange={filterByOrbitClass}
+        />
       </p>
-
-      <Select
-        options={orbitOptions}
-        isMulti
-        closeMenuOnSelect={false}
-        hideSelectedOptions={false}
-        onChange={filterByOrbitClass}
-      />
-
     </div>
   );
 }
