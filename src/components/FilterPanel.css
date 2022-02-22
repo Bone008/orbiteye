@@ -1,4 +1,14 @@
 .FilterPanel {
   padding: 1em;
-  background-color: #aaaacc;
+  background-color: lightgray;
+}
+
+.MultiSelectDiv{
+  display: flex;
+  align-items: center;
+}
+
+.MultiDropDown{
+  width: 80%;
+  padding: 1em;
 }

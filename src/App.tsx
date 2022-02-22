@@ -39,13 +39,16 @@ function App() {
         </p>
         DEBUG: {filteredSatellites.length} filtered satellites
       </header>
-
-      <GlobeView filteredSatellites={filteredSatellites} />
-      <StaticWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />
       <FilterPanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
       <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
     </div>
   );
 }
+
+/**
+        <GlobeView filteredSatellites={filteredSatellites} />
+      <StaticWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />
+  
+ */
 
 export default App;

@@ -1,7 +1,7 @@
 import './FilterPanel.css';
 import * as d3 from 'd3';
 import React from 'react';
-import { ALL_ORBIT_CLASSES, OrbitClass, Satellite } from '../model/satellite';
+import { ALL_ORBIT_CLASSES, OrbitClass, Satellite, ALL_USERS_TYPE } from '../model/satellite';
 import { FilterProps, FilterSettings, SetFilterCallback } from '../model/filter_settings';
 import Select, { MultiValue } from "react-select";
 
@@ -12,6 +12,11 @@ export interface FilterPanelProps {
   filteredSatellites: Satellite[];
   filterSettings: FilterSettings;
   onUpdateFilter: SetFilterCallback;
+}
+
+interface FilterOptions {
+  value: String | undefined;
+  label: String;
 }
 
 /** React component to render the global filter selection UI. */
@@ -26,9 +31,7 @@ export default function FilterPanel(props: FilterPanelProps) {
   }
 
   /** Updates the global filter. */
-  const filterByOrbitClass = (options: MultiValue<{ value: "LEO" | "GEO" | "MEO" | "Elliptical" | undefined; label: string; }>) => {
-    console.log(options)
-
+  const filterByOrbitClass = (options: MultiValue<FilterOptions>) => {
     const orbitClass: OrbitClass[] | undefined = options.map(option => {
       return option.value as OrbitClass
     })
@@ -37,28 +40,79 @@ export default function FilterPanel(props: FilterPanelProps) {
     props.onUpdateFilter(newFilter);
   };
 
+  const filterByOwner = (options: MultiValue<FilterOptions>) => {
+    const owner: String[] | undefined = options.map(option => {
+      return option.value as String
+    })
+
+    const newFilter = props.filterSettings.update({ owner })
+    props.onUpdateFilter(newFilter)
+  }
+
+  const filterByUsage = (options: MultiValue<FilterOptions>) => {
+    const userType: String[] | undefined = options.map(option => {
+      return option.value as String
+    })
+
+    const newFilter = props.filterSettings.update({ userType })
+    props.onUpdateFilter(newFilter)
+  }
+
   const orbitOptions = [undefined, ...ALL_ORBIT_CLASSES].map(orbitClass => {
     const orbitClassList: OrbitClass[] | undefined = [orbitClass as OrbitClass]
     return {
       value: orbitClass, label: (orbitClass || 'All orbit classes')
-      /* Add to see rows that row that matches with countWithUpdatedFilter() */
+      /* TODO: Add to see rows that matches using countWithUpdatedFilter*/
     }
   });
+
+  const ownerOptions = [undefined, ...props.allSatellites.map(sat => sat.owner)].filter((value, index, self) => self.indexOf(value) === index).map(ownerCode => {
+    return { value: ownerCode, label: (ownerCode || 'All countries') }
+  })
+
+  const usageOption = [undefined, ...ALL_USERS_TYPE].map(usage => {
+    return { value: usage, label: (usage || 'All usage') }
+  }
+  )
 
   return (
     <div className="FilterPanel">
       FILTER
       <p>TESTING: Currently the filter includes {props.filteredSatellites.length} of {props.allSatellites.length} results.</p>
 
-      <p> Filter by Orbit type: 
+      <div className='MultiSelectDiv'>
+        <p> Orbit type:</p>
         <Select
+          className='MultiDropDown'
           options={orbitOptions}
           isMulti
           closeMenuOnSelect={false}
           hideSelectedOptions={false}
           onChange={filterByOrbitClass}
         />
-      </p>
+      </div>
+      <div className='MultiSelectDiv'>
+        <p>Owner:</p>
+        <Select
+          className='MultiDropDown'
+          options={ownerOptions}
+          isMulti
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          onChange={filterByOwner}
+        />
+      </div>
+      <div className='MultiSelectDiv'>
+        <p>Usage type:</p>
+        <Select
+          className='MultiDropDown'
+          options={usageOption}
+          isMulti
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          onChange={filterByUsage}
+        />
+      </div>
     </div>
   );
 }

@@ -134,3 +134,10 @@ export const ALL_ORBIT_TYPES = [
 ] as const;
 /** For LEO and Elliptical orbit classes, contains a more granular orbit categorization. */
 export type OrbitType = typeof ALL_ORBIT_TYPES[number];
+
+export const ALL_USERS_TYPE = [
+  'Government',
+  'Military',
+  'Commercial',
+  'Earth Observation'
+]

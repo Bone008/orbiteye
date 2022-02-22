@@ -1,3 +1,4 @@
+import { isArray } from "react-select/dist/declarations/src/utils";
 import { OrbitClass, Satellite } from "./satellite";
 
 export type SetFilterCallback = (newSettings: FilterSettings) => void;
@@ -34,8 +35,14 @@ export class FilterSettings {
     if (this.filter.maxDate && satellite.launchDate > this.filter.maxDate) {
       return false;
     }
-    if (this.filter.orbitClass && this.filter.orbitClass.indexOf(satellite.orbitClass) != -1) {
+    if (this.filter.orbitClass && this.filter.orbitClass.indexOf(satellite.orbitClass) == -1) {
       return false;
+    }
+    if (this.filter.owner && this.filter.owner.indexOf(satellite.owner) == -1) {
+      return false;
+    }
+    if (this.filter.userType && (!Array.isArray(satellite.users) || !(satellite.users.some((user) => this.filter.userType?.includes(user))))) {
+      return false
     }
     return true;
   }
