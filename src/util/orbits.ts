@@ -1,5 +1,7 @@
 import { Satellite } from "../model/satellite";
-import { getLastAntemeridianCrossingTimeMS, getOrbitTrack, getOrbitTrackSync, LngLat } from 'tle.js';
+import { getAverageOrbitTimeMS, getLastAntemeridianCrossingTimeMS, getOrbitTrack, getOrbitTrackSync, LngLat } from 'tle.js';
+import * as THREE from 'three';
+import { twoline2satrec, propagate, eciToEcf, gstime, EciVec3 } from 'satellite.js';
 
 const _MS_IN_A_MINUTE = 60000;
 const _MS_IN_A_DAY = 1440000;
@@ -68,4 +70,58 @@ export function groundTraceSync(sat: Satellite, stepMS: number = 1000): LngLat[]
     startTimeMS: curOrbitStartMS,
     stepMS,
   });
+}
+
+
+/**
+ * Returns set of points outlining the orbit of the given satellite in ECF coodinates
+ * @param sat the Satellite to check
+ * @param stepMS the granularity of the returned points
+ * @returns A list of Vector3 points outlining the orbit
+ */
+export function getOrbitECF(sat: Satellite, stepMS: number = 1000): THREE.Vector3[] {
+  if (!sat.tle) throw Error(`TLE doesn't exist for satellite ${sat.id}`);
+
+  // TODO: Orbits don't fully wrap around!
+
+  const satrec = twoline2satrec(...sat.tle);
+  let date = new Date();
+
+  const startTimeMS = Date.now();
+  const gmst = gstime(date);
+
+  const orbitPeriodMS = getAverageOrbitTimeMS(sat.tle);
+  const curOrbitStartMS = getLastAntemeridianCrossingTimeMS(
+    { name: sat.name, tle: sat.tle }, // For some reason this method requires a name
+    startTimeMS
+  );
+
+  if (curOrbitStartMS === -1) {
+    // Must be Geo stationary or something, just return position
+    const eci = propagate(satrec, date).position as EciVec3<number>;
+
+    // Check if position was established
+    if (!eci) return [];
+
+    const ecf = eciToEcf(eci, gmst);
+    return [new THREE.Vector3(ecf.x, ecf.y, ecf.z)]
+  }
+
+  // Compute times for sampling
+  const N = Math.floor(orbitPeriodMS / stepMS);
+  const positions: Array<THREE.Vector3> = Array(N);
+  for (let i = 0; i < N; i++) {
+    const eci = propagate(satrec, date).position as EciVec3<number>;
+
+    // Check if position was established
+    if (!eci) continue;
+
+    const ecf = eciToEcf(eci, gstime(date));
+    positions[i] = new THREE.Vector3(ecf.x, ecf.y, ecf.z);
+
+    // Increment time
+    date.setTime(date.getTime() + stepMS);
+  }
+
+  return positions;
 }
