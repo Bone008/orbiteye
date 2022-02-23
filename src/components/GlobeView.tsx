@@ -1,11 +1,11 @@
 import './GlobeView.css'
 
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { Line, Sphere, Stars, TrackballControls, useTexture } from '@react-three/drei'
 import { useRef, Suspense } from 'react';
 import { DefaultValues } from '../util/optional_props';
 import { Satellite } from '../model/satellite';
-import { getOrbitECF } from '../util/orbits';
+import { getOrbitECI } from '../util/orbits';
 
 
 const EARTH_RADIUS_KM = 6371;
@@ -24,7 +24,7 @@ const defaultProps: DefaultValues<GlobeViewProps> = {
   orbitLimit: 10,
   radius: 1,
   minDistance: 1.5,
-  maxDistance: 10,
+  maxDistance: 15,
   orbitOpacity: 1,
 }
 
@@ -38,7 +38,7 @@ export default function GlobeView(__props: GlobeViewProps) {
         <Canvas>
           <color attach="background" args={["black"]} />
           <ambientLight />
-          <TrackballControls maxDistance={props.maxDistance} minDistance={props.minDistance} />
+          <TrackballControls maxDistance={props.maxDistance} minDistance={props.minDistance} noPan />
           <Globe {...props} />
           <Stars fade />
         </Canvas>
@@ -55,8 +55,7 @@ function Globe(props: Required<GlobeViewProps>) {
 
   const satellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.orbitLimit);
   const orbits = satellites.map(sat => {
-    // TODO: Confirm that ECF coordinates are the same as our canvas coordinates (axis could be different!)
-    const coordinates = getOrbitECF(sat);
+    const coordinates = getOrbitECI(sat);
 
     // Note on the commented section below:
     //  Interaction with these elements seems pretty rough. Performance slowed down a ton when I tried to use it.

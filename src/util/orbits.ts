@@ -1,7 +1,7 @@
 import { Satellite } from "../model/satellite";
 import { getAverageOrbitTimeMS, getLastAntemeridianCrossingTimeMS, getOrbitTrack, getOrbitTrackSync, LngLat } from 'tle.js';
 import * as THREE from 'three';
-import { twoline2satrec, propagate, eciToEcf, gstime, EciVec3 } from 'satellite.js';
+import { twoline2satrec, propagate, EciVec3 } from 'satellite.js';
 
 const _MS_IN_A_MINUTE = 60000;
 const _MS_IN_A_DAY = 1440000;
@@ -74,21 +74,18 @@ export function groundTraceSync(sat: Satellite, stepMS: number = 1000): LngLat[]
 
 
 /**
- * Returns set of points outlining the orbit of the given satellite in ECF coodinates
+ * Returns set of points outlining the orbit of the given satellite in ECI coordinates
  * @param sat the Satellite to check
  * @param stepMS the granularity of the returned points
  * @returns A list of Vector3 points outlining the orbit
  */
-export function getOrbitECF(sat: Satellite, stepMS: number = 1000): THREE.Vector3[] {
+export function getOrbitECI(sat: Satellite, stepMS: number = 1000): THREE.Vector3[] {
   if (!sat.tle) throw Error(`TLE doesn't exist for satellite ${sat.id}`);
-
-  // TODO: Orbits don't fully wrap around!
 
   const satrec = twoline2satrec(...sat.tle);
   let date = new Date();
 
   const startTimeMS = Date.now();
-  const gmst = gstime(date);
 
   const orbitPeriodMS = getAverageOrbitTimeMS(sat.tle);
   const curOrbitStartMS = getLastAntemeridianCrossingTimeMS(
@@ -103,8 +100,7 @@ export function getOrbitECF(sat: Satellite, stepMS: number = 1000): THREE.Vector
     // Check if position was established
     if (!eci) return [];
 
-    const ecf = eciToEcf(eci, gmst);
-    return [new THREE.Vector3(ecf.x, ecf.y, ecf.z)]
+    return [new THREE.Vector3(eci.x, eci.y, eci.z)]
   }
 
   // Compute times for sampling
@@ -116,8 +112,7 @@ export function getOrbitECF(sat: Satellite, stepMS: number = 1000): THREE.Vector
     // Check if position was established
     if (!eci) continue;
 
-    const ecf = eciToEcf(eci, gstime(date));
-    positions[i] = new THREE.Vector3(ecf.x, ecf.y, ecf.z);
+    positions[i] = new THREE.Vector3(eci.x, eci.y, eci.z);
 
     // Increment time
     date.setTime(date.getTime() + stepMS);
