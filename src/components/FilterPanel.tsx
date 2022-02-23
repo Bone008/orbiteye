@@ -53,11 +53,8 @@ export default function FilterPanel(props: FilterPanelProps) {
   }
 
   const orbitOptions = ALL_ORBIT_CLASSES.map(orbitClass => {
-    const orbitClassList: OrbitClass[] | undefined = [orbitClass as OrbitClass]
-    return {
-      value: orbitClass, label: (orbitClass || 'All orbit classes')
-      /* TODO: Add to see rows that matches using countWithUpdatedFilter*/
-    }
+    const count = countWithUpdatedFilter({ orbitClasses: [orbitClass] });
+    return { value: orbitClass, label: `${orbitClass} (${count})` };
   });
 
   // Deduplicate owners from all satellites. Kinda slow so memoized to run only when necessary.
@@ -69,13 +66,14 @@ export default function FilterPanel(props: FilterPanelProps) {
   });
 
   const usageOption = ALL_USERS_TYPE.map(usage => {
-    return { value: usage, label: (usage || 'All usage') };
+    const count = countWithUpdatedFilter({ userTypes: [usage] });
+    return { value: usage, label: `${usage} (${count})` };
   });
 
   return (
     <div className="FilterPanel">
       <h1 className='headerName'>OrbitEye</h1>
-      <p>TESTING: Currently the filter includes {props.filteredSatellites.length} of {props.allSatellites.length} results.</p>
+      <p>Showing {props.filteredSatellites.length} of {props.allSatellites.length} satellites.</p>
 
       <div className='MultiSelectDiv'>
         <p className='dropDownName'> Orbit type:</p>
