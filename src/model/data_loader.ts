@@ -39,7 +39,11 @@ export async function fetchSatellitesAsync(): Promise<Satellite[]> {
     purpose: Array.isArray(raw.purpose) ? raw.purpose : [],
 
     tle: tleMap.get(raw.id),
-  }));
+  })).filter(sat =>
+    // For now filter out debris to make our lives a bit easier.
+    // Will probably want to include them in the future.
+    sat.objectType !== 'DEBRIS'
+  );
 
   console.log(new Date(), `Loaded ${data.length} rows!\nExample entry:`, data[0]);
   // For easy debug access from dev tools, expose also as global variable.

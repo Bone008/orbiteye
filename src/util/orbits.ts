@@ -15,7 +15,7 @@ const _MS_IN_A_DAY = 1440000;
  * @param stepMS Step size in milliseconds of returned orbit
  * @returns (Promise of) list of [lng, lat] formatted positions separated by stepMS milliseconds
  */
-export async function groundTraceAsync(sat: Satellite, stepMS: number = 1000): Promise<LngLat[]> {
+export async function groundTraceAsync(sat: Satellite, stepMS: number = 10000): Promise<LngLat[]> {
   if (!sat.tle) throw Error(`TLE doesn't exist for satellite ${sat.id}`);
 
   // Copied from tle.js getGroundTracks but returns just current orbit
@@ -43,7 +43,7 @@ export async function groundTraceAsync(sat: Satellite, stepMS: number = 1000): P
   });
 }
 
-export function groundTraceSync(sat: Satellite, stepMS: number = 1000): LngLat[] {
+export function groundTraceSync(sat: Satellite, stepMS: number = 10000): LngLat[] {
   if (!sat.tle) throw Error(`TLE doesn't exist for satellite ${sat.id}`);
 
   // Copied from tle.js getGroundTracks but returns just current orbit
@@ -79,7 +79,7 @@ export function groundTraceSync(sat: Satellite, stepMS: number = 1000): LngLat[]
  * @param stepMS the granularity of the returned points
  * @returns A list of Vector3 points outlining the orbit
  */
-export function getOrbitECI(sat: Satellite, stepMS: number = 1000): THREE.Vector3[] {
+export function getOrbitECI(sat: Satellite, stepMS: number = 10000): THREE.Vector3[] {
   if (!sat.tle) throw Error(`TLE doesn't exist for satellite ${sat.id}`);
 
   const satrec = twoline2satrec(...sat.tle);
@@ -91,6 +91,8 @@ export function getOrbitECI(sat: Satellite, stepMS: number = 1000): THREE.Vector
 
   // Compute times for sampling
   const N = Math.floor(orbitPeriodMS / stepMS);
+  console.log(`DEBUG: Calculating orbit for ${sat.id} with ${N} points.`);
+
   const positions: Array<THREE.Vector3> = Array(N);
   for (let i = 0; i < N; i++) {
     const eci = propagate(satrec, date).position as EciVec3<number>;
