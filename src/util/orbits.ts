@@ -85,8 +85,6 @@ export function getOrbitECI(sat: Satellite, stepMS: number = 10000): THREE.Vecto
   const satrec = twoline2satrec(...sat.tle);
   let date = new Date();
 
-  const startTimeMS = Date.now();
-
   const orbitPeriodMS = getAverageOrbitTimeMS(sat.tle);
 
   // Compute times for sampling

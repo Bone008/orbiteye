@@ -21,8 +21,6 @@ interface FilterOptions {
 
 /** React component to render the global filter selection UI. */
 export default function FilterPanel(props: FilterPanelProps) {
-  const currentFilter = props.filterSettings.filter;
-
   /** Computes how many rows match the filter after changing some value in it. */
   const countWithUpdatedFilter = (partialFilter: Partial<FilterProps>) => {
     // Note that this is kinda slow to run for all drop-downs, could be optimized by caching by the filter values.
