@@ -54,6 +54,10 @@ function Globe(props: Required<GlobeViewProps>) {
   const sphereRef = useRef<THREE.Mesh>(null!);
   const texture = useTexture({ map: 'assets/NASA-Visible-Earth-September-2004.jpg' });
 
+  // Rotate the Earth over time (at one revolution per minute)
+  //  - this reduces assumption that you can look at 3D orbits to see where they fly over the surface
+  useFrame((state, delta) => { sphereRef.current.rotation.y += 2 * Math.PI * delta / 60; })
+
   const satellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.orbitLimit);
   const orbits = satellites.map(sat => {
     const coordinates = getOrbitECI(sat);
