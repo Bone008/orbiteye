@@ -29,10 +29,15 @@
   background-color: darkslategray;
 }
 
+.optionContainer div {
+  padding: 0 10rem;
+}
+
 .optionTitle {
   color: white;
 }
 
 .optionDescription {
   color: lightgray;
+  text-align: left;
 }

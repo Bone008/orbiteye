@@ -1,7 +1,7 @@
 import './GlobeView.css'
 
 import { Canvas } from '@react-three/fiber'
-import { Line, Sphere, TrackballControls, useTexture } from '@react-three/drei'
+import { Line, Sphere, Stars, TrackballControls, useTexture } from '@react-three/drei'
 import { useRef, Suspense } from 'react';
 import { DefaultValues } from '../util/optional_props';
 import { Satellite } from '../model/satellite';
@@ -36,9 +36,11 @@ export default function GlobeView(__props: GlobeViewProps) {
     <div className="GlobeView">
       <Suspense fallback={null}> {/* Replaces canvas with nothing while loading */}
         <Canvas>
+          <color attach="background" args={["black"]} />
           <ambientLight />
           <TrackballControls maxDistance={props.maxDistance} minDistance={props.minDistance} />
           <Globe {...props} />
+          <Stars fade />
         </Canvas>
       </Suspense >
     </div>
@@ -92,7 +94,7 @@ function Globe(props: Required<GlobeViewProps>) {
       opacity: props.orbitOpacity,
     }
 
-    return <Line key={sat.id} name={sat.id} points={coordinates} {...material} />
+    return <Line key={sat.id} name={sat.id} points={coordinates} {...material} onClick={e => console.log(e.object.name)} />
 
   });
 
