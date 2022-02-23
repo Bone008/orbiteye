@@ -38,7 +38,18 @@
   width: 70px;
   height: 70px;
   left: 1em;
-  top: 1em
+  top: 1em;
+  z-index: 100;
+
+  background-color: gray;
+  border-radius: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Ignore default a tag styles */
+  text-decoration: inherit;
+  color: inherit;
 }
 
 @keyframes App-logo-spin {

@@ -35,7 +35,7 @@ function App() {
   return (
     <div className="App">
       <div className='mainView'>
-        <button className='modeBTN'> MODE </button>
+        <a className='modeBTN' href="#/"> MODE </a>
         <div className='mapView'>
           <HashRouter>
             <Routes>
