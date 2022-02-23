@@ -88,20 +88,6 @@ export function getOrbitECI(sat: Satellite, stepMS: number = 1000): THREE.Vector
   const startTimeMS = Date.now();
 
   const orbitPeriodMS = getAverageOrbitTimeMS(sat.tle);
-  const curOrbitStartMS = getLastAntemeridianCrossingTimeMS(
-    { name: sat.name, tle: sat.tle }, // For some reason this method requires a name
-    startTimeMS
-  );
-
-  if (curOrbitStartMS === -1) {
-    // Must be Geo stationary or something, just return position
-    const eci = propagate(satrec, date).position as EciVec3<number>;
-
-    // Check if position was established
-    if (!eci) return [];
-
-    return [new THREE.Vector3(eci.x, eci.y, eci.z)]
-  }
 
   // Compute times for sampling
   const N = Math.floor(orbitPeriodMS / stepMS);

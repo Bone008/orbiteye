@@ -6,6 +6,7 @@ import { useRef, Suspense } from 'react';
 import { DefaultValues } from '../util/optional_props';
 import { Satellite } from '../model/satellite';
 import { getOrbitECI } from '../util/orbits';
+import { Euler } from 'three';
 
 
 const EARTH_RADIUS_KM = 6371;
@@ -99,7 +100,8 @@ function Globe(props: Required<GlobeViewProps>) {
 
   return (
     <>
-      <Sphere ref={sphereRef} args={[props.radius, 64, 32]}>
+      {/* Sphere rotation aligns the Z axis with ECI coordinates! */}
+      <Sphere ref={sphereRef} args={[props.radius, 64, 32]} rotation={new Euler(Math.PI / 2, 0, 0)}>
         <meshLambertMaterial {...texture} />
       </Sphere>
       {orbits}
