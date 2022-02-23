@@ -3,23 +3,32 @@ import { OrbitClass, Satellite } from "./satellite";
 
 export type SetFilterCallback = (newSettings: FilterSettings) => void;
 
-/** Stores values that are filtered by. An undefined value means the filter for that dimension is inactive. */
+/** Stores values that are filtered by. A null value or empty array means the filter for that dimension is inactive. */
 export interface FilterProps {
-  minDate?: Date;
-  maxDate?: Date;
-  orbitClass?: OrbitClass[];
-  userType?: String[];
-  owner?: String[];
-  purpose?: String[];
+  minDate: Date | null;
+  maxDate: Date | null;
+  orbitClasses: readonly OrbitClass[];
+  userTypes: readonly string[];
+  owners: readonly string[];
+  purposes: readonly string[];
 }
+
+const defaultFilterProps: Readonly<FilterProps> = {
+  minDate: null,
+  maxDate: null,
+  orbitClasses: [],
+  userTypes: [],
+  owners: [],
+  purposes: [],
+};
 
 /** Contains main logic for applying filter criteria to the satellite dataset. */
 export class FilterSettings {
   /** The values that are currently filtered by. */
   readonly filter: Readonly<FilterProps>;
 
-  constructor(props?: FilterProps) {
-    this.filter = props || {};
+  constructor(props?: Partial<FilterProps>) {
+    this.filter = { ...defaultFilterProps, ...props };
   }
 
   /** Returns a new FilterSettings object with some values updated and the rest staying unmodified. */
@@ -35,14 +44,14 @@ export class FilterSettings {
     if (this.filter.maxDate && satellite.launchDate > this.filter.maxDate) {
       return false;
     }
-    if (this.filter.orbitClass && this.filter.orbitClass.indexOf(satellite.orbitClass) == -1) {
+    if (this.filter.orbitClasses.length > 0 && !this.filter.orbitClasses.includes(satellite.orbitClass)) {
       return false;
     }
-    if (this.filter.owner && this.filter.owner.indexOf(satellite.owner) == -1) {
+    if (this.filter.owners.length > 0 && !this.filter.owners.includes(satellite.owner)) {
       return false;
     }
-    if (this.filter.userType && (!Array.isArray(satellite.users) || !(satellite.users.some((user) => this.filter.userType?.includes(user))))) {
-      return false
+    if (this.filter.userTypes.length > 0 && !satellite.users.some(user => this.filter.userTypes.includes(user))) {
+      return false;
     }
     return true;
   }

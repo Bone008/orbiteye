@@ -24,11 +24,17 @@ export async function fetchSatellitesAsync(): Promise<Satellite[]> {
 
   const tleMap = await fetchTLEsAsync();
 
-  // Post-process: parse dates into JS Date objects
+  // Post-process
   const data: Satellite[] = rawData.map(raw => ({
     ...raw,
+    // Parse dates into JS Date objects
     launchDate: new Date(raw.launchDate),
     decayDate: raw.decayDate ? new Date(raw.decayDate) : undefined,
+
+    // Protect against messy default values for arrays
+    users: Array.isArray(raw.users) ? raw.users : [],
+    purpose: Array.isArray(raw.purpose) ? raw.purpose : [],
+
     tle: tleMap.get(raw.id),
   }));
 

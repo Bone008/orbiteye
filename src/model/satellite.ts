@@ -68,7 +68,7 @@ export interface Satellite {
    * High-level description of purpose (such as "Earth Observation" or "Navigation").
    * Can be empty if unknown. Can have more than one value (about 4%).
    */
-  purpose: string[] | string; // TODO: Make sure it is consistently array or non-array.
+  purpose: string[];
 
   /** More specific description of purpose. Can be empty. */
   detailedPurpose: string;
