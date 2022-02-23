@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
+
+import { useEffect, useMemo, useState } from 'react';
 import { fetchSatellitesAsync } from './model/data_loader';
 import { Satellite } from './model/satellite';
 import { FilterSettings } from './model/filter_settings';
@@ -9,6 +9,8 @@ import Timeline from './components/Timeline';
 import StaticWorldMap from './components/StaticWorldMap';
 import SVGWorldMap from './components/SVGWorldMap';
 import GlobeView from './components/GlobeView';
+import { HashRouter, Route, Routes } from 'react-router-dom';
+import ViewSelector from './components/ViewSelector';
 
 function App() {
   const [allSatellites, setAllSatellites] = useState<Satellite[]>([]);
@@ -32,15 +34,15 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          OrbitEye
-        </p>
-        DEBUG: {filteredSatellites.length} filtered satellites
-      </header>
-      <GlobeView filteredSatellites={filteredSatellites} />
-      <StaticWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<ViewSelector />} />
+          <Route path="/orbits/globe" element={<GlobeView filteredSatellites={filteredSatellites} />} />
+          <Route path="/orbits/map" element={<StaticWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />} />
+          <Route path="/origin" element={<SVGWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />} />
+        </Routes>
+      </HashRouter>
+
       <FilterPanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
       <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
     </div>

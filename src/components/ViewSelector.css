@@ -1,0 +1,38 @@
+/* TODO: Set colors better */
+
+.ViewSelector {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+
+  /* DEBUG values (TODO: replace when UI layout is done) */
+  min-height: 80vh;
+}
+
+.optionContainer {
+  background-color: black;
+  width: 50%;
+  
+  /* Align all content center */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Ignore default a tag styles */
+  text-decoration: inherit;
+  color: inherit;
+}
+
+.optionContainer:hover {
+  background-color: darkslategray;
+}
+
+.optionTitle {
+  color: white;
+}
+
+.optionDescription {
+  color: lightgray;
+}
