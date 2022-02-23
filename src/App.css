@@ -2,11 +2,6 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 20vmin;
-  pointer-events: none;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -26,6 +21,31 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.mainView{
+  display: flex;
+  height: 90vh;
+}
+
+.mapView{
+  width: 85%;
+
+}
+
+.headerName{
+  background: transparent;
+  position: absolute;
+  color: white;
+  left: 30%;
+}
+
+.modeBTN{
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  left: 1em;
+  top: 1em
 }
 
 @keyframes App-logo-spin {

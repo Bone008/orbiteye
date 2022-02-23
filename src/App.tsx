@@ -34,16 +34,21 @@ function App() {
 
   return (
     <div className="App">
-      <HashRouter>
-        <Routes>
-          <Route path="/" element={<ViewSelector />} />
-          <Route path="/orbits/globe" element={<GlobeView filteredSatellites={filteredSatellites} />} />
-          <Route path="/orbits/map" element={<StaticWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />} />
-          <Route path="/origin" element={<SVGWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />} />
-        </Routes>
-      </HashRouter>
-
-      <FilterPanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
+      <div className='mainView'>
+        <button className='modeBTN'> MODE </button>
+        <div className='mapView'>
+          <h1 className='headerName'>OrbitEye</h1>
+          <HashRouter>
+            <Routes>
+              <Route path="/" element={<ViewSelector />} />
+              <Route path="/orbits/globe" element={<GlobeView filteredSatellites={filteredSatellites} />} />
+              <Route path="/orbits/map" element={<StaticWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />} />
+              <Route path="/origin" element={<SVGWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />} />
+            </Routes>
+          </HashRouter>
+        </div>
+        <FilterPanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
+      </div>
       <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
     </div>
   );
