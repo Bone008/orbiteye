@@ -6,9 +6,6 @@
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-
-  /* DEBUG values (TODO: replace when UI layout is done) */
-  min-height: 80vh;
 }
 
 .optionContainer {
@@ -30,7 +27,7 @@
 }
 
 .optionContainer div {
-  padding: 0 10rem;
+  padding: 0 2rem;
 }
 
 .optionTitle {
