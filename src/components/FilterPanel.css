@@ -3,12 +3,26 @@
   background-color: lightgray;
 }
 
+.dropDownName{
+  width: 70px;
+}
+
 .MultiSelectDiv{
   display: flex;
-  align-items: center;
+  align-items:center;
+  justify-content: space-around;
+  width: 100%;
 }
 
 .MultiDropDown{
   width: 80%;
   padding: 1em;
+  position: absolute;
+  right: 5px;
+}
+
+.headerName{
+  background: transparent;
+  position: relative;
+  color: black;
 }

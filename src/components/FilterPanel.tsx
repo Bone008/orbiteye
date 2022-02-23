@@ -74,11 +74,11 @@ export default function FilterPanel(props: FilterPanelProps) {
 
   return (
     <div className="FilterPanel">
-      FILTER
+      <h1 className='headerName'>OrbitEye</h1>
       <p>TESTING: Currently the filter includes {props.filteredSatellites.length} of {props.allSatellites.length} results.</p>
 
       <div className='MultiSelectDiv'>
-        <p> Orbit type:</p>
+        <p className='dropDownName'> Orbit type:</p>
         <Select
           className='MultiDropDown'
           options={orbitOptions}
@@ -90,7 +90,7 @@ export default function FilterPanel(props: FilterPanelProps) {
         />
       </div>
       <div className='MultiSelectDiv'>
-        <p>Owner:</p>
+        <p className='dropDownName'>Owner:</p>
         <Select
           className='MultiDropDown'
           options={ownerOptions}
@@ -102,7 +102,7 @@ export default function FilterPanel(props: FilterPanelProps) {
         />
       </div>
       <div className='MultiSelectDiv'>
-        <p>Usage type:</p>
+        <p className='dropDownName'>Usage type:</p>
         <Select
           className='MultiDropDown'
           options={usageOption}

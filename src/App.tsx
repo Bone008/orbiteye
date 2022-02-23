@@ -37,7 +37,6 @@ function App() {
       <div className='mainView'>
         <button className='modeBTN'> MODE </button>
         <div className='mapView'>
-          <h1 className='headerName'>OrbitEye</h1>
           <HashRouter>
             <Routes>
               <Route path="/" element={<ViewSelector />} />
