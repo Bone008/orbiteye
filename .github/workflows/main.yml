@@ -19,6 +19,10 @@ jobs:
         node-version: 14.x
 
     - name: Build
+      env:
+        # This is needed so warnings are not treated as errors, see:
+        # https://github.com/facebook/create-react-app/issues/3657
+        CI: false
       run: |
         npm install
         npm run build
