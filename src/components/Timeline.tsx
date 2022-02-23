@@ -34,9 +34,9 @@ export default function Timeline(props: TimelineProps) {
   return (
     <div className="Timeline">
       Placeholder: Timeline from
-      <span> {minDate?.toDateString() || 'unknown'} </span>
+      <span> {minDate?.toISOString()?.substring(0, 10) || 'unknown'} </span>
       till
-      <span> {maxDate?.toDateString() || 'unknown'}</span>.
+      <span> {maxDate?.toISOString()?.substring(0, 10) || 'unknown'}</span>.
       <br />
       <button type="button" onClick={changeSelectedRange}>TEST: Click to change filter</button>
     </div>
