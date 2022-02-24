@@ -35,7 +35,7 @@ export async function fetchSatellitesAsync(): Promise<Satellite[]> {
     decayDate: raw.decayDate ? new Date(raw.decayDate) : undefined,
 
     // Protect against messy default values for arrays
-    users: Array.isArray(raw.users) ? raw.users : [],
+    users: Array.isArray(raw.users) ? raw.users.map(u => u ? u.trim() : '') : [],
     purpose: Array.isArray(raw.purpose) ? raw.purpose : [],
 
     tle: tleMap.get(raw.id),

@@ -1,7 +1,7 @@
 import './FilterPanel.css';
 import * as d3 from 'd3';
 import React, { useMemo } from 'react';
-import { ALL_ORBIT_CLASSES, OrbitClass, Satellite, ALL_USERS_TYPE } from '../model/satellite';
+import { ALL_ORBIT_CLASSES, OrbitClass, Satellite } from '../model/satellite';
 import { FilterProps, FilterSettings, SetFilterCallback } from '../model/filter_settings';
 import Select, { MultiValue } from "react-select";
 
@@ -63,9 +63,18 @@ export default function FilterPanel(props: FilterPanelProps) {
     return { value: ownerCode, label: (ownerCode || 'All countries') };
   });
 
-  const usageOption = ALL_USERS_TYPE.map(usage => {
-    const count = countWithUpdatedFilter({ userTypes: [usage] });
-    return { value: usage, label: `${usage} (${count})` };
+  const uniqueUsers: string[] = useMemo(() => {
+    const usersSet = new Set<string>();
+    for (const sat of props.allSatellites) {
+      for (const user of sat.users) {
+        usersSet.add(user);
+      }
+    }
+    return Array.from(usersSet).sort();
+  }, [props.allSatellites]);
+  const usageOption = uniqueUsers.map(user => {
+    const count = countWithUpdatedFilter({ userTypes: [user] });
+    return { value: user, label: `${user} (${count})` };
   });
 
   return (
