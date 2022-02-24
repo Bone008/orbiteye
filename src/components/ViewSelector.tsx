@@ -8,6 +8,11 @@ const viewOptions = [
     href: "/orbits/globe",
   },
   {
+    name: "Orbits (2D)",
+    description: "Temporary link until we implement switching within the view :)",
+    href: "/orbits/map",
+  },
+  {
     name: "Origin",
     description: "In this mode, you will be able to see the most active countries in launching or active satellites throughout history.",
     href: "/origin",

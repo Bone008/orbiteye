@@ -5,13 +5,17 @@
   height: 100%;
   padding: 0;
   display: flex;
+  align-content: stretch;
+  justify-content: stretch;
   flex-wrap: wrap;
+
+  background-color: black;
 }
 
 .optionContainer {
   background-color: black;
   width: 50%;
-  
+
   /* Align all content center */
   display: flex;
   align-items: center;
