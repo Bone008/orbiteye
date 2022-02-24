@@ -58,12 +58,19 @@ export default function WorldMap(__props: StaticWorldMapProps) {
         const trace: [number, number][] = groundTraceSync(sat).map(lngLat => [lngLat[0], lngLat[1]]);
         const lineGen = d3.line()
           .x(p => p[0])
-          .y(p => p[1])
+          .y(p => p[1]);
+
+        // Special case for geostationary: Draw box around the position instead.
+        if (sat.orbitClass === 'GEO' && trace.length > 0) {
+          const [px, py] = mapProjection(trace[0]) || [Infinity, Infinity];
+          const s = 5;
+          return lineGen([[px - s, py - s], [px + s, py - s], [px + s, py + s], [px - s, py + s], [px - s, py - s]]);
+        }
         return lineGen(trace.map(p => mapProjection(p) || [Infinity, Infinity]));
       })
       .attr("fill", "none")
       .attr("stroke", "red") // TODO: base on something else
-      .attr("border-width", "2px")
+      .attr("stroke-width", "1px")
       .attr("border-color", "blue")
       .on('mouseover', d => {
         d3.select(d.srcElement).attr("stroke-width", "10px");
