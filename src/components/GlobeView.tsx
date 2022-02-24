@@ -6,6 +6,7 @@ import { useRef, Suspense } from 'react';
 import { DefaultValues } from '../util/optional_props';
 import { Satellite } from '../model/satellite';
 import { getOrbitECI } from '../util/orbits';
+import { Euler } from 'three';
 
 
 const EARTH_RADIUS_KM = 6371;
@@ -53,6 +54,10 @@ function Globe(props: Required<GlobeViewProps>) {
   const sphereRef = useRef<THREE.Mesh>(null!);
   const texture = useTexture({ map: 'assets/NASA-Visible-Earth-September-2004.jpg' });
 
+  // Rotate the Earth over time (at one revolution per minute)
+  //  - this reduces assumption that you can look at 3D orbits to see where they fly over the surface
+  useFrame((state, delta) => { sphereRef.current.rotation.y += 2 * Math.PI * delta / 60; })
+
   const satellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.orbitLimit);
   const orbits = satellites.map(sat => {
     const coordinates = getOrbitECI(sat);
@@ -99,7 +104,8 @@ function Globe(props: Required<GlobeViewProps>) {
 
   return (
     <>
-      <Sphere ref={sphereRef} args={[props.radius, 64, 32]}>
+      {/* Sphere rotation aligns the Z axis with ECI coordinates! */}
+      <Sphere ref={sphereRef} args={[props.radius, 64, 32]} rotation={new Euler(Math.PI / 2, 0, 0)}>
         <meshLambertMaterial {...texture} />
       </Sphere>
       {orbits}

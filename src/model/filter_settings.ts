@@ -1,4 +1,3 @@
-import { isArray } from "react-select/dist/declarations/src/utils";
 import { OrbitClass, Satellite } from "./satellite";
 
 export type SetFilterCallback = (newSettings: FilterSettings) => void;

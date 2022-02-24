@@ -1,5 +1,8 @@
 import { Satellite } from "./satellite";
 
+const URL_SATELLITE_DATA = 'data/satellites.json';
+const URL_TLE_DATA = 'data/celestrak_tle.txt';
+
 /** A satellite entry as loaded directly from JSON before post-processing. */
 type RawSatellite = Omit<Satellite, 'launchDate' | 'decayDate'> & {
   launchDate: string,
@@ -8,7 +11,7 @@ type RawSatellite = Omit<Satellite, 'launchDate' | 'decayDate'> & {
 
 export async function fetchSatellitesAsync(): Promise<Satellite[]> {
   console.log(new Date(), 'Sending request ...');
-  const response = await fetch('/data/satellites.json', {
+  const response = await fetch(URL_SATELLITE_DATA, {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -32,11 +35,15 @@ export async function fetchSatellitesAsync(): Promise<Satellite[]> {
     decayDate: raw.decayDate ? new Date(raw.decayDate) : undefined,
 
     // Protect against messy default values for arrays
-    users: Array.isArray(raw.users) ? raw.users : [],
+    users: Array.isArray(raw.users) ? raw.users.map(u => u ? u.trim() : '') : [],
     purpose: Array.isArray(raw.purpose) ? raw.purpose : [],
 
     tle: tleMap.get(raw.id),
-  }));
+  })).filter(sat =>
+    // For now filter out debris to make our lives a bit easier.
+    // Will probably want to include them in the future.
+    sat.objectType !== 'DEBRIS'
+  );
 
   console.log(new Date(), `Loaded ${data.length} rows!\nExample entry:`, data[0]);
   // For easy debug access from dev tools, expose also as global variable.
@@ -48,7 +55,7 @@ export async function fetchSatellitesAsync(): Promise<Satellite[]> {
 
 async function fetchTLEsAsync(): Promise<Map<string, [string, string]>> {
   console.log(new Date(), 'Sending request for TLEs...');
-  const response = await fetch('/data/celestrak_tle.txt', {
+  const response = await fetch(URL_TLE_DATA, {
     headers: {
       'Content-Type': 'text/plain',
       'Accept': 'text/plain',
