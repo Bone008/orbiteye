@@ -89,8 +89,6 @@ export function getOrbitECI(sat: Satellite, stepMS: number = 10000): THREE.Vecto
 
   // Compute times for sampling
   const N = Math.floor(orbitPeriodMS / stepMS);
-  console.log(`DEBUG: Calculating orbit for ${sat.id} with ${N} points.`);
-
   const positions: Array<THREE.Vector3> = Array(N);
   for (let i = 0; i < N; i++) {
     const eci = propagate(satrec, date).position as EciVec3<number>;

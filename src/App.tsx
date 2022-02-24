@@ -30,6 +30,8 @@ function App() {
     setAllSatellites(await fetchSatellitesAsync());
   };
 
+  useEffect(() => { initialize(); }, []);
+
   return (
     <div className="App">
       <HashRouter>
@@ -45,33 +47,7 @@ function App() {
           </div>
           <FilterPanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
         </div>
-<<<<<<< HEAD
-        <div>
-        <td>
-          <FilterPanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
-        <tr>
-        </tr>
-        <tr>
-
-        <body>
-        <form action="http://localhost:3000/#/orbits/map"> 
-          <button type="submit">2D view</button>
-        </form>
-
-        <form action="http://localhost:3000/#/orbits/globe"> 
-          <button type="submit">3D view</button>
-        </form>
-
-        </body>
-
-        </tr>
-        </td>
-        </div>
-
-      </div>
-=======
       </HashRouter>
->>>>>>> 164afdf292da5257ef1d948a96b13631ee4f1687
       <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
     </div>
   );
