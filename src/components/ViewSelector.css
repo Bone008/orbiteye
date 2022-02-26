@@ -25,6 +25,10 @@
   background-color: black;
 }
 
+.optionBlockContainer.uncollapsible {
+  grid-template-rows: 1fr 1fr;
+}
+
 .optionBlock {
   /* Ignore default a tag styles */
   text-decoration: inherit;

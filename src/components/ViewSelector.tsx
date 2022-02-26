@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { ChevronDownIcon, ChevronUpIcon } from './Icons';
 
 export interface ViewControlsProps {
-  view: ReactElement,
+  view?: ReactElement
 }
 
 export default function ViewControls(props: ViewControlsProps) {
@@ -38,13 +38,15 @@ export default function ViewControls(props: ViewControlsProps) {
     );
   });
 
+  const wipeUpButton = !props.view ? null : <div className="wipeUpButton" onClick={showBot}><ChevronUpIcon /></div>;
+
   return (
     <div ref={ref} className="wipeContainer">
-      <div className="wipe optionBlockContainer">
+      <div className={`wipe ${props.view ? "hidden" : "uncollapsible"} optionBlockContainer`}>
         {optionBlocks}
-        <div className="wipeUpButton" onClick={showBot}><ChevronUpIcon /></div>
+        {wipeUpButton}
       </div>
-      <div className="wipe hidden optionTabsAndViewContainer">
+      <div className={`wipe ${props.view ? "" : "hidden"} optionTabsAndViewContainer`}>
         <div className='optionTabContainer'>
           {optionTabs}
           <div className="optionTab" onClick={showTop}><ChevronDownIcon /></div>
