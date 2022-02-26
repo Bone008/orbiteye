@@ -19,6 +19,7 @@ interface FilterOptions {
   label: string;
 }
 
+
 /** React component to render the global filter selection UI. */
 export default function FilterPanel(props: FilterPanelProps) {
   /** Computes how many rows match the filter after changing some value in it. */
@@ -50,6 +51,16 @@ export default function FilterPanel(props: FilterPanelProps) {
     props.onUpdateFilter(newFilter)
   }
 
+  /** TODO: Logic for purpose filter */
+  const filterByPurpose = (options: MultiValue<FilterOptions>) => {
+    //do stuff
+  }
+
+  /** TODO: Logic for active/non-active filter */
+  const filterOnActive = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //Do stuff
+  }
+
   const orbitOptions = ALL_ORBIT_CLASSES.map(orbitClass => {
     const count = countWithUpdatedFilter({ orbitClasses: [orbitClass] });
     return { value: orbitClass, label: `${orbitClass} (${count})` };
@@ -63,6 +74,7 @@ export default function FilterPanel(props: FilterPanelProps) {
     return { value: ownerCode, label: (ownerCode || 'All countries') };
   });
 
+  /**Called "Sector" in the filter */
   const uniqueUsers: string[] = useMemo(() => {
     const usersSet = new Set<string>();
     for (const sat of props.allSatellites) {
@@ -77,15 +89,22 @@ export default function FilterPanel(props: FilterPanelProps) {
     return { value: user, label: `${user} (${count})` };
   });
 
+  /*TODO: Add names of the unique purposes for the dropdown*/
+  const uniquePurposes = ['Eartch Observation', 'and more sectors'].map(
+    purpose => {
+      return { value: purpose, label: purpose }
+    }
+  )
+
   return (
     <div className="FilterPanel">
       <h1 className='headerName'>OrbitEye</h1>
-      <p>Showing {props.filteredSatellites.length} of {props.allSatellites.length} satellites.</p>
+      <p className='SatCountText'>Matches: {props.filteredSatellites.length} of {props.allSatellites.length} satellites.</p>
 
-      <div className='MultiSelectDiv'>
-        <p className='dropDownName'> Orbit type:</p>
+      <div className='FilterRowDiv'>
+        <p className='FilterNameTag'> Orbit type:</p>
         <Select
-          className='MultiDropDown'
+          className='DropDown'
           options={orbitOptions}
           isMulti
           isClearable
@@ -94,10 +113,10 @@ export default function FilterPanel(props: FilterPanelProps) {
           onChange={filterByOrbitClass}
         />
       </div>
-      <div className='MultiSelectDiv'>
-        <p className='dropDownName'>Owner:</p>
+      <div className='FilterRowDiv'>
+        <p className='FilterNameTag'>Owner:</p>
         <Select
-          className='MultiDropDown'
+          className='DropDown'
           options={ownerOptions}
           isMulti
           isClearable
@@ -106,10 +125,10 @@ export default function FilterPanel(props: FilterPanelProps) {
           onChange={filterByOwner}
         />
       </div>
-      <div className='MultiSelectDiv'>
-        <p className='dropDownName'>Usage type:</p>
+      <div className='FilterRowDiv'>
+        <p className='FilterNameTag'>Sector:</p>
         <Select
-          className='MultiDropDown'
+          className='DropDown'
           options={usageOption}
           isMulti
           isClearable
@@ -117,6 +136,24 @@ export default function FilterPanel(props: FilterPanelProps) {
           hideSelectedOptions={false}
           onChange={filterByUsage}
         />
+      </div>
+      <div className='FilterRowDiv'>
+        <p className='FilterNameTag'>Purpose:</p>
+        <Select
+          className='DropDown'
+          options={uniquePurposes}
+          isMulti
+          isClearable
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          onChange={filterByPurpose}
+        />
+      </div>
+      <div className='FilterRowDiv'>
+        <form>
+          <label className='FilterNameTag'>Only active satellites: </label>
+          <input name='activeToggle' type={'checkbox'} onChange={e => filterOnActive(e)} defaultChecked={true} />
+        </form>
       </div>
     </div>
   );
