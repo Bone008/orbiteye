@@ -1,6 +1,63 @@
-import { Link } from 'react-router-dom';
 import './ViewSelector.css';
 
+import { ReactElement, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { ChevronDownIcon, ChevronUpIcon } from './Icons';
+
+export interface ViewControlsProps {
+  view: ReactElement,
+}
+
+export default function ViewControls(props: ViewControlsProps) {
+  const ref = useRef<HTMLDivElement>(null!);
+
+  const showTop = () => {
+    ref.current.querySelector(".optionBlockContainer")?.classList.remove("hidden");
+    ref.current.querySelector(".optionTabsAndViewContainer")?.classList.add("hidden");
+  }
+
+  const showBot = () => {
+    ref.current.querySelector(".optionBlockContainer")?.classList.add("hidden");
+    ref.current.querySelector(".optionTabsAndViewContainer")?.classList.remove("hidden");
+  }
+
+  const optionBlocks = viewOptions.map(opt => {
+    return (
+      <Link key={opt.name + "_block"} className="optionBlock" to={opt.href} onClick={showBot}>
+        <div className="optionContainer">
+          <p className="optionTitle">{opt.name}</p>
+          <p className="optionDescription">{opt.description}</p>
+        </div>
+      </Link>
+    );
+  });
+
+  const optionTabs = viewOptions.map(opt => {
+    return (
+      <Link key={opt.name + "_tab"} className="optionTab" to={opt.href} onClick={showBot}> {opt.name} </Link>
+    );
+  });
+
+  return (
+    <div ref={ref} className="wipeContainer">
+      <div className="wipe optionBlockContainer">
+        {optionBlocks}
+        <div className="wipeUpButton" onClick={showBot}><ChevronUpIcon /></div>
+      </div>
+      <div className="wipe hidden optionTabsAndViewContainer">
+        <div className='optionTabContainer'>
+          {optionTabs}
+          <div className="optionTab" onClick={showTop}><ChevronDownIcon /></div>
+        </div>
+        {props.view}
+      </div>
+    </div>
+  );
+}
+
+
+
+// NOTE: This isn't too extensible! The layout above and in the CSS is built for 4 options total
 const viewOptions = [
   {
     name: "Orbits",
@@ -17,33 +74,14 @@ const viewOptions = [
     description: "In this mode, you will be able to see the most active countries in launching or active satellites throughout history.",
     href: "/origin",
   },
-  {
-    name: "Launch",
-    description: "In this mode, you will see all the launch sites used depending on their interests.",
-    href: "/",
-  },
+  // {
+  //   name: "Launch",
+  //   description: "In this mode, you will see all the launch sites used depending on their interests.",
+  //   href: "/launch",
+  // },
   {
     name: "Decay",
     description: "In this mode, you will be able to point out the increase of debris number over the years.",
-    href: "/",
+    href: "/decay",
   },
 ];
-
-export default function ViewSelector() {
-  const options = viewOptions.map(option => {
-    return (
-      <Link key={option.name} className="optionContainer" to={option.href}>
-        <div>
-          <p className='optionTitle'>{option.name}</p>
-          <p className='optionDescription'>{option.description}</p>
-        </div>
-      </Link>
-    );
-  });
-
-  return (
-    <div className="ViewSelector">
-      {options}
-    </div>
-  );
-}

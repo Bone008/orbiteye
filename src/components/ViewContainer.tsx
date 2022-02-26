@@ -3,7 +3,7 @@ import { Satellite } from "../model/satellite";
 import GlobeView from "./GlobeView";
 import StaticWorldMap from "./StaticWorldMap";
 import SVGWorldMap from './SVGWorldMap';
-import ViewOptionsGrid from './ViewOptionsGrid';
+import ViewSelector from "./ViewSelector";
 
 export interface ViewContainerProps {
   filteredSatellites: Satellite[],
@@ -15,13 +15,13 @@ export default function ViewContainer(props: ViewContainerProps) {
   return (
     <HashRouter>
       <Routes>
-        <Route path="/" element={<ViewOptionsGrid view={<ViewNotFound />} />} />
-        <Route path="/orbits/globe" element={<ViewOptionsGrid view={<GlobeView filteredSatellites={filteredSatellites} />} />} />
-        <Route path="/orbits/map" element={<ViewOptionsGrid view={<StaticWorldMap filteredSatellites={filteredSatellites} width={500} height={250} />} />} />
-        <Route path="/origin" element={<ViewOptionsGrid view={<SVGWorldMap filteredSatellites={filteredSatellites} width={500} height={250} />} />} />
+        <Route path="/" element={<ViewSelector view={<ViewNotFound />} />} />
+        <Route path="/orbits/globe" element={<ViewSelector view={<GlobeView filteredSatellites={filteredSatellites} />} />} />
+        <Route path="/orbits/map" element={<ViewSelector view={<StaticWorldMap filteredSatellites={filteredSatellites} width={500} height={250} />} />} />
+        <Route path="/origin" element={<ViewSelector view={<SVGWorldMap filteredSatellites={filteredSatellites} width={500} height={250} />} />} />
 
         {/* For unmatched paths, give ViewNotFound */}
-        <Route path="*" element={<ViewOptionsGrid view={<ViewNotFound />} />} />
+        <Route path="*" element={<ViewSelector view={<ViewNotFound />} />} />
       </Routes>
     </HashRouter>
   );
