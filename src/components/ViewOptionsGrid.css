@@ -1,0 +1,58 @@
+body {
+  background-color: #23262d;
+  width: 100vw;
+  height: 100vh;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 0fr 0fr 0fr 1fr 10fr;
+  width: 100%;
+  height: 100%;
+  transition: all 300ms ease;
+
+  background-color: black;
+}
+
+.grid.expand {
+  grid-template-columns: 1fr 1fr 0fr 0fr 0fr;
+  grid-template-rows: 5fr 5fr 1fr 0fr 0fr;
+}
+
+.item {
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Ignore default a tag styles */
+  text-decoration: inherit;
+}
+
+.desc {
+  color: white;
+}
+
+.nav {
+  color: gray;
+}
+
+.nav:hover, .desc:hover, .nav.active, .desc.active {
+  color: white;
+  background-color: #111;
+}
+
+.nav.expand {
+  visibility: hidden;
+}
+
+.desc:not(.expand) {
+  visibility: hidden;
+}

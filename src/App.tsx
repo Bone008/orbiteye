@@ -6,11 +6,7 @@ import { Satellite } from './model/satellite';
 import { FilterSettings } from './model/filter_settings';
 import FilterPanel from './components/FilterPanel';
 import Timeline from './components/Timeline';
-import StaticWorldMap from './components/StaticWorldMap';
-import SVGWorldMap from './components/SVGWorldMap';
-import GlobeView from './components/GlobeView';
-import { HashRouter, Link, Route, Routes } from 'react-router-dom';
-import ViewSelector from './components/ViewSelector';
+import ViewContainer from './components/ViewContainer';
 
 function App() {
   const [allSatellites, setAllSatellites] = useState<Satellite[]>([]);
@@ -34,20 +30,14 @@ function App() {
 
   return (
     <div className="App">
-      <HashRouter>
-        <div className='mainView'>
-          <Link className='modeBTN' to="/"> MODE </Link>
-          <div className='mapView'>
-            <Routes>
-              <Route path="/" element={<ViewSelector />} />
-              <Route path="/orbits/globe" element={<GlobeView filteredSatellites={filteredSatellites} />} />
-              <Route path="/orbits/map" element={<StaticWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />} />
-              <Route path="/origin" element={<SVGWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />} />
-            </Routes>
-          </div>
-          <FilterPanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
+      <div className='mainView'>
+        <div className='mapView'>
+          <ViewContainer filteredSatellites={filteredSatellites} />
         </div>
-      </HashRouter>
+
+        <FilterPanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
+      </div>
+
       <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
     </div>
   );

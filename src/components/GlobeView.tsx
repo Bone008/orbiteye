@@ -36,7 +36,7 @@ export default function GlobeView(__props: GlobeViewProps) {
   return (
     <div className="GlobeView">
       <Suspense fallback={null}> {/* Replaces canvas with nothing while loading */}
-        <Canvas>
+        <Canvas style={{ width: "100%", height: "100%" }}>
           <color attach="background" args={["black"]} />
           <ambientLight />
           <TrackballControls maxDistance={props.maxDistance} minDistance={props.minDistance} noPan />
