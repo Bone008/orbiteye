@@ -41,7 +41,7 @@ body {
 }
 
 .nav {
-  color: gray;
+  color: lightgray;
 }
 
 .nav:hover, .desc:hover, .nav.active, .desc.active {
@@ -55,4 +55,19 @@ body {
 
 .desc:not(.expand) {
   visibility: hidden;
+}
+
+
+
+.optionContainer {
+  padding: 0 2rem;
+}
+
+.optionTitle {
+  font-size: large;
+}
+
+.optionDescription {
+  color: gray;
+  font-size: small;
 }

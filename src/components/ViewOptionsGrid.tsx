@@ -1,10 +1,17 @@
 import './ViewOptionsGrid.css'
 
-import { useRef } from 'react';
+import { ReactElement, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDownIcon, ChevronUpIcon } from './Icons';
 
-export default function GridTest(props: any) {
+// TODO: add prop for "collapsible" which is used in landing page
+//  and disables ability to collapse menu. Also starts menu expanded.
+
+export interface ViewOptionsGridProps {
+  view: ReactElement,
+}
+
+export default function ViewOptionsGrid(props: ViewOptionsGridProps) {
   const ref = useRef<HTMLDivElement>(null!);
 
   const collapse = () => {
@@ -17,24 +24,36 @@ export default function GridTest(props: any) {
     ref.current.querySelectorAll(".nav, .desc").forEach(e => e.classList.add("expand"))
   }
 
+  const optionBlocks = viewOptions.map(opt => {
+    return (
+      <Link key={opt.name + "_block"} className="item desc" to={opt.href} onClick={collapse}>
+        <div className="optionContainer">
+          <p className="optionTitle">{opt.name}</p>
+          <p className="optionDescription">{opt.description}</p>
+        </div>
+      </Link>
+    );
+  });
+
+  const optionTabs = viewOptions.map(opt => {
+    return (
+      <Link key={opt.name + "_tab"} className="item nav" to={opt.href} onClick={collapse}> {opt.name} </Link>
+    );
+  });
+
   return (
     <div ref={ref} className="grid">
-      <Link className="item desc" to='/orbits/globe' onClick={collapse}>Orbits Expand</Link>
-      <Link className="item desc" to='/orbits/map' onClick={collapse}>Orbits (2D) Expand</Link>
+      {optionBlocks.slice(0, 2)}
       <div className="item"></div>
       <div className="item"></div>
       <div className="item"></div>
-      <Link className="item desc" to='/' onClick={collapse}>Origin Expand</Link>
-      <Link className="item desc" to='/' onClick={collapse}>Decay Expand</Link>
+      {optionBlocks.slice(2, 4)}
       <div className="item"></div>
       <div className="item"></div>
       <div className="item"></div>
       <div className="item desc" onClick={collapse} style={{ gridColumn: "1/5" }}><ChevronUpIcon /></div>
       <div className="item"></div>
-      <Link className="item nav" to='/orbits/globe'>Orbits</Link>
-      <Link className="item nav" to='/orbits/map'>Orbits (2D)</Link>
-      <Link className="item nav" to='/'>Origin</Link>
-      <Link className="item nav" to='/'>Decay</Link>
+      {optionTabs}
       <div className="item nav" onClick={expand}> <ChevronDownIcon /> </div>
       <div className="item" style={{ gridColumn: "1/6" }}>
         {props.view}
@@ -42,3 +61,33 @@ export default function GridTest(props: any) {
     </div>
   );
 }
+
+
+// NOTE: This isn't too extensible! The layout above and in the CSS is built for 4 options total
+const viewOptions = [
+  {
+    name: "Orbits",
+    description: "In this mode, you will be able to see an overview of the different types of orbits and their satellites.",
+    href: "/orbits/globe",
+  },
+  {
+    name: "Orbits (2D)",
+    description: "Temporary link until we implement switching within the view :)",
+    href: "/orbits/map",
+  },
+  {
+    name: "Origin",
+    description: "In this mode, you will be able to see the most active countries in launching or active satellites throughout history.",
+    href: "/origin",
+  },
+  // {
+  //   name: "Launch",
+  //   description: "In this mode, you will see all the launch sites used depending on their interests.",
+  //   href: "/launch",
+  // },
+  {
+    name: "Decay",
+    description: "In this mode, you will be able to point out the increase of debris number over the years.",
+    href: "/decay",
+  },
+];
