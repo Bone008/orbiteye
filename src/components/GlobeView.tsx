@@ -30,7 +30,7 @@ const defaultProps: DefaultValues<GlobeViewProps> = {
   minDistance: 1.5,
   maxDistance: 15,
   orbitOpacity: 1,
-  orbitLineWidth: 2,
+  orbitLineWidth: 1.3,
 }
 
 

@@ -16,7 +16,7 @@
 .FilterRowDiv{
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: stretch;
   width: 100%;
   text-align: left;
   padding-bottom: 0.5em;
@@ -31,13 +31,17 @@
   right: 5px;
 }
 
+.optionValueCount {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 85%;
+}
+.DropDown__value-container .optionValueCount {
+  display: none;
+}
+
 
 .SatCountText{
   color: white;
-}
-
-Form{
-  width: 100%
 }
 
 /*Project name at top*/

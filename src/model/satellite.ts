@@ -106,6 +106,11 @@ export const ALL_OPERATIONAL_STATUSES = [
 /** Detailed categorization if a satellite is still in service or not. */
 export type OperationalStatus = typeof ALL_OPERATIONAL_STATUSES[number];
 
+/** Set of OperationalStatus values that should be considered "active". */
+export const ACTIVE_OPERATIONAL_STATUS_SET = new Set<OperationalStatus>([
+  'OP', 'PART_OP', 'STANDBY', 'SPARE', 'EXTENDED',
+]);
+
 
 export const ALL_ORBIT_CLASSES = [
   'LEO', 'GEO', 'MEO', 'Elliptical'

@@ -10,7 +10,7 @@ import ViewContainer from './components/ViewContainer';
 
 function App() {
   const [allSatellites, setAllSatellites] = useState<Satellite[]>([]);
-  const [filterSettings, setFilterSettings] = useState(new FilterSettings());
+  const [filterSettings, setFilterSettings] = useState(new FilterSettings({ activeStatus: true }));
 
   // Applies the current filter settings, executed only when necessary.
   const filteredSatellites = useMemo(() => {
