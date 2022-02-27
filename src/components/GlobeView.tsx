@@ -7,6 +7,7 @@ import { DefaultValues } from '../util/optional_props';
 import { Satellite } from '../model/satellite';
 import { getOrbitECI } from '../util/orbits';
 import { Euler } from 'three';
+import { COLOR_PALETTE_ORBITS } from '../util/colors';
 
 
 const EARTH_RADIUS_KM = 6371;
@@ -45,7 +46,8 @@ export default function GlobeView(__props: GlobeViewProps) {
           <SceneObjects {...props} />
           <Stars fade />
         </Canvas>
-      </Suspense >
+      </Suspense>
+      <OrbitLegend />
     </div>
   );
 }
@@ -96,10 +98,10 @@ function Orbit(props: OrbitProps) {
 
   // TODO: Opacity < 1 doesn't work properly (parts of the line appear in full opacity, others at the selected value)
   const material = {
-    color: hovered ? "green" : "red",
+    color: hovered ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass],
     transparent: props.orbitOpacity !== 1,
     opacity: props.orbitOpacity,
-    lineWidth: props.orbitLineWidth,
+    lineWidth: (hovered ? 2 : 1) * props.orbitLineWidth,
   }
 
   const hoverControls = {
@@ -111,4 +113,19 @@ function Orbit(props: OrbitProps) {
   const onclick = (e: ThreeEvent<MouseEvent>) => console.log(`Selected ${e.object.name}`);
 
   return <Line name={sat.id} points={coordinates} {...material} {...hoverControls} onClick={onclick} />
+}
+
+
+function OrbitLegend(props: {}) {
+  return (
+    <div className="Legend">
+      <div className="title">Orbit types</div>
+      {Object.entries(COLOR_PALETTE_ORBITS).map(([name, color]) =>
+        <div className="entry">
+          <div className="entryColor" style={{ backgroundColor: color }}></div>
+          <div className="entryLabel">{name}</div>
+        </div>
+      )}
+    </div>
+  );
 }
