@@ -121,7 +121,7 @@ function OrbitLegend(props: {}) {
     <div className="Legend">
       <div className="title">Orbit types</div>
       {Object.entries(COLOR_PALETTE_ORBITS).map(([name, color]) =>
-        <div className="entry">
+        <div key={name} className="entry">
           <div className="entryColor" style={{ backgroundColor: color }}></div>
           <div className="entryLabel">{name}</div>
         </div>

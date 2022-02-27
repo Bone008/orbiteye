@@ -31,12 +31,12 @@ export default function WorldMap(__props: StaticWorldMapProps) {
   // Render world map (runs just once)
   useEffect(() => {
     const mapLayer = d3.select(svgRef.current).select("g.mapLayer");
+    mapLayer.selectAll("*").remove();
     mapLayer.append("svg:image")
       .attr("xlink:href", "assets/NASA-Visible-Earth-September-2004.jpg")
       .attr("width", props.width)
-      .attr("height", props.height)
-
-  }, [mapProjection, props.width, props.height]);
+      .attr("height", props.height);
+  }, [props.width, props.height]);
 
 
   // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
@@ -60,13 +60,15 @@ export default function WorldMap(__props: StaticWorldMapProps) {
           .x(p => p[0])
           .y(p => p[1]);
 
-        // Special case for geostationary: Draw box around the position instead.
+        let pointsStr = lineGen(trace.map(p => mapProjection(p) || [Infinity, Infinity]));
+        // Special case for geosynchronous: Draw box around the position.
         if (sat.orbitClass === 'GEO' && trace.length > 0) {
           const [px, py] = mapProjection(trace[0]) || [Infinity, Infinity];
           const s = 5;
-          return lineGen([[px - s, py - s], [px + s, py - s], [px + s, py + s], [px - s, py + s], [px - s, py - s]]);
+          // SVG path instructions can just be concatenated
+          pointsStr += lineGen([[px - s, py - s], [px + s, py - s], [px + s, py + s], [px - s, py + s], [px - s, py - s]])!;
         }
-        return lineGen(trace.map(p => mapProjection(p) || [Infinity, Infinity]));
+        return pointsStr;
       })
       .attr("fill", "none")
       .attr("stroke", "red") // TODO: base on something else
