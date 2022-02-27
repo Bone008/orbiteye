@@ -51,7 +51,11 @@ export default function ViewControls(props: ViewControlsProps) {
           {optionTabs}
           <div className="optionTab" onClick={showTop}><ChevronDownIcon /></div>
         </div>
-        {props.view}
+
+        {/* Prevent grid blowout https://css-tricks.com/preventing-a-grid-blowout/ */}
+        <div style={{ minWidth: 0, backgroundColor: "black" }}>
+          {props.view}
+        </div>
       </div>
     </div>
   );
