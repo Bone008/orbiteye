@@ -4,6 +4,8 @@ import * as d3 from 'd3';
 import { Satellite } from '../model/satellite';
 import { groundTraceSync } from '../util/orbits';
 import { DefaultValues } from '../util/optional_props';
+import { COLOR_PALETTE_ORBITS } from '../util/colors';
+import Legend from './Legend';
 
 export interface StaticWorldMapProps {
   filteredSatellites: Satellite[];
@@ -71,7 +73,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
         return pointsStr;
       })
       .attr("fill", "none")
-      .attr("stroke", "red") // TODO: base on something else
+      .attr("stroke", d => COLOR_PALETTE_ORBITS[d.orbitClass])
       .attr("stroke-width", "1px")
       .attr("stroke-linecap", "round")
       .on('mouseover', d => {
@@ -108,6 +110,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
         <g className="mapLayer"></g>
         <g className="traceLayer"></g>
       </svg>
+      <Legend type="orbitTypes" />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { Satellite } from '../model/satellite';
 import { getOrbitECI } from '../util/orbits';
 import { Euler } from 'three';
 import { COLOR_PALETTE_ORBITS } from '../util/colors';
+import Legend from './Legend';
 
 
 const EARTH_RADIUS_KM = 6371;
@@ -47,7 +48,7 @@ export default function GlobeView(__props: GlobeViewProps) {
           <Stars fade />
         </Canvas>
       </Suspense>
-      <OrbitLegend />
+      <Legend type="orbitTypes" />
     </div>
   );
 }
@@ -113,19 +114,4 @@ function Orbit(props: OrbitProps) {
   const onclick = (e: ThreeEvent<MouseEvent>) => console.log(`Selected ${e.object.name}`);
 
   return <Line name={sat.id} points={coordinates} {...material} {...hoverControls} onClick={onclick} />
-}
-
-
-function OrbitLegend(props: {}) {
-  return (
-    <div className="Legend">
-      <div className="title">Orbit types</div>
-      {Object.entries(COLOR_PALETTE_ORBITS).map(([name, color]) =>
-        <div key={name} className="entry">
-          <div className="entryColor" style={{ backgroundColor: color }}></div>
-          <div className="entryLabel">{name}</div>
-        </div>
-      )}
-    </div>
-  );
 }
