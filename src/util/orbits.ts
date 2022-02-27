@@ -20,6 +20,7 @@ export async function groundTraceAsync(sat: Satellite, stepMS: number = 10000): 
 
   // Copied from tle.js getGroundTracks but returns just current orbit
   const startTimeMS = Date.now();
+  const orbitPeriodMS = getAverageOrbitTimeMS(sat.tle);
   const curOrbitStartMS = getLastAntemeridianCrossingTimeMS(
     { name: sat.name, tle: sat.tle }, // For some reason this method requires a name
     startTimeMS
@@ -39,7 +40,8 @@ export async function groundTraceAsync(sat: Satellite, stepMS: number = 10000): 
   return getOrbitTrack({
     tle: sat.tle,
     startTimeMS: curOrbitStartMS,
-    stepMS,
+    stepMS: stepMS,
+    maxTimeMS: orbitPeriodMS * 2,
   });
 }
 
@@ -49,6 +51,7 @@ export function groundTraceSync(sat: Satellite, stepMS: number = 10000): LngLat[
   // Copied from tle.js getGroundTracks but returns just current orbit
 
   const startTimeMS = Date.now();
+  const orbitPeriodMS = getAverageOrbitTimeMS(sat.tle);
   const curOrbitStartMS = getLastAntemeridianCrossingTimeMS(
     { name: sat.name, tle: sat.tle }, // For some reason this method requires a name
     startTimeMS
@@ -59,7 +62,7 @@ export function groundTraceSync(sat: Satellite, stepMS: number = 10000): LngLat[
 
     return getOrbitTrackSync({
       tle: sat.tle,
-      startTimeMS,
+      startTimeMS: startTimeMS,
       stepMS: _MS_IN_A_MINUTE,
       maxTimeMS: _MS_IN_A_DAY / 4,
     });
@@ -68,7 +71,8 @@ export function groundTraceSync(sat: Satellite, stepMS: number = 10000): LngLat[
   return getOrbitTrackSync({
     tle: sat.tle,
     startTimeMS: curOrbitStartMS,
-    stepMS,
+    stepMS: stepMS,
+    maxTimeMS: orbitPeriodMS * 2, // Give a little leeway
   });
 }
 

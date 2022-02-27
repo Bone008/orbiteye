@@ -71,9 +71,9 @@ export default function WorldMap(__props: StaticWorldMapProps) {
       .attr("fill", "none")
       .attr("stroke", "red") // TODO: base on something else
       .attr("stroke-width", "1px")
-      .attr("border-color", "blue")
+      .attr("stroke-linecap", "round")
       .on('mouseover', d => {
-        d3.select(d.srcElement).attr("stroke-width", "10px");
+        d3.select(d.srcElement).attr("stroke-width", "5px");
       })
       .on('mouseout', d => {
         d3.select(d.srcElement).attr("stroke-width", "1px");
