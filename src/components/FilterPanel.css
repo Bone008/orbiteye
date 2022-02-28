@@ -3,7 +3,8 @@
   min-width: 350px;
   max-width: 400px;
   padding: 0 1em;
-  background-color: #3e5958
+  background-color: #3e5958;
+  height: inherit;
 }
 
 .FilterNameTag{

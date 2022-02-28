@@ -4,9 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { fetchSatellitesAsync } from './model/data_loader';
 import { Satellite } from './model/satellite';
 import { FilterSettings } from './model/filter_settings';
-import FilterPanel from './components/FilterPanel';
 import Timeline from './components/Timeline';
 import ViewContainer from './components/ViewContainer';
+import RightSidePanel from './components/RightSidePanel';
 
 function App() {
   const [allSatellites, setAllSatellites] = useState<Satellite[]>([]);
@@ -28,16 +28,21 @@ function App() {
 
   useEffect(() => { initialize(); }, []);
 
+  /*Test data to show in the panel. Will be deleted later for actual data, but will do for now */
+  const test = {
+    name: 'Name A',
+    launchDate: '2022-02-26',
+    status: 'Operational'
+  }
+
   return (
     <div className="App">
       <div className='mainView'>
         <div className='mapView'>
           <ViewContainer filteredSatellites={filteredSatellites} />
         </div>
-
-        <FilterPanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
+        <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} name={test.name} launchDate={test.launchDate} status={test.status} />
       </div>
-
       <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
     </div>
   );
