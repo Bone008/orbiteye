@@ -32,31 +32,64 @@ export default function WorldMap(reqProps: WorldMapProps) {
     .center([0, 0])
     .translate([props.width / 2, props.height / 2]);
 
+  const mapLayer = d3.select(svgRef.current).select("g.mapLayer");
+
+  // Projections path generator
+  const pathGenerator = d3.geoPath().projection(mapProjection);
+
+  //Color scale
+  const colorScale = d3.scaleLog()
+    .range(["lightgreen", "green"] as Iterable<number>)
+    .domain([1, 100])
+
   // Render world map (runs just once)
   useEffect(() => {
-    const mapLayer = d3.select(svgRef.current).select("g.mapLayer");
-
-    // Projections path generator
-    const pathGenerator = d3.geoPath().projection(mapProjection);
-
     // Loading the world map
     fetch('data/world.json').then(resp => {
       resp.json().then(json => {
 
+        //Computing the number of satellite per country within the filtered satellites dataset
+        var nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => 1), d => d.owner)
+
         // Creating the path to make the map
-        mapLayer.selectAll("path")
+        var groupMap = mapLayer.selectAll("path")
           .data(json.features)
+
+        groupMap
           .enter()
-          .append("path")
+          .append('path')
+          .merge(groupMap as any)
+          .transition()
+          .duration(600)
           .attr("d", function (d: any) { return pathGenerator(d) })
           .attr("stroke", "grey")
           .attr("stroke-width", "1px")
-          .attr("fill", "burlywood")
+          .attr("fill", function (d: any) {
+            //If undefined/unknown, we put it in grey
+            if (!nbSatellitePerCountry.get(d.properties.ISO_A3)) return "lightgrey"
+            //console.log("data", nbSatellitePerCountry.get(d.properties.ISO_A3), d.properties.ISO_A3)
+
+            //Otherwise we put it in a color scale TODO check with mapping
+            return colorScale(nbSatellitePerCountry.get(d.properties.ISO_A3) as number)
+          })
+          //Some mouse interactions
+          .on('mouseover', function (d: any) {
+            d3.select(d.srcElement)
+              .style("opacity", .8)
+              .style("stroke", "black")
+          })
+          .on('mouseout', function (d: any) {
+            d3.select(d.srcElement)
+              .style("opacity", 1)
+              .style("stroke", "grey")
+          })
+
+        //For updating
+        groupMap.exit().remove()
       });
     });
 
-  }, [mapProjection]);
-
+  }, [props.filteredSatellites, mapProjection]);
 
   // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
   useEffect(() => {
@@ -68,11 +101,11 @@ export default function WorldMap(reqProps: WorldMapProps) {
     // Filter to satellites with orbital data
     const satellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.traceLimit);
 
-
     // Calculate all traces
     traceLayer.selectAll("path")
       .data(satellites)
-      .enter().append("path")
+      .enter()
+      .append("path")
       .attr("d", sat => {
         const trace: [number, number][] = groundTraceSync(sat).map(lngLat => [lngLat[0], lngLat[1]]);
         const lineGen = d3.line()
@@ -82,18 +115,21 @@ export default function WorldMap(reqProps: WorldMapProps) {
       })
       .attr("fill", "none")
       .attr("stroke", "red") // TODO: base on something else
+      .attr("stroke-width", "1px")
       .attr("border-width", "2px")
       .attr("border-color", "blue")
       .on('mouseover', d => {
-        d3.select(d.srcElement).attr("stroke-width", "10px");
+        d3.select(d.srcElement)
+          .style("stroke-width", "10px");
       })
       .on('mouseout', d => {
-        d3.select(d.srcElement).attr("stroke-width", "1px");
+        d3.select(d.srcElement)
+          .style("stroke-width", "1px");
       })
 
   }, [props.filteredSatellites, props.traceLimit, mapProjection]);
 
-  // Set up zoom and pan
+  // Set up zoom and panning
   const zoom = d3.zoom()
     .scaleExtent([1, 4])
     .translateExtent([[0, 0], [props.width, props.height]])
