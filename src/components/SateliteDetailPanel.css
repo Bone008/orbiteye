@@ -1,0 +1,22 @@
+.DetailPanelProps, .DetailButton{
+  width: 350px;
+  background: transparent;
+  padding: 1em;
+}
+
+.DetailPanel{
+  position: absolute;
+  bottom: 10%;
+  right: 0%;
+}
+
+.DetailButton{
+  height: 40px;
+  font-family: Arial, Helvetica, sans-serif
+}
+
+.DetailRowText{
+  position: relative;
+  text-align: left;
+}
+
