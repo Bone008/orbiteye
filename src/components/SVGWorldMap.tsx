@@ -1,5 +1,5 @@
 import './SVGWorldMap.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { Satellite } from '../model/satellite';
 import { groundTraceSync } from '../util/orbits';
@@ -37,6 +37,21 @@ export default function WorldMap(reqProps: WorldMapProps) {
   // Projections path generator
   const pathGenerator = d3.geoPath().projection(mapProjection);
 
+  const [worldJson, setWorldJson] = useState([])
+  const fetchWorldMap = async () => {
+    const response = await fetch('data/world.json')/* .then(resp => {
+      resp.json().then(json => {
+        return json;
+      }) */
+    const data = await response.json();
+    setWorldJson(data)
+  };
+
+  //Loading map geojson only once
+  useEffect(() => {
+    fetchWorldMap();
+  }, [])
+
   //Color scale
   const colorScale = d3.scaleLog()
     .range(["lightgreen", "green"] as Iterable<number>)
@@ -44,16 +59,16 @@ export default function WorldMap(reqProps: WorldMapProps) {
 
   // Render world map (runs just once)
   useEffect(() => {
-    // Loading the world map
-    fetch('data/world.json').then(resp => {
-      resp.json().then(json => {
+    // Loading the world map, useS
+    /*     fetch('data/world.json').then(resp => {
+          resp.json().then(json => { */
 
         //Computing the number of satellite per country within the filtered satellites dataset
         var nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => 1), d => d.owner)
 
         // Creating the path to make the map
         var groupMap = mapLayer.selectAll("path")
-          .data(json.features)
+          .data(worldJson.features)
 
         groupMap
           .enter()
@@ -86,8 +101,8 @@ export default function WorldMap(reqProps: WorldMapProps) {
 
         //For updating
         groupMap.exit().remove()
-      });
-    });
+    /*       }); */
+    /*     }); */
 
   }, [props.filteredSatellites, mapProjection]);
 
