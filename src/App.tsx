@@ -8,9 +8,19 @@ import Timeline from './components/Timeline';
 import ViewContainer from './components/ViewContainer';
 import RightSidePanel from './components/RightSidePanel';
 
-function App() {
+const DEFAULT_FILTER_SETTINGS = new FilterSettings({ activeStatus: true });
+
+export default function App() {
   const [allSatellites, setAllSatellites] = useState<Satellite[]>([]);
-  const [filterSettings, setFilterSettings] = useState(new FilterSettings({ activeStatus: true }));
+  const [filterSettings, setFilterSettings] = useState(DEFAULT_FILTER_SETTINGS);
+  const [selectedSatellite, setSelectedSatellite] = useState<Satellite | null>(null);
+
+  const updateSelected = (newSatellite: Satellite | null) => {
+    if (newSatellite !== selectedSatellite) {
+      console.log('Selecting:', newSatellite ? newSatellite.id : null);
+      setSelectedSatellite(newSatellite);
+    }
+  };
 
   // Applies the current filter settings, executed only when necessary.
   const filteredSatellites = useMemo(() => {
@@ -39,7 +49,7 @@ function App() {
     <div className="App">
       <div className='mainView'>
         <div className='mapView'>
-          <ViewContainer filteredSatellites={filteredSatellites} />
+          <ViewContainer filteredSatellites={filteredSatellites} selectedSatellite={selectedSatellite} setSelectedSatellite={updateSelected} />
         </div>
         <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} name={test.name} launchDate={test.launchDate} status={test.status} />
       </div>
@@ -47,5 +57,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
