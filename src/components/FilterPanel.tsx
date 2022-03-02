@@ -13,12 +13,8 @@ export interface FilterPanelProps {
   onUpdateFilter: SetFilterCallback;
 }
 
-<<<<<<< HEAD
-export interface FilterOptions {
-=======
 /** Data representation of a single option in one of the filter dropdowns. */
-interface FilterOption {
->>>>>>> c3e958bf78588521ba1d1a6f6fed69a574223612
+export interface FilterOption {
   value: string;
   label: string;
   count?: number;
@@ -26,16 +22,6 @@ interface FilterOption {
   selected: boolean;
 }
 
-<<<<<<< HEAD
-/*export const OWNER_CODE_TO_LABEL: Record<string, string> = {
-  public translations: Record<someTypes, ITranslation>;
-  constructor(){
-    this.buildTranslations = {
-      ['category1']: {value: 'AB', label: 'Arab Satellite Communications Organization'}
-    }
-};*/
-=======
->>>>>>> c3e958bf78588521ba1d1a6f6fed69a574223612
 
 /** React component to render the global filter selection UI. */
 export default function FilterPanel(props: FilterPanelProps) {
