@@ -1,3 +1,4 @@
+import { getCOSPAR } from "tle.js";
 import { Satellite } from "./satellite";
 
 const URL_SATELLITE_DATA = 'data/satellites.json';
@@ -8,19 +9,6 @@ type RawSatellite = Omit<Satellite, 'launchDate' | 'decayDate'> & {
   launchDate: string,
   decayDate: string,
 };
-
-/*export const OWNER_CODE_TO_LABEL: Record<string, string> = {
-  public translations: Record<someTypes, ITranslation>;
-  constructor(){
-    this.buildTranslations = {
-      //['category1']: {key: 'AB', value: 'Arab Satellite Communications Organization'}
-    }
-};*/
-
-//const ownerOptions = uniqueOwners.map(ownerCode => {
-//  return { value: ownerCode, label: (ownerCode || 'All countries') };
-
-type someTypes = 'category1';
 
 export async function fetchSatellitesAsync(): Promise<Satellite[]> {
   console.log(new Date(), 'Sending request ...');
@@ -96,13 +84,7 @@ async function fetchTLEsAsync(): Promise<Map<string, [string, string]>> {
     const line1 = lines[i + 1].trim();
     const line2 = lines[i + 2].trim();
 
-    // Mappings from https://en.wikipedia.org/wiki/Two-line_element_set#Format
-    let id_year = line1.substring(9, 11).trim();
-    id_year = parseInt(id_year) < 57 ? id_year = "20" + id_year : id_year = "19" + id_year;
-    const id_launch_num = line1.substring(11, 14).trim();
-    const id_launch_piece = line1.substring(14, 17).trim();
-
-    const id = id_year + "-" + id_launch_num + id_launch_piece;
+    const id = getCOSPAR([line1, line2], false);
 
     tleMap.set(id, [line1, line2]);
   }

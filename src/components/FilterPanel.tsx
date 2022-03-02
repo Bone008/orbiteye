@@ -4,7 +4,8 @@ import React, { useMemo } from 'react';
 import { ALL_ORBIT_CLASSES, OrbitClass, Satellite } from '../model/satellite';
 import { FilterProps, FilterSettings, SetFilterCallback } from '../model/filter_settings';
 import Select, { MultiValue } from "react-select";
-//import dataLoader from "./src/model/data_loader.ts"
+
+
 
 export interface FilterPanelProps {
   allSatellites: Satellite[];
@@ -14,7 +15,7 @@ export interface FilterPanelProps {
 }
 
 /** Data representation of a single option in one of the filter dropdowns. */
-export interface FilterOptions {
+interface FilterOption {
   value: string;
   label: string;
   count?: number;
@@ -22,13 +23,6 @@ export interface FilterOptions {
   selected: boolean;
 }
 
-/*export const OWNER_CODE_TO_LABEL: Record<string, string> = {
-  public translations: Record<someTypes, ITranslation>;
-  constructor(){
-    this.buildTranslations = {
-      ['category1']: {value: 'AB', label: 'Arab Satellite Communications Organization'}
-    }
-};*/
 
 /** React component to render the global filter selection UI. */
 export default function FilterPanel(props: FilterPanelProps) {
@@ -51,20 +45,11 @@ export default function FilterPanel(props: FilterPanelProps) {
     props.onUpdateFilter(newFilter);
   };
 
-  //TO CHANGE
-  const filterByOwner = (options: MultiValue<FilterOptions>) => {
-    
-    //this filters by owner, i.e. by shortCode
+  const filterByOwner = (options: MultiValue<FilterOption>) => {
     const owners: string[] = options.map(option => option.value);
-    //const owners2: string[] = options.map(option => option.label);
-    const newFilter = props.filterSettings.update({ owners })
-    props.onUpdateFilter(newFilter)
-
-    //this filters by "fullname"
-    //const owners: string[] = options.map(option => option.value[2]);
-    //const newFilter = props.filterSettings.update({ owners })
-    //props.onUpdateFilter(newFilter)
-  }
+    const newFilter = props.filterSettings.update({ owners });
+    props.onUpdateFilter(newFilter);
+  };
 
   const filterByUsage = (options: MultiValue<FilterOption>) => {
     const userTypes: string[] = options.map(option => option.value);
@@ -94,20 +79,16 @@ export default function FilterPanel(props: FilterPanelProps) {
     };
   });
 
-  /* Deduplicated owner values from all satellites. */
+  /** Deduplicated owner values from all satellites. */
   const uniqueOwners: string[] = useMemo(
     () => Array.from(new Set(props.allSatellites.map(sat => sat.owner))).sort(),
     [props.allSatellites]);
-  
-  //TO CHANGE
-  const ownerOptions = uniqueOwners.map(ownerCode => {
-    return { value: ownerCode, label: (ownerCode || 'All countries') }; //
-  /*const ownerOptions: FilterOption[] = uniqueOwners.map(owner => {
+  const ownerOptions: FilterOption[] = uniqueOwners.map(owner => {
     return {
       value: owner,
       label: owner,
       selected: currentFilter.owners.includes(owner),
-    };*/
+    };
   });
 
   /**Called "Sector" in the filter */
