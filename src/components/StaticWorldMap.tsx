@@ -9,13 +9,16 @@ import Legend from './Legend';
 
 export interface StaticWorldMapProps {
   filteredSatellites: Satellite[];
+  selectedSatellite: Satellite | null;
+  setSelectedSatellite: (newSatellite: Satellite | null) => void;
+
   width: number,
   height: number,
   traceLimit?: number,
 }
 
 const defaultProps: DefaultValues<StaticWorldMapProps> = {
-  traceLimit: 10,
+  traceLimit: 20,
 }
 
 /** React component to render 2D world map with visualizations on top. */
@@ -51,7 +54,6 @@ export default function WorldMap(__props: StaticWorldMapProps) {
     // Filter to satellites with orbital data
     const satellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.traceLimit);
 
-
     // Calculate all traces
     traceLayer.selectAll("path")
       .data(satellites)
@@ -73,16 +75,23 @@ export default function WorldMap(__props: StaticWorldMapProps) {
         return pointsStr;
       })
       .attr("fill", "none")
-      .attr("stroke", d => COLOR_PALETTE_ORBITS[d.orbitClass])
-      .attr("stroke-width", "1px")
+      .attr("stroke", sat => sat === props.selectedSatellite ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass])
+      .attr("stroke-width", sat => sat === props.selectedSatellite ? "5px" : "1px")
       .attr("stroke-linecap", "round")
-      .on('mouseover', e => {
-        d3.select(e.srcElement).attr("stroke-width", "5px");
+      .on('mouseover', (e, sat) => {
+        if (sat !== props.selectedSatellite) {
+          d3.select(e.srcElement).attr("stroke-width", "5px");
+        }
       })
-      .on('mouseout', e => {
-        d3.select(e.srcElement).attr("stroke-width", "1px");
+      .on('mouseout', (e, d) => {
+        if (d !== props.selectedSatellite) {
+          d3.select(e.srcElement).attr("stroke-width", "1px");
+        }
       })
-
+      .on('click', (e: MouseEvent, sat) => {
+        e.stopPropagation();
+        props.setSelectedSatellite(sat);
+      });
   }, [props.filteredSatellites, props.traceLimit, mapProjection]);
 
   // Set up zoom and pan
@@ -106,6 +115,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
         viewBox={`0 0 ${props.width}, ${props.height}`}
         preserveAspectRatio="xMidYMid meet"
         className="WorldMap" style={{ padding: "0" }}
+        onClick={e => props.setSelectedSatellite(null)}
       >
         <g className="mapLayer"></g>
         <g className="traceLayer"></g>

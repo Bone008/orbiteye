@@ -10,10 +10,20 @@ import RightSidePanel from './components/RightSidePanel';
 import WorldMap from './components/StaticWorldMap';
 import { Feature } from 'geojson';
 
-function App() {
+const DEFAULT_FILTER_SETTINGS = new FilterSettings({ activeStatus: true });
+
+export default function App() {
   const [allSatellites, setAllSatellites] = useState<Satellite[]>([]);
-  const [filterSettings, setFilterSettings] = useState(new FilterSettings({ activeStatus: true }));
+  const [filterSettings, setFilterSettings] = useState(DEFAULT_FILTER_SETTINGS);
+  const [selectedSatellite, setSelectedSatellite] = useState<Satellite | null>(null);
   const [worldJson, setWorldJson] = useState<WorldMapJSON>({ type: "", name: "", crs: [""], features: [] })
+
+  const updateSelected = (newSatellite: Satellite | null) => {
+    if (newSatellite !== selectedSatellite) {
+      console.log('Selecting:', newSatellite ? newSatellite.id : null);
+      setSelectedSatellite(newSatellite);
+    }
+  };
 
   // Applies the current filter settings, executed only when necessary.
   const filteredSatellites = useMemo(() => {
@@ -27,7 +37,7 @@ function App() {
 
   const initialize = async () => {
     setAllSatellites(await fetchSatellitesAsync());
-    setWorldJson(await fetchWorldMapAsync());    
+    setWorldJson(await fetchWorldMapAsync());
   };
 
   useEffect(() => { initialize(); }, []);
@@ -43,13 +53,11 @@ function App() {
     <div className="App">
       <div className='mainView'>
         <div className='mapView'>
-          <ViewContainer filteredSatellites={filteredSatellites} worldJson={worldJson} />
-        </div>
+          <ViewContainer filteredSatellites={filteredSatellites} selectedSatellite={selectedSatellite} setSelectedSatellite={updateSelected} worldJson={worldJson} />
+        </div >
         <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} name={test.name} launchDate={test.launchDate} status={test.status} />
-      </div>
+      </div >
       <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
-    </div>
+    </div >
   );
 }
-
-export default App;

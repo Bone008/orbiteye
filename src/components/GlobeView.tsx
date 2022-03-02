@@ -16,6 +16,9 @@ const EARTH_RADIUS_KM = 6371;
 
 export interface GlobeViewProps {
   filteredSatellites: Satellite[],
+  selectedSatellite: Satellite | null;
+  setSelectedSatellite: (newSatellite: Satellite | null) => void;
+
   orbitLimit?: number,
   radius?: number,
   minDistance?: number, // Must be <= radius
@@ -37,10 +40,14 @@ const defaultProps: DefaultValues<GlobeViewProps> = {
 export default function GlobeView(__props: GlobeViewProps) {
   const props = { ...defaultProps, ...__props } as Required<GlobeViewProps>;
 
+  const onClickNothing = (e: MouseEvent) => {
+    props.setSelectedSatellite(null);
+  };
+
   return (
     <div className="GlobeView">
       <Suspense fallback={null}> {/* Replaces canvas with nothing while loading */}
-        <Canvas style={{ width: "100%", height: "100%" }}>
+        <Canvas onPointerMissed={onClickNothing} style={{ width: "100%", height: "100%" }}>
           <color attach="background" args={["black"]} />
           <ambientLight />
           <TrackballControls maxDistance={props.maxDistance} minDistance={props.minDistance} noPan />
@@ -65,9 +72,13 @@ function SceneObjects(props: Required<GlobeViewProps>) {
 
 
   // Block hover events from orbits behind Earth
-  const occludeHover = {
+  const occludeInput = {
     onPointerEnter: (e: ThreeEvent<PointerEvent>) => { e.stopPropagation(); },
-    onPointerLeave: (e: ThreeEvent<PointerEvent>) => { e.stopPropagation(); }
+    onPointerLeave: (e: ThreeEvent<PointerEvent>) => { e.stopPropagation(); },
+    onClick: (e: ThreeEvent<MouseEvent>) => {
+      e.stopPropagation();
+      props.setSelectedSatellite(null);
+    },
   };
 
   const satellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.orbitLimit);
@@ -76,7 +87,7 @@ function SceneObjects(props: Required<GlobeViewProps>) {
   return (
     <>
       {/* Sphere rotation aligns the Z axis with ECI coordinates! */}
-      <Sphere ref={sphereRef} args={[props.radius, 64, 32]} rotation={new Euler(Math.PI / 2, 0, 0)} {...occludeHover}>
+      <Sphere ref={sphereRef} args={[props.radius, 64, 32]} rotation={new Euler(Math.PI / 2, 0, 0)} {...occludeInput}>
         <meshLambertMaterial {...texture} />
       </Sphere>
       {orbits}
@@ -89,6 +100,7 @@ type OrbitProps = { satellite: Satellite } & Required<GlobeViewProps>;
 function Orbit(props: OrbitProps) {
   const sat = props.satellite;
 
+  const selected = sat === props.selectedSatellite;
   const [hovered, setHovered] = useState<boolean>(false);
   const coordinates = getOrbitECI(sat);
 
@@ -99,10 +111,10 @@ function Orbit(props: OrbitProps) {
 
   // TODO: Opacity < 1 doesn't work properly (parts of the line appear in full opacity, others at the selected value)
   const material = {
-    color: hovered ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass],
+    color: (hovered || selected) ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass],
     transparent: props.orbitOpacity !== 1,
     opacity: props.orbitOpacity,
-    lineWidth: (hovered ? 2 : 1) * props.orbitLineWidth,
+    lineWidth: (selected ? 3 : hovered ? 2 : 1) * props.orbitLineWidth,
   }
 
   const hoverControls = {
@@ -110,8 +122,10 @@ function Orbit(props: OrbitProps) {
     onPointerLeave: (e: ThreeEvent<PointerEvent>) => { setHovered(false); e.stopPropagation(); }
   };
 
-  // TODO: link this onclick with the Details panel
-  const onclick = (e: ThreeEvent<MouseEvent>) => console.log(`Selected ${e.object.name}`);
+  const onclick = (e: ThreeEvent<MouseEvent>) => {
+    e.stopPropagation();
+    props.setSelectedSatellite(sat);
+  };
 
   return <Line name={sat.id} points={coordinates} {...material} {...hoverControls} onClick={onclick} />
 }

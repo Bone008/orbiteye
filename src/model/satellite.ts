@@ -25,6 +25,8 @@ export interface Satellite {
    */
   owner: string; // TODO: rename to ownerCode
 
+  ownerComplete: string;  
+
   /**
    * Short code of the launch site. Always present.
    * @see https://celestrak.com/satcat/launchsites.php
