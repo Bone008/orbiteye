@@ -4,17 +4,23 @@ import { useEffect, useMemo, useState } from 'react';
 import { fetchSatellitesAsync } from './model/data_loader';
 import { Satellite } from './model/satellite';
 import { FilterSettings } from './model/filter_settings';
-import FilterPanel from './components/FilterPanel';
 import Timeline from './components/Timeline';
-import StaticWorldMap from './components/StaticWorldMap';
-import SVGWorldMap from './components/SVGWorldMap';
-import GlobeView from './components/GlobeView';
-import { HashRouter, Link, Route, Routes } from 'react-router-dom';
-import ViewSelector from './components/ViewSelector';
+import ViewContainer from './components/ViewContainer';
+import RightSidePanel from './components/RightSidePanel';
 
-function App() {
+const DEFAULT_FILTER_SETTINGS = new FilterSettings({ activeStatus: true });
+
+export default function App() {
   const [allSatellites, setAllSatellites] = useState<Satellite[]>([]);
-  const [filterSettings, setFilterSettings] = useState(new FilterSettings());
+  const [filterSettings, setFilterSettings] = useState(DEFAULT_FILTER_SETTINGS);
+  const [selectedSatellite, setSelectedSatellite] = useState<Satellite | null>(null);
+
+  const updateSelected = (newSatellite: Satellite | null) => {
+    if (newSatellite !== selectedSatellite) {
+      console.log('Selecting:', newSatellite ? newSatellite.id : null);
+      setSelectedSatellite(newSatellite);
+    }
+  };
 
   // Applies the current filter settings, executed only when necessary.
   const filteredSatellites = useMemo(() => {
@@ -32,25 +38,22 @@ function App() {
 
   useEffect(() => { initialize(); }, []);
 
+  /*Test data to show in the panel. Will be deleted later for actual data, but will do for now */
+  const test = {
+    name: 'Name A',
+    launchDate: '2022-02-26',
+    status: 'Operational'
+  }
+
   return (
     <div className="App">
-      <HashRouter>
-        <div className='mainView'>
-          <Link className='modeBTN' to="/"> MODE </Link>
-          <div className='mapView'>
-            <Routes>
-              <Route path="/" element={<ViewSelector />} />
-              <Route path="/orbits/globe" element={<GlobeView filteredSatellites={filteredSatellites} />} />
-              <Route path="/orbits/map" element={<StaticWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />} />
-              <Route path="/origin" element={<SVGWorldMap filteredSatellites={filteredSatellites} height={500} width={1000} />} />
-            </Routes>
-          </div>
-          <FilterPanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
+      <div className='mainView'>
+        <div className='mapView'>
+          <ViewContainer filteredSatellites={filteredSatellites} selectedSatellite={selectedSatellite} setSelectedSatellite={updateSelected} />
         </div>
-      </HashRouter>
+        <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} name={test.name} launchDate={test.launchDate} status={test.status} />
+      </div>
       <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
     </div>
   );
 }
-
-export default App;

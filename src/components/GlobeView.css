@@ -1,3 +1,5 @@
 .GlobeView {
   height: 100%;
+  width: 100%;
+  position: relative; /* To anchor the legend at the correct container. */
 }

@@ -4,16 +4,21 @@ import * as d3 from 'd3';
 import { Satellite } from '../model/satellite';
 import { groundTraceSync } from '../util/orbits';
 import { DefaultValues } from '../util/optional_props';
+import { COLOR_PALETTE_ORBITS } from '../util/colors';
+import Legend from './Legend';
 
 export interface StaticWorldMapProps {
   filteredSatellites: Satellite[];
+  selectedSatellite: Satellite | null;
+  setSelectedSatellite: (newSatellite: Satellite | null) => void;
+
   width: number,
   height: number,
   traceLimit?: number,
 }
 
 const defaultProps: DefaultValues<StaticWorldMapProps> = {
-  traceLimit: 10,
+  traceLimit: 20,
 }
 
 /** React component to render 2D world map with visualizations on top. */
@@ -31,12 +36,12 @@ export default function WorldMap(__props: StaticWorldMapProps) {
   // Render world map (runs just once)
   useEffect(() => {
     const mapLayer = d3.select(svgRef.current).select("g.mapLayer");
+    mapLayer.selectAll("*").remove();
     mapLayer.append("svg:image")
       .attr("xlink:href", "assets/NASA-Visible-Earth-September-2004.jpg")
       .attr("width", props.width)
-      .attr("height", props.height)
-
-  }, [mapProjection, props.width, props.height]);
+      .attr("height", props.height);
+  }, [props.width, props.height]);
 
 
   // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
@@ -49,7 +54,6 @@ export default function WorldMap(__props: StaticWorldMapProps) {
     // Filter to satellites with orbital data
     const satellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.traceLimit);
 
-
     // Calculate all traces
     traceLayer.selectAll("path")
       .data(satellites)
@@ -60,25 +64,34 @@ export default function WorldMap(__props: StaticWorldMapProps) {
           .x(p => p[0])
           .y(p => p[1]);
 
-        // Special case for geostationary: Draw box around the position instead.
+        let pointsStr = lineGen(trace.map(p => mapProjection(p) || [Infinity, Infinity]));
+        // Special case for geosynchronous: Draw box around the position.
         if (sat.orbitClass === 'GEO' && trace.length > 0) {
           const [px, py] = mapProjection(trace[0]) || [Infinity, Infinity];
           const s = 5;
-          return lineGen([[px - s, py - s], [px + s, py - s], [px + s, py + s], [px - s, py + s], [px - s, py - s]]);
+          // SVG path instructions can just be concatenated
+          pointsStr += lineGen([[px - s, py - s], [px + s, py - s], [px + s, py + s], [px - s, py + s], [px - s, py - s]])!;
         }
-        return lineGen(trace.map(p => mapProjection(p) || [Infinity, Infinity]));
+        return pointsStr;
       })
       .attr("fill", "none")
-      .attr("stroke", "red") // TODO: base on something else
-      .attr("stroke-width", "1px")
-      .attr("border-color", "blue")
-      .on('mouseover', d => {
-        d3.select(d.srcElement).attr("stroke-width", "10px");
+      .attr("stroke", sat => sat === props.selectedSatellite ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass])
+      .attr("stroke-width", sat => sat === props.selectedSatellite ? "5px" : "1px")
+      .attr("stroke-linecap", "round")
+      .on('mouseover', (e, sat) => {
+        if (sat !== props.selectedSatellite) {
+          d3.select(e.srcElement).attr("stroke-width", "5px");
+        }
       })
-      .on('mouseout', d => {
-        d3.select(d.srcElement).attr("stroke-width", "1px");
+      .on('mouseout', (e, d) => {
+        if (d !== props.selectedSatellite) {
+          d3.select(e.srcElement).attr("stroke-width", "1px");
+        }
       })
-
+      .on('click', (e: MouseEvent, sat) => {
+        e.stopPropagation();
+        props.setSelectedSatellite(sat);
+      });
   }, [props.filteredSatellites, props.traceLimit, mapProjection]);
 
   // Set up zoom and pan
@@ -102,10 +115,12 @@ export default function WorldMap(__props: StaticWorldMapProps) {
         viewBox={`0 0 ${props.width}, ${props.height}`}
         preserveAspectRatio="xMidYMid meet"
         className="WorldMap" style={{ padding: "0" }}
+        onClick={e => props.setSelectedSatellite(null)}
       >
         <g className="mapLayer"></g>
         <g className="traceLayer"></g>
       </svg>
+      <Legend type="orbitTypes" />
     </div>
   );
 }

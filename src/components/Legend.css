@@ -1,0 +1,28 @@
+.Legend {
+  position: absolute;
+  bottom: 1em;
+  right: 1em;
+  padding: .33em .5em;
+  font-size: 80%;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+}
+
+.Legend .title {
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: .66em;
+}
+
+.Legend .entry {
+  margin: .33em 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.Legend .entryColor {
+  width: 32px;
+  height: 4px;
+  margin-right: .5em;
+}

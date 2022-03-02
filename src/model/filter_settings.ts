@@ -1,4 +1,4 @@
-import { OrbitClass, Satellite } from "./satellite";
+import { ACTIVE_OPERATIONAL_STATUS_SET, OperationalStatus, OrbitClass, Satellite } from "./satellite";
 
 export type SetFilterCallback = (newSettings: FilterSettings) => void;
 
@@ -10,6 +10,7 @@ export interface FilterProps {
   userTypes: readonly string[];
   owners: readonly string[];
   purposes: readonly string[];
+  activeStatus: boolean | null;
 }
 
 const defaultFilterProps: Readonly<FilterProps> = {
@@ -19,6 +20,7 @@ const defaultFilterProps: Readonly<FilterProps> = {
   userTypes: [],
   owners: [],
   purposes: [],
+  activeStatus: null,
 };
 
 /** Contains main logic for applying filter criteria to the satellite dataset. */
@@ -37,6 +39,9 @@ export class FilterSettings {
 
   /** Returns if a given satellite passes the current filter. */
   matchesSatellite(satellite: Satellite): boolean {
+    if (this.filter.activeStatus !== null && this.filter.activeStatus !== isSatelliteActive(satellite)) {
+      return false;
+    }
     if (this.filter.minDate && satellite.launchDate < this.filter.minDate) {
       return false;
     }
@@ -49,9 +54,17 @@ export class FilterSettings {
     if (this.filter.owners.length > 0 && !this.filter.owners.includes(satellite.owner)) {
       return false;
     }
-    if (this.filter.userTypes.length > 0 && !satellite.users.some(user => this.filter.userTypes.includes(user))) {
+    if (this.filter.userTypes.length > 0 && !satellite.users.some(value => this.filter.userTypes.includes(value))) {
+      return false;
+    }
+    if (this.filter.purposes.length > 0 && !satellite.purpose.some(value => this.filter.purposes.includes(value))) {
       return false;
     }
     return true;
   }
+}
+
+
+function isSatelliteActive(satellite: Satellite): boolean {
+  return ACTIVE_OPERATIONAL_STATUS_SET.has(satellite.operationalStatus);
 }

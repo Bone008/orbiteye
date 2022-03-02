@@ -1,0 +1,30 @@
+.MainDetailPanel, .DetailButton{
+  width: inherit;
+  background: transparent;
+}
+
+.MainDetailPanel{
+  bottom: 10%;
+  right: 0%;
+}
+
+.DetailDiv{
+  padding-bottom: 1em;
+}
+
+.DetailButton{
+  height: 40px;
+  border-color: #397371;
+  color: white;
+  width: 100%;
+  padding: 1em;
+}
+
+.DetailRowText{
+  position: relative;
+  text-align: left;
+  color: white;
+  padding-left:1em;
+  padding-right: 1em;
+}
+
