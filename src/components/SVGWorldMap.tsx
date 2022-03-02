@@ -2,11 +2,13 @@ import './SVGWorldMap.css';
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { Satellite } from '../model/satellite';
-import { groundTraceSync } from '../util/orbits';
 import { DefaultValues } from '../util/optional_props';
+import { Feature } from 'geojson';
+import { fetchWorldMapAsync, WorldMapJSON } from "../model/data_loader"
 
 export interface WorldMapProps {
-  filteredSatellites: Satellite[];
+  filteredSatellites: Satellite[],
+  worldJson: WorldMapJSON,
   width: number,
   height: number,
   traceLimit?: number,
@@ -37,115 +39,66 @@ export default function WorldMap(reqProps: WorldMapProps) {
   // Projections path generator
   const pathGenerator = d3.geoPath().projection(mapProjection);
 
-  const [worldJson, setWorldJson] = useState([])
-  const fetchWorldMap = async () => {
-    const response = await fetch('data/world.json')/* .then(resp => {
-      resp.json().then(json => {
-        return json;
-      }) */
-    const data = await response.json();
-    setWorldJson(data)
-  };
-
-  //Loading map geojson only once
-  useEffect(() => {
-    fetchWorldMap();
-  }, [])
-
   //Color scale
-  const colorScale = d3.scaleLog()
-    .range(["lightgreen", "green"] as Iterable<number>)
+  const colorScale = d3.scaleLog<string>()
+    .range(["lightgreen", "green"])
     .domain([1, 100])
 
-  // Render world map (runs just once)
-  useEffect(() => {
-    // Loading the world map, useS
-    /*     fetch('data/world.json').then(resp => {
-          resp.json().then(json => { */
+  function updateMap() {
+    console.log(props.worldJson)
 
-        //Computing the number of satellite per country within the filtered satellites dataset
-        var nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => 1), d => d.owner)
+    //Computing the number of satellite per country within the filtered satellites dataset
+    const nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => 1), d => d.owner);
 
-        // Creating the path to make the map
-        var groupMap = mapLayer.selectAll("path")
-          .data(worldJson.features)
+    // Creating the path to make the map
+    const groupMap = mapLayer.selectAll/* <SVGPathElement, Feature<Geometry, GeoJsonProperties>> */("path")
+      .data(props.worldJson?.features as Feature[])
 
-        groupMap
-          .enter()
-          .append('path')
-          .merge(groupMap as any)
-          .transition()
-          .duration(600)
-          .attr("d", function (d: any) { return pathGenerator(d) })
-          .attr("stroke", "grey")
-          .attr("stroke-width", "1px")
-          .attr("fill", function (d: any) {
-            //If undefined/unknown, we put it in grey
-            if (!nbSatellitePerCountry.get(d.properties.ISO_A3)) return "lightgrey"
-            //console.log("data", nbSatellitePerCountry.get(d.properties.ISO_A3), d.properties.ISO_A3)
+    groupMap.exit().remove()
 
-            //Otherwise we put it in a color scale TODO check with mapping
-            return colorScale(nbSatellitePerCountry.get(d.properties.ISO_A3) as number)
-          })
-          //Some mouse interactions
-          .on('mouseover', function (d: any) {
-            d3.select(d.srcElement)
-              .style("opacity", .8)
-              .style("stroke", "black")
-          })
-          .on('mouseout', function (d: any) {
-            d3.select(d.srcElement)
-              .style("opacity", 1)
-              .style("stroke", "grey")
-          })
-
-        //For updating
-        groupMap.exit().remove()
-    /*       }); */
-    /*     }); */
-
-  }, [props.filteredSatellites, mapProjection]);
-
-  // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
-  useEffect(() => {
-    const traceLayer = d3.select(svgRef.current).select("g.traceLayer");
-
-    // Reset the container
-    traceLayer.selectAll("*").remove();
-
-    // Filter to satellites with orbital data
-    const satellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.traceLimit);
-
-    // Calculate all traces
-    traceLayer.selectAll("path")
-      .data(satellites)
+    groupMap
       .enter()
-      .append("path")
-      .attr("d", sat => {
-        const trace: [number, number][] = groundTraceSync(sat).map(lngLat => [lngLat[0], lngLat[1]]);
-        const lineGen = d3.line()
-          .x(p => p[0])
-          .y(p => p[1])
-        return lineGen(trace.map(p => mapProjection(p) || [Infinity, Infinity]));
-      })
-      .attr("fill", "none")
-      .attr("stroke", "red") // TODO: base on something else
-      .attr("stroke-width", "1px")
-      .attr("border-width", "2px")
-      .attr("border-color", "blue")
-      .on('mouseover', d => {
-        d3.select(d.srcElement)
-          .style("stroke-width", "10px");
-      })
-      .on('mouseout', d => {
-        d3.select(d.srcElement)
-          .style("stroke-width", "1px");
-      })
+      .append('path')
+      .merge(groupMap as any)  //TODO: I don't get this type, maybe problem between TypeScript and D3
 
-  }, [props.filteredSatellites, props.traceLimit, mapProjection]);
+      .attr("d", d => pathGenerator(d))
+      .attr("stroke", "grey")
+      .attr("stroke-width", "1px")
+      .attr("fill", d => {
+        const countOfSatellite = nbSatellitePerCountry.get(d.properties?.iso_a3)
+        // If undefined/unknown, we put it in grey
+        if (!countOfSatellite) return "lightgrey"
+        //console.log("data", nbSatellitePerCountry.get(d.properties.ISO_A3), d.properties.ISO_A3)
+
+        // Otherwise we put it in a color scale TODO check with mapping
+        return colorScale(countOfSatellite)
+      })
+      // Some mouse interactions
+      .on('mouseover', function (e: any) {
+        d3.select(e.srcElement)
+          .style("opacity", .8)
+          .style("stroke", "black")
+      })
+      .on('mouseout', e => {
+        d3.select(e.srcElement)
+          .style("opacity", 1)
+          .style("stroke", "grey")
+      })
+      .transition()
+      .duration(600)
+
+    groupMap.exit().remove()
+  }
+
+  // Render/update world map
+  useEffect(() => {
+    console.log("map", props.worldJson, props.filteredSatellites)
+    updateMap()
+    console.log("mapUp", props.worldJson, props.filteredSatellites)
+  }, [props.filteredSatellites, props.worldJson.features, mapProjection]);
 
   // Set up zoom and panning
-  const zoom = d3.zoom()
+  const zoom = d3.zoom<SVGSVGElement, unknown>()
     .scaleExtent([1, 4])
     .translateExtent([[0, 0], [props.width, props.height]])
     .on('zoom', e => {
@@ -154,8 +107,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
     });
 
   d3.select(svgRef.current)
-    .call(zoom as any);
-
+    .call(zoom);
 
   return (
     <div className="WorldMap">
@@ -167,7 +119,6 @@ export default function WorldMap(reqProps: WorldMapProps) {
         className="WorldMap" style={{ backgroundColor: "lightblue", padding: "0" }}
       >
         <g className="mapLayer"></g>
-        <g className="traceLayer"></g>
       </svg>
     </div>
   );

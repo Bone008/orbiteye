@@ -1,8 +1,10 @@
 import { getCOSPAR } from "tle.js";
+import { Feature } from 'geojson';
 import { Satellite } from "./satellite";
 
 const URL_SATELLITE_DATA = 'data/satellites.json';
 const URL_TLE_DATA = 'data/celestrak_tle.txt';
+const URL_WORLD_DATA = 'data/custom.geo.json';
 
 /** A satellite entry as loaded directly from JSON before post-processing. */
 type RawSatellite = Omit<Satellite, 'launchDate' | 'decayDate'> & {
@@ -90,4 +92,23 @@ async function fetchTLEsAsync(): Promise<Map<string, [string, string]>> {
   }
 
   return tleMap;
+}
+
+export interface WorldMapJSON {
+  type: string,
+  name: string,
+  crs: string[],
+  features: Feature[]
+}
+
+export async function fetchWorldMapAsync(): Promise<WorldMapJSON> {
+  const response = await fetch(URL_WORLD_DATA)
+
+  if (!response.ok) {
+    throw new Error(`Failed to load world data: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+
+  return data;
 }

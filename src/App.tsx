@@ -1,16 +1,19 @@
 import './App.css';
 
 import { useEffect, useMemo, useState } from 'react';
-import { fetchSatellitesAsync } from './model/data_loader';
+import { fetchSatellitesAsync, fetchWorldMapAsync, WorldMapJSON } from './model/data_loader';
 import { Satellite } from './model/satellite';
 import { FilterSettings } from './model/filter_settings';
-import FilterPanel from './components/FilterPanel';
 import Timeline from './components/Timeline';
 import ViewContainer from './components/ViewContainer';
+import RightSidePanel from './components/RightSidePanel';
+import WorldMap from './components/StaticWorldMap';
+import { Feature } from 'geojson';
 
 function App() {
   const [allSatellites, setAllSatellites] = useState<Satellite[]>([]);
   const [filterSettings, setFilterSettings] = useState(new FilterSettings({ activeStatus: true }));
+  const [worldJson, setWorldJson] = useState<WorldMapJSON>({ type: "", name: "", crs: [""], features: [] })
 
   // Applies the current filter settings, executed only when necessary.
   const filteredSatellites = useMemo(() => {
@@ -24,20 +27,26 @@ function App() {
 
   const initialize = async () => {
     setAllSatellites(await fetchSatellitesAsync());
+    setWorldJson(await fetchWorldMapAsync());    
   };
 
   useEffect(() => { initialize(); }, []);
+
+  /*Test data to show in the panel. Will be deleted later for actual data, but will do for now */
+  const test = {
+    name: 'Name A',
+    launchDate: '2022-02-26',
+    status: 'Operational'
+  }
 
   return (
     <div className="App">
       <div className='mainView'>
         <div className='mapView'>
-          <ViewContainer filteredSatellites={filteredSatellites} />
+          <ViewContainer filteredSatellites={filteredSatellites} worldJson={worldJson} />
         </div>
-
-        <FilterPanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
+        <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} name={test.name} launchDate={test.launchDate} status={test.status} />
       </div>
-
       <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
     </div>
   );

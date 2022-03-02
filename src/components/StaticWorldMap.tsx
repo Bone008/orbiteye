@@ -76,11 +76,11 @@ export default function WorldMap(__props: StaticWorldMapProps) {
       .attr("stroke", d => COLOR_PALETTE_ORBITS[d.orbitClass])
       .attr("stroke-width", "1px")
       .attr("stroke-linecap", "round")
-      .on('mouseover', d => {
-        d3.select(d.srcElement).attr("stroke-width", "5px");
+      .on('mouseover', e => {
+        d3.select(e.srcElement).attr("stroke-width", "5px");
       })
-      .on('mouseout', d => {
-        d3.select(d.srcElement).attr("stroke-width", "1px");
+      .on('mouseout', e => {
+        d3.select(e.srcElement).attr("stroke-width", "1px");
       })
 
   }, [props.filteredSatellites, props.traceLimit, mapProjection]);
