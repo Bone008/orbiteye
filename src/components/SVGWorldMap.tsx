@@ -4,7 +4,8 @@ import * as d3 from 'd3';
 import { Satellite } from '../model/satellite';
 import { DefaultValues } from '../util/optional_props';
 import { Feature } from 'geojson';
-import { fetchWorldMapAsync, WorldMapJSON } from "../model/data_loader"
+import { WorldMapJSON } from "../model/data_loader";
+import { fromIsoA3ToSatCat } from '../model/mapping';
 
 export interface WorldMapProps {
   filteredSatellites: Satellite[],
@@ -27,6 +28,8 @@ export default function WorldMap(reqProps: WorldMapProps) {
   // Reference to the main SVG element
   const svgRef = useRef<SVGSVGElement>(null!);
 
+  console.log(fromIsoA3ToSatCat.AZE)
+
   // Projector to Lat/Long to Mercator
   const mapProjection = props.projection
     .scale(props.width / (2.5 * Math.PI))
@@ -45,8 +48,6 @@ export default function WorldMap(reqProps: WorldMapProps) {
     .domain([1, 100])
 
   function updateMap() {
-    console.log(props.worldJson)
-
     //Computing the number of satellite per country within the filtered satellites dataset
     const nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => 1), d => d.owner);
 
@@ -65,7 +66,9 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .attr("stroke", "grey")
       .attr("stroke-width", "1px")
       .attr("fill", d => {
-        const countOfSatellite = nbSatellitePerCountry.get(d.properties?.iso_a3)
+        const satCatCode = d.properties?.iso_a3;
+        const countOfSatellite = nbSatellitePerCountry.get(fromIsoA3ToSatCat[satCatCode])
+        //const countOfSatellite = nbSatellitePerCountry.get(d.properties?.iso_a3)
         // If undefined/unknown, we put it in grey
         if (!countOfSatellite) return "lightgrey"
         //console.log("data", nbSatellitePerCountry.get(d.properties.ISO_A3), d.properties.ISO_A3)
