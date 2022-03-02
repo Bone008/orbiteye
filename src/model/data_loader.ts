@@ -2,12 +2,26 @@ import { Satellite } from "./satellite";
 
 const URL_SATELLITE_DATA = 'data/satellites.json';
 const URL_TLE_DATA = 'data/celestrak_tle.txt';
+//const OWNER_CODE_TO_LABEL = 'data/mapping.tsx';
 
 /** A satellite entry as loaded directly from JSON before post-processing. */
 type RawSatellite = Omit<Satellite, 'launchDate' | 'decayDate'> & {
   launchDate: string,
   decayDate: string,
 };
+
+/*export const OWNER_CODE_TO_LABEL: Record<string, string> = {
+  public translations: Record<someTypes, ITranslation>;
+  constructor(){
+    this.buildTranslations = {
+      //['category1']: {key: 'AB', value: 'Arab Satellite Communications Organization'}
+    }
+};*/
+
+//const ownerOptions = uniqueOwners.map(ownerCode => {
+//  return { value: ownerCode, label: (ownerCode || 'All countries') };
+
+type someTypes = 'category1';
 
 export async function fetchSatellitesAsync(): Promise<Satellite[]> {
   console.log(new Date(), 'Sending request ...');

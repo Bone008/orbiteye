@@ -4,8 +4,7 @@ import React, { useMemo } from 'react';
 import { ALL_ORBIT_CLASSES, OrbitClass, Satellite } from '../model/satellite';
 import { FilterProps, FilterSettings, SetFilterCallback } from '../model/filter_settings';
 import Select, { MultiValue } from "react-select";
-
-
+//import dataLoader from "./src/model/data_loader.ts"
 
 export interface FilterPanelProps {
   allSatellites: Satellite[];
@@ -14,10 +13,18 @@ export interface FilterPanelProps {
   onUpdateFilter: SetFilterCallback;
 }
 
-interface FilterOptions {
+export interface FilterOptions {
   value: string;
   label: string;
 }
+
+/*export const OWNER_CODE_TO_LABEL: Record<string, string> = {
+  public translations: Record<someTypes, ITranslation>;
+  constructor(){
+    this.buildTranslations = {
+      ['category1']: {value: 'AB', label: 'Arab Satellite Communications Organization'}
+    }
+};*/
 
 /** React component to render the global filter selection UI. */
 export default function FilterPanel(props: FilterPanelProps) {
@@ -38,10 +45,19 @@ export default function FilterPanel(props: FilterPanelProps) {
     props.onUpdateFilter(newFilter);
   };
 
+  //TO CHANGE
   const filterByOwner = (options: MultiValue<FilterOptions>) => {
+    
+    //this filters by owner, i.e. by shortCode
     const owners: string[] = options.map(option => option.value);
+    //const owners2: string[] = options.map(option => option.label);
     const newFilter = props.filterSettings.update({ owners })
     props.onUpdateFilter(newFilter)
+
+    //this filters by "fullname"
+    //const owners: string[] = options.map(option => option.value[2]);
+    //const newFilter = props.filterSettings.update({ owners })
+    //props.onUpdateFilter(newFilter)
   }
 
   const filterByUsage = (options: MultiValue<FilterOptions>) => {
@@ -59,8 +75,10 @@ export default function FilterPanel(props: FilterPanelProps) {
   const uniqueOwners: string[] = useMemo(
     () => Array.from(new Set(props.allSatellites.map(sat => sat.owner))).sort(),
     [props.allSatellites]);
+  
+  //TO CHANGE
   const ownerOptions = uniqueOwners.map(ownerCode => {
-    return { value: ownerCode, label: (ownerCode || 'All countries') };
+    return { value: ownerCode, label: (ownerCode || 'All countries') }; //
   });
 
   const uniqueUsers: string[] = useMemo(() => {
