@@ -1,10 +1,8 @@
-import { getCOSPAR } from "tle.js";
-import { Feature } from 'geojson';
 import { Satellite } from "./satellite";
+import { Feature } from 'geojson';
 
 const URL_SATELLITE_DATA = 'data/satellites.json';
 const URL_TLE_DATA = 'data/celestrak_tle.txt';
-//const OWNER_CODE_TO_LABEL = 'data/mapping.tsx';
 const URL_WORLD_DATA = 'data/custom.geo.json';
 
 /** A satellite entry as loaded directly from JSON before post-processing. */
@@ -100,7 +98,13 @@ async function fetchTLEsAsync(): Promise<Map<string, [string, string]>> {
     const line1 = lines[i + 1].trim();
     const line2 = lines[i + 2].trim();
 
-    const id = getCOSPAR([line1, line2], false);
+    // Mappings from https://en.wikipedia.org/wiki/Two-line_element_set#Format
+    let id_year = line1.substring(9, 11).trim();
+    id_year = parseInt(id_year) < 57 ? id_year = "20" + id_year : id_year = "19" + id_year;
+    const id_launch_num = line1.substring(11, 14).trim();
+    const id_launch_piece = line1.substring(14, 17).trim();
+
+    const id = id_year + "-" + id_launch_num + id_launch_piece;
 
     tleMap.set(id, [line1, line2]);
   }

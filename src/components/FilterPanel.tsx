@@ -22,6 +22,13 @@ export interface FilterOption {
   selected: boolean;
 }
 
+/*export const OWNER_CODE_TO_LABEL: Record<string, string> = {
+  public translations: Record<someTypes, ITranslation>;
+  constructor(){
+    this.buildTranslations = {
+      ['category1']: {value: 'AB', label: 'Arab Satellite Communications Organization'}
+    }
+};*/
 
 /** React component to render the global filter selection UI. */
 export default function FilterPanel(props: FilterPanelProps) {
@@ -45,8 +52,8 @@ export default function FilterPanel(props: FilterPanelProps) {
   };
 
   //TO CHANGE
-  const filterByOwner = (options: MultiValue<FilterOptions>) => {
-    
+  const filterByOwner = (options: MultiValue<FilterOption>) => {
+
     //this filters by owner, i.e. by shortCode
     const owners: string[] = options.map(option => option.value);
     //const owners2: string[] = options.map(option => option.label);
@@ -91,16 +98,16 @@ export default function FilterPanel(props: FilterPanelProps) {
   const uniqueOwners: string[] = useMemo(
     () => Array.from(new Set(props.allSatellites.map(sat => sat.owner))).sort(),
     [props.allSatellites]);
-  
+
   //TO CHANGE
   const ownerOptions = uniqueOwners.map(ownerCode => {
     return { value: ownerCode, label: (ownerCode || 'All countries') }; //
-  /*const ownerOptions: FilterOption[] = uniqueOwners.map(owner => {
-    return {
-      value: owner,
-      label: owner,
-      selected: currentFilter.owners.includes(owner),
-    };*/
+    /*const ownerOptions: FilterOption[] = uniqueOwners.map(owner => {
+      return {
+        value: owner,
+        label: owner,
+        selected: currentFilter.owners.includes(owner),
+      };*/
   });
 
   /**Called "Sector" in the filter */
