@@ -68,7 +68,7 @@ function SceneObjects(props: Required<GlobeViewProps>) {
 
   // Rotate the Earth over time (at one revolution per minute)
   //  - this reduces assumption that you can look at 3D orbits to see where they fly over the surface
-  useFrame((state, delta) => { sphereRef.current.rotation.y += 2 * Math.PI * delta / 60; })
+  useFrame((state, delta) => { sphereRef.current.rotation.y = Date.now() / 1000 * 2 * Math.PI / 60; })
 
 
   // Block hover events from orbits behind Earth
