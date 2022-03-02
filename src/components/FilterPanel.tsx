@@ -4,6 +4,7 @@ import React, { useMemo } from 'react';
 import { ALL_ORBIT_CLASSES, OrbitClass, Satellite } from '../model/satellite';
 import { FilterProps, FilterSettings, SetFilterCallback } from '../model/filter_settings';
 import Select, { MultiValue } from "react-select";
+import { OWNER_SHORT_CODE_TO_FULL } from '../model/mapping';
 
 
 
@@ -86,7 +87,7 @@ export default function FilterPanel(props: FilterPanelProps) {
   const ownerOptions: FilterOption[] = uniqueOwners.map(owner => {
     return {
       value: owner,
-      label: owner,
+      label: OWNER_SHORT_CODE_TO_FULL[owner],
       selected: currentFilter.owners.includes(owner),
     };
   });

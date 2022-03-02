@@ -1,6 +1,6 @@
 //TypeScript file with the mapping of shortCode to Fullname
 //shortcode is the 'owner' in satellites.json, or 'source code' in celestrack. fullName would be the 'Source Description'
-export const fromSatCatToName: Record<string, string> =
+export const OWNER_SHORT_CODE_TO_FULL: Record<string, string> =
 
 {
   AB: "Arab Satellite Communications Organization",
