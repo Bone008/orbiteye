@@ -48,6 +48,25 @@ export default function WorldMap(reqProps: WorldMapProps) {
     .range(["lightgreen", "green"])
     .domain([1, 100])
 
+  const tooltip = d3.select('body')
+    .append('div')
+    .attr('id', 'tooltip')
+
+  const mouseOver = () => {
+    tooltip.style("opacity", 1)
+  }
+
+  var mouseMove = (e: any) => {
+    tooltip
+      .html("The exact value of<br>this cell is: ")
+      .style("left", e.x / 2 + "px")
+      .style("top", e.y / 2 + "px")
+  }
+
+  var mouseOut = () => {
+    tooltip.style("opacity", 0)
+  }
+
   function updateMap() {
     //Computing the number of satellite per country within the filtered satellites dataset
     const nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => 1), d => d.owner);
@@ -62,20 +81,36 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .merge(groupMap as any)  //TODO: I don't get this type, maybe problem between TypeScript and D3
       .attr("d", d => pathGenerator(d))
       .attr("stroke", "grey")
-      .attr("stroke-width", "1px")
+      .attr("stroke-width", "0.1px")
       // Some mouse interactions
-      .on('mouseover', e => {
+      .on('mouseover', (e, d) => {
+        const satCatCode = d.properties?.iso_a3;
+        var nbSat = nbSatellitePerCountry.get(fromIsoA3ToSatCat[satCatCode])
+        if (!nbSat) nbSat = 0
+        d3.select('#tooltip')
+          .transition()
+          .duration(2000)
+          .style('opacity', 1)
+          .text(d.properties?.name + " " + nbSat)
+
         d3.select(e.srcElement)
           .style("opacity", .8)
           .style("stroke", "black")
       })
       .on('mouseout', e => {
+        d3.select('#tooltip').style('opacity', 0)
+        //tooltip.style("opacity", 0)
         d3.select(e.srcElement)
           .style("opacity", 1)
           .style("stroke", "grey")
       })
-      .transition()
-      .duration(1000)
+      .on('mousemove', e =>
+        d3.select('#tooltip')
+          .style('left', (e.pageX + 10) + 'px')
+          .style('top', (e.pageY + 10) + 'px')
+          .style('opacity', 1)
+          .transition()
+          .duration(1000))
       .attr("fill", d => {
         const satCatCode = d.properties?.iso_a3;
         const countOfSatellite = nbSatellitePerCountry.get(fromIsoA3ToSatCat[satCatCode])
@@ -107,12 +142,11 @@ export default function WorldMap(reqProps: WorldMapProps) {
     .call(zoom);
 
   return (
-    <div className="WorldMap" style={{ backgroundColor: "black", padding: "0" }}>
+    <div className="WorldMap">
       <svg ref={svgRef}
         viewBox={`0 0 ${props.width}, ${props.height}`}
         preserveAspectRatio="xMidYMid meet"
         className="WorldMap" style={{ backgroundColor: "lightblue", padding: "0" }}
-        //style={{ width: "100%", paddingBottom: "92%", height: "1px", overflow: "visible", backgroundColor: "transparent" }}
       >
         <g className="mapLayer"></g>
 
