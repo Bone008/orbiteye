@@ -52,24 +52,52 @@ export default function WorldMap(reqProps: WorldMapProps) {
     .append('div')
     .attr('id', 'tooltip')
 
-  const mouseOver = () => {
-    tooltip.style("opacity", 1)
-  }
-
-  var mouseMove = (e: any) => {
-    tooltip
-      .html("The exact value of<br>this cell is: ")
-      .style("left", e.x / 2 + "px")
-      .style("top", e.y / 2 + "px")
-  }
-
-  var mouseOut = () => {
-    tooltip.style("opacity", 0)
-  }
-
   function updateMap() {
     //Computing the number of satellite per country within the filtered satellites dataset
     const nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => 1), d => d.owner);
+
+    function mouseOver(e: any, d: any) {
+      const satCatCode = d.properties?.iso_a3;
+      var nbSat = nbSatellitePerCountry.get(fromIsoA3ToSatCat[satCatCode])
+      if (!nbSat) nbSat = 0
+      tooltip
+        .transition()
+        .duration(2000)
+        .style('opacity', 1)
+        .text(d.properties?.name + " " + nbSat)
+
+      d3.select(e.srcElement)
+        .style("opacity", .8)
+        .style("stroke", "black")
+    }
+
+    function mouseMove(e: any) {
+      tooltip
+        .style('left', (e.pageX + 10) + 'px')
+        .style('top', (e.pageY + 10) + 'px')
+        .style('opacity', 1)
+        .transition()
+        .duration(1000)
+    }
+
+    function mouseOut(e: any) {
+      tooltip
+        .style('opacity', 0)
+      d3.select(e.srcElement)
+        .style("opacity", 1)
+        .style("stroke", "grey")
+    }
+
+    function colorCountry(d: any) {
+      const satCatCode = d.properties?.iso_a3;
+      const countOfSatellite = nbSatellitePerCountry.get(fromIsoA3ToSatCat[satCatCode])
+
+      // If undefined/unknown, we put it in grey
+      if (!countOfSatellite) return "lightgrey"
+
+      // Otherwise we put it in a color scale TODO check with mapping
+      return colorScale(countOfSatellite)
+    }
 
     // Creating the path to make the map
     const groupMap = mapLayer.selectAll("path")
@@ -83,44 +111,12 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .attr("stroke", "grey")
       .attr("stroke-width", "0.1px")
       // Some mouse interactions
-      .on('mouseover', (e, d) => {
-        const satCatCode = d.properties?.iso_a3;
-        var nbSat = nbSatellitePerCountry.get(fromIsoA3ToSatCat[satCatCode])
-        if (!nbSat) nbSat = 0
-        d3.select('#tooltip')
-          .transition()
-          .duration(2000)
-          .style('opacity', 1)
-          .text(d.properties?.name + " " + nbSat)
-
-        d3.select(e.srcElement)
-          .style("opacity", .8)
-          .style("stroke", "black")
-      })
-      .on('mouseout', e => {
-        d3.select('#tooltip').style('opacity', 0)
-        //tooltip.style("opacity", 0)
-        d3.select(e.srcElement)
-          .style("opacity", 1)
-          .style("stroke", "grey")
-      })
-      .on('mousemove', e =>
-        d3.select('#tooltip')
-          .style('left', (e.pageX + 10) + 'px')
-          .style('top', (e.pageY + 10) + 'px')
-          .style('opacity', 1)
-          .transition()
-          .duration(1000))
-      .attr("fill", d => {
-        const satCatCode = d.properties?.iso_a3;
-        const countOfSatellite = nbSatellitePerCountry.get(fromIsoA3ToSatCat[satCatCode])
-
-        // If undefined/unknown, we put it in grey
-        if (!countOfSatellite) return "lightgrey"
-
-        // Otherwise we put it in a color scale TODO check with mapping
-        return colorScale(countOfSatellite)
-      })
+      .on('mouseover', mouseOver)
+      .on('mousemove', mouseMove)
+      .on('mouseout', mouseOut)
+      .transition()
+      .duration(800)
+      .attr("fill", colorCountry)
     groupMap.exit().remove()
   }
 
