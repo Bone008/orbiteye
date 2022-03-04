@@ -41,10 +41,12 @@ export default function App() {
   const initialize = async () => {
     setAllSatellites(await fetchSatellitesAsync());
     setWorldJson(await fetchWorldMapAsync());
-    ReactModal.setAppElement("#root");
   };
 
   useEffect(() => { initialize(); }, []);
+
+  // Modal library requires this for accessibility
+  ReactModal.setAppElement("#root");
 
   return (
     <div className="App">
