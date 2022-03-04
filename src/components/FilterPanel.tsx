@@ -5,6 +5,7 @@ import { ALL_ORBIT_CLASSES, OrbitClass, Satellite } from '../model/satellite';
 import { FilterProps, FilterSettings, SetFilterCallback } from '../model/filter_settings';
 import Select, { MultiValue } from "react-select";
 import { OWNER_SHORT_CODE_TO_FULL } from '../model/mapping';
+import { InfoCircleIcon } from './Icons'
 
 
 
@@ -13,6 +14,7 @@ export interface FilterPanelProps {
   filteredSatellites: Satellite[];
   filterSettings: FilterSettings;
   onUpdateFilter: SetFilterCallback;
+  openOrbitExplainer: () => void;
 }
 
 /** Data representation of a single option in one of the filter dropdowns. */
@@ -132,7 +134,7 @@ export default function FilterPanel(props: FilterPanelProps) {
       <p className='SatCountText'>Matches: {props.filteredSatellites.length} of {props.allSatellites.length} satellites.</p>
 
       <label className='FilterRowDiv'>
-        <p className='FilterNameTag'> Orbit type:</p>
+        <p className='FilterNameTag'>Orbit type: <InfoCircleIcon onClick={props.openOrbitExplainer} /></p>
         <Select
           className='DropDown'
           classNamePrefix='DropDown'

@@ -5,6 +5,7 @@ import GlobeView from "./GlobeView";
 import StaticWorldMap from "./StaticWorldMap";
 import SVGWorldMap from './SVGWorldMap';
 import ViewSelector from "./ViewSelector";
+import OrbitExplainer from "./OrbitExplainer";
 
 export interface ViewContainerProps {
   filteredSatellites: Satellite[];

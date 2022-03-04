@@ -11,6 +11,7 @@ export interface RightPanelProps {
   filterSettings: FilterSettings;
   setFilterSettings: SetFilterCallback;
   selectedSatellite: Satellite | null;
+  openOrbitExplainer: () => void;
 }
 
 
@@ -37,7 +38,7 @@ export default function RightSidePanel(props: RightPanelProps) {
   return (
     <div className='RightPanel'>
       <div ref={ref} className='FilterPart'>
-        <FilterPanel allSatellites={props.allSatellites} filteredSatellites={props.filteredSatellites} filterSettings={props.filterSettings} onUpdateFilter={props.setFilterSettings} />
+        <FilterPanel allSatellites={props.allSatellites} filteredSatellites={props.filteredSatellites} filterSettings={props.filterSettings} onUpdateFilter={props.setFilterSettings} openOrbitExplainer={props.openOrbitExplainer} />
       </div>
       <div className='DetailPart'>
         <SateliteDetailPanel satellite={props.selectedSatellite} showDetail={showDetailPanel} setShowDetail={setShowDetailPanel} />
