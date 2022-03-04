@@ -28,3 +28,16 @@
   padding-right: 1em;
 }
 
+.DetailRowText a {
+  color: white;
+}
+
+.NoSelection {
+  margin: 1em 0;
+  font-style: italic;
+  color: white;
+}
+
+.help {
+  cursor: help;
+}

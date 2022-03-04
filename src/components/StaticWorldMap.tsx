@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { Satellite } from '../model/satellite';
 import { groundTraceSync } from '../util/orbits';
-import { DefaultValues } from '../util/optional_props';
+import { DefaultValues } from '../util/util';
 import { COLOR_PALETTE_ORBITS } from '../util/colors';
 import Legend from './Legend';
 

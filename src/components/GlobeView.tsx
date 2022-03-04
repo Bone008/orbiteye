@@ -3,7 +3,7 @@ import './GlobeView.css'
 import { Canvas, ThreeEvent, useFrame } from '@react-three/fiber'
 import { Line, Sphere, Stars, TrackballControls, useTexture } from '@react-three/drei'
 import { useRef, Suspense, useState } from 'react';
-import { DefaultValues } from '../util/optional_props';
+import { DefaultValues } from '../util/util';
 import { Satellite } from '../model/satellite';
 import { getOrbitECI } from '../util/orbits';
 import { Euler } from 'three';

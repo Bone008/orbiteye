@@ -2,7 +2,7 @@ import './SVGWorldMap.css';
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { Satellite } from '../model/satellite';
-import { DefaultValues } from '../util/optional_props';
+import { DefaultValues } from '../util/util';
 import { Feature } from 'geojson';
 import { WorldMapJSON } from "../model/data_loader";
 import { fromIsoA3ToSatCat } from '../model/mapping';

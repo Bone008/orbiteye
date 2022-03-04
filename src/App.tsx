@@ -42,20 +42,13 @@ export default function App() {
 
   useEffect(() => { initialize(); }, []);
 
-  /*Test data to show in the panel. Will be deleted later for actual data, but will do for now */
-  const test = {
-    name: 'Name A',
-    launchDate: '2022-02-26',
-    status: 'Operational'
-  }
-
   return (
     <div className="App">
       <div className='mainView'>
         <div className='mapView'>
           <ViewContainer filteredSatellites={filteredSatellites} selectedSatellite={selectedSatellite} setSelectedSatellite={updateSelected} worldJson={worldJson} />
         </div >
-        <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} name={test.name} launchDate={test.launchDate} status={test.status} />
+        <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} selectedSatellite={selectedSatellite} />
       </div >
       <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
     </div >
