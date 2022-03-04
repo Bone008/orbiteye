@@ -147,23 +147,6 @@ export default function FilterPanel(props: FilterPanelProps) {
         />
       </label>
       <label className='FilterRowDiv'>
-        <p className='FilterNameTag'>Owner:</p>
-        <Select
-          className='DropDown'
-          classNamePrefix='DropDown'
-          formatOptionLabel={labelFormatter}
-          options={ownerOptions}
-          value={ownerOptions.filter(opt => opt.selected)
-              /* Note: cannot use defaultValue instead of value because ownerOptions is initialized
-                       with a delay (when allSatellites is available). */}
-          isMulti
-          isClearable
-          closeMenuOnSelect={false}
-          hideSelectedOptions={false}
-          onChange={filterByOwner}
-        />
-      </label>
-      <label className='FilterRowDiv'>
         <p className='FilterNameTag'>Sector:</p>
         <Select
           className='DropDown'
@@ -189,6 +172,23 @@ export default function FilterPanel(props: FilterPanelProps) {
           closeMenuOnSelect={false}
           hideSelectedOptions={false}
           onChange={filterByPurpose}
+        />
+      </label>
+      <label className='FilterRowDiv'>
+        <p className='FilterNameTag'>Owner:</p>
+        <Select
+          className='DropDown'
+          classNamePrefix='DropDown'
+          formatOptionLabel={labelFormatter}
+          options={ownerOptions}
+          value={ownerOptions.filter(opt => opt.selected)
+              /* Note: cannot use defaultValue instead of value because ownerOptions is initialized
+                       with a delay (when allSatellites is available). */}
+          isMulti
+          isClearable
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          onChange={filterByOwner}
         />
       </label>
       <label className='FilterRowDiv'>
