@@ -1,7 +1,7 @@
 import './ViewSelector.css';
 
 import { ReactElement, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { ChevronDownIcon, ChevronUpIcon } from './Icons';
 
 export interface ViewControlsProps {
@@ -23,18 +23,22 @@ export default function ViewControls(props: ViewControlsProps) {
 
   const optionBlocks = viewOptions.map(opt => {
     return (
-      <Link key={opt.name + "_block"} className="optionBlock" to={opt.href} onClick={showBot}>
+      <NavLink key={opt.name + "_block"} className={({ isActive }) => "optionBlock" + (isActive ? ' selected' : '')} to={opt.href} onClick={showBot}>
         <div className="optionContainer">
           <p className="optionTitle">{opt.name}</p>
           <p className="optionDescription">{opt.description}</p>
         </div>
-      </Link>
+      </NavLink>
     );
   });
 
   const optionTabs = viewOptions.map(opt => {
     return (
-      <Link key={opt.name + "_tab"} className="optionTab" to={opt.href} onClick={showBot}> {opt.name} </Link>
+      <NavLink
+        key={opt.name + "_tab"}
+        className={({ isActive }) => "optionTab" + (isActive ? ' selected' : '')}
+        to={opt.href}
+        onClick={showBot}>{opt.name}</NavLink>
     );
   });
 

@@ -39,6 +39,10 @@
   justify-content: center;
 }
 
+.optionBlock.selected {
+  /* TODO: should this be styled too in grid view? */
+}
+
 .optionBlockContainer :hover, .optionTabContainer :hover {
   background-color: #111;
 }
@@ -82,15 +86,22 @@
   /* Ignore default a tag styles */
   text-decoration: inherit;
 
-  color: lightgray;
   flex-grow: 1;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
+  color: rgba(255, 255, 255, 0.66);
+  border-bottom: 2px solid #222;
 }
 
 .optionTab:hover {
   color: white;
   background-color: #111;
+}
+
+.optionTab.selected {
+  color: white;
+  border-bottom-color: white;
 }
