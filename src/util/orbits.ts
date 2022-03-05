@@ -6,74 +6,42 @@ import { twoline2satrec, propagate, EciVec3 } from 'satellite.js';
 const _MS_IN_A_MINUTE = 60000;
 const _MS_IN_A_DAY = 1440000;
 
-
-/**
- * Gets the ground trace of a satellite's current orbit (always starting at the antimeridian).
- * Returns orbit trace in [lng, lag] format to work better with GeoJSON.
- * 
- * @param sat Satellite
- * @param stepMS Step size in milliseconds of returned orbit
- * @returns (Promise of) list of [lng, lat] formatted positions separated by stepMS milliseconds
- */
-export async function groundTraceAsync(sat: Satellite, stepMS: number = 10000): Promise<LngLat[]> {
-  if (!sat.tle) throw Error(`TLE doesn't exist for satellite ${sat.id}`);
-
-  // Copied from tle.js getGroundTracks but returns just current orbit
-  const startTimeMS = Date.now();
-  const orbitPeriodMS = getAverageOrbitTimeMS(sat.tle);
-  const curOrbitStartMS = getLastAntemeridianCrossingTimeMS(
-    { name: sat.name, tle: sat.tle }, // For some reason this method requires a name
-    startTimeMS
-  );
-
-  if (curOrbitStartMS === -1) {
-    // Geosync or unusual orbit, so just return a Promise for a partial orbit track.
-
-    return getOrbitTrack({
-      tle: sat.tle,
-      startTimeMS,
-      stepMS: _MS_IN_A_MINUTE,
-      maxTimeMS: _MS_IN_A_DAY / 4,
-    });
-  }
-
-  return getOrbitTrack({
-    tle: sat.tle,
-    startTimeMS: curOrbitStartMS,
-    stepMS: stepMS,
-    maxTimeMS: orbitPeriodMS * 2,
-  });
-}
-
 export function groundTraceSync(sat: Satellite, stepMS: number = 10000): LngLat[] {
   if (!sat.tle) throw Error(`TLE doesn't exist for satellite ${sat.id}`);
 
-  // Copied from tle.js getGroundTracks but returns just current orbit
+  // TLE.js seems to have internal issues. Wrapping in try catch to avoid fatal crash
+  try {
 
-  const startTimeMS = Date.now();
-  const orbitPeriodMS = getAverageOrbitTimeMS(sat.tle);
-  const curOrbitStartMS = getLastAntemeridianCrossingTimeMS(
-    { name: sat.name, tle: sat.tle }, // For some reason this method requires a name
-    startTimeMS
-  );
+    // Copied from tle.js getGroundTracks but returns just current orbit
 
-  if (curOrbitStartMS === -1) {
-    // Geosync or unusual orbit, so just return a Promise for a partial orbit track.
+    const startTimeMS = Date.now();
+    const orbitPeriodMS = getAverageOrbitTimeMS(sat.tle);
+    const curOrbitStartMS = getLastAntemeridianCrossingTimeMS(
+      { name: sat.name, tle: sat.tle }, // For some reason this method requires a name
+      startTimeMS
+    );
+
+    if (curOrbitStartMS === -1) {
+      // Geosync or unusual orbit, so just return a Promise for a partial orbit track.
+
+      return getOrbitTrackSync({
+        tle: sat.tle,
+        startTimeMS: startTimeMS,
+        stepMS: _MS_IN_A_MINUTE,
+        maxTimeMS: _MS_IN_A_DAY / 4,
+      });
+    }
 
     return getOrbitTrackSync({
       tle: sat.tle,
-      startTimeMS: startTimeMS,
-      stepMS: _MS_IN_A_MINUTE,
-      maxTimeMS: _MS_IN_A_DAY / 4,
+      startTimeMS: curOrbitStartMS,
+      stepMS: stepMS,
+      maxTimeMS: orbitPeriodMS * 2, // Give a little leeway
     });
+  } catch (e: any) {
+    console.error("Error in calculating orbit:", e);
+    return [];
   }
-
-  return getOrbitTrackSync({
-    tle: sat.tle,
-    startTimeMS: curOrbitStartMS,
-    stepMS: stepMS,
-    maxTimeMS: orbitPeriodMS * 2, // Give a little leeway
-  });
 }
 
 
@@ -86,26 +54,34 @@ export function groundTraceSync(sat: Satellite, stepMS: number = 10000): LngLat[
 export function getOrbitECI(sat: Satellite, N: number = 300): THREE.Vector3[] {
   if (!sat.tle) throw Error(`TLE doesn't exist for satellite ${sat.id}`);
 
-  const satrec = twoline2satrec(...sat.tle);
-  let date = new Date();
+  // TLE.js seems to have internal issues. Wrapping in try catch to avoid fatal crash
+  try {
 
-  const orbitPeriodMS = getAverageOrbitTimeMS(sat.tle);
+    const satrec = twoline2satrec(...sat.tle);
+    let date = new Date();
 
-  // Compute times for sampling.
-  // We have N - 1 segments since the first point needs to appear twice.
-  const stepMS = orbitPeriodMS / (N - 1);
-  const positions: Array<THREE.Vector3> = Array(N);
-  for (let i = 0; i < N; i++) {
-    const eci = propagate(satrec, date).position as EciVec3<number>;
+    const orbitPeriodMS = getAverageOrbitTimeMS(sat.tle);
 
-    // Check if position was established
-    if (!eci) continue;
+    // Compute times for sampling.
+    // We have N - 1 segments since the first point needs to appear twice.
+    const stepMS = orbitPeriodMS / (N - 1);
+    const positions: Array<THREE.Vector3> = Array(N);
+    for (let i = 0; i < N; i++) {
+      const eci = propagate(satrec, date).position as EciVec3<number>;
 
-    positions[i] = new THREE.Vector3(eci.x, eci.y, eci.z);
+      // Check if position was established
+      if (!eci) continue;
 
-    // Increment time
-    date.setTime(date.getTime() + stepMS);
+      positions[i] = new THREE.Vector3(eci.x, eci.y, eci.z);
+
+      // Increment time
+      date.setTime(date.getTime() + stepMS);
+    }
+
+    return positions;
+
+  } catch (e: any) {
+    console.error("Error in calculating orbit:", e);
+    return [];
   }
-
-  return positions;
 }
