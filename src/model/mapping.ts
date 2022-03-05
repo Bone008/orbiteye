@@ -247,3 +247,14 @@ export const fromIsoA3ToSatCat: Record<string, string> =
   VEN: "VENZ",
   VNM: "VTNM"
 }
+
+
+export const ORBIT_TYPE_CODE_TO_FULL_NAME: Record<string, string> =
+{
+  LEO: "Low Earth Orbit", // that is orbitClass: "orbitType",
+  GEO: "Geostationary Earth Orbit",
+  MEO: "Medium Earth Orbit",
+  Elliptical: "Elliptical"
+  //NGSO: "Non-Geostationary Orbit"
+}
+

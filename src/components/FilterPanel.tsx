@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { ALL_ORBIT_CLASSES, OrbitClass, Satellite } from '../model/satellite';
 import { FilterProps, FilterSettings, SetFilterCallback } from '../model/filter_settings';
 import Select, { MultiValue } from "react-select";
-import { OWNER_SHORT_CODE_TO_FULL } from '../model/mapping';
+import { OWNER_SHORT_CODE_TO_FULL, fromIsoA3ToSatCat, ORBIT_TYPE_CODE_TO_FULL_NAME,  } from '../model/mapping';
 import { InfoCircleIcon } from './Icons'
 
 
@@ -76,7 +76,7 @@ export default function FilterPanel(props: FilterPanelProps) {
     const count = countWithUpdatedFilter({ orbitClasses: [orbitClass] });
     return {
       value: orbitClass,
-      label: orbitClass,
+      label: ORBIT_TYPE_CODE_TO_FULL_NAME[orbitClass],
       count,
       selected: currentFilter.orbitClasses.includes(orbitClass),
     };
