@@ -54,6 +54,20 @@ OBJECT_TYPE_MAPPING = {
   "UNK": "UNKNOWN",
 }
 
+UCS_PURPOSE_TYPOS = {
+  "Communication": "Communications",
+  "Earth": "Earth Observation",
+  "Earth Observarion": "Earth Observation",
+}
+
+def ucs_simplify_purpose(purpose_list):
+  # Navigation is too broad and redundant -- let's remove it
+  new_list = [p for p in purpose_list if p != "Navigation"]
+
+  # TODO: rename labels in some sensible way
+  return new_list
+
+
 def ucs_to_standard(ucs):
   ucs = ucs.fillna('').copy() # Avoid view vs. copy issues
   
@@ -70,8 +84,11 @@ def ucs_to_standard(ucs):
   # TODO: Either way, convert owners into standard format
 
   # Split Users and Purpose into lists
-  ucs["Users"] = ucs["Users"].apply(lambda x: x.split('/'))
-  ucs["Purpose"] = ucs["Purpose"].apply(lambda x: x.split('/'))
+  ucs["Users"] = ucs["Users"].apply(lambda x: [str.strip(u) for u in x.split('/')])
+  ucs["Purpose"] = ucs["Purpose"].apply(lambda x: [str.strip(p) for p in x.split('/')])
+
+  ucs["Purpose"] = ucs["Purpose"].apply(lambda x: [UCS_PURPOSE_TYPOS.get(p, p) for p in x])
+  ucs["Purpose"] = ucs["Purpose"].apply(ucs_simplify_purpose)
 
   # Filter to only relevant rows and rename
   std = ucs[UCS_MAPPING.keys()].rename(columns=UCS_MAPPING)
@@ -159,4 +176,4 @@ satcat_std = satcat_to_standard(satcat)
 
 final = merge(ucs_std, satcat_std)
 # final.to_csv("test.csv")
-final.to_json("test.json", orient="records")
+final.to_json("satellites.json", orient="records")
