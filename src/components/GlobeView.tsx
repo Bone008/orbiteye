@@ -56,6 +56,7 @@ export default function GlobeView(__props: GlobeViewProps) {
         </Canvas>
       </Suspense>
       <Legend type="orbitTypes" />
+      <Legend type="switch2d3d" />
     </div>
   );
 }

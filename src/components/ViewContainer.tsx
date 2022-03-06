@@ -5,7 +5,6 @@ import GlobeView from "./GlobeView";
 import StaticWorldMap from "./StaticWorldMap";
 import SVGWorldMap from './SVGWorldMap';
 import ViewSelector from "./ViewSelector";
-import OrbitExplainer from "./OrbitExplainer";
 
 export interface ViewContainerProps {
   filteredSatellites: Satellite[];
@@ -21,9 +20,12 @@ export default function ViewContainer(props: ViewContainerProps) {
     <HashRouter>
       <Routes>
         <Route path="/" element={<ViewSelector />} />
+        <Route path="/orbits" element={<Navigate to="/orbits/globe" replace />} />
         <Route path="/orbits/globe" element={<ViewSelector view={<GlobeView {...props} />} />} />
         <Route path="/orbits/map" element={<ViewSelector view={<StaticWorldMap {...props} width={500} height={250} />} />} />
         <Route path="/origin" element={<ViewSelector view={<SVGWorldMap filteredSatellites={filteredSatellites} worldJson={props.worldJson} width={500} height={250} />} />} />
+        <Route path="/launch" element={<ViewSelector view={<h2 style={({ color: 'white' })}>TODO</h2>} />} />
+        <Route path="/decay" element={<ViewSelector view={<h2 style={({ color: 'white' })}>TODO</h2>} />} />
 
         {/* For unmatched paths, give ViewNotFound */}
         <Route path="*" element={<Navigate to="/" />} />

@@ -1,6 +1,6 @@
 .Legend {
   position: absolute;
-  bottom: 1em;
+  top: 1em;
   right: 1em;
   padding: .33em .5em;
   font-size: 80%;
@@ -25,4 +25,40 @@
   width: 32px;
   height: 4px;
   margin-right: .5em;
+}
+
+.SwitchMode {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+  color: white;
+  display: flex;
+}
+
+.SwitchMode .SwitchLink {
+  width: 70px;
+  padding: 0.5em 1em;
+  margin-right: 1em;
+  border-radius: 5px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-decoration: none;
+  color: white;
+  background-color: #3e5958;
+  font-weight: lighter;
+  opacity: 0.66;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.SwitchMode .SwitchLink.selected {
+  opacity: 1;
+  border-color: white;
+}
+
+.SwitchMode .SwitchLink .icon {
+  font-size: 150%;
+  margin-bottom: 3px;
 }
