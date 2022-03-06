@@ -1,0 +1,156 @@
+/* Wipe control styles */
+.wipeContainer {
+  height: 100%;
+  overflow-y: hidden;
+}
+
+.wipe {
+  overflow: hidden;
+  height: 100%;
+  transition: height 500ms ease;
+}
+
+.wipe.hidden {
+  height: 0;
+}
+
+
+/* Top section styles */
+.optionBlockContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 5fr 5fr 1fr;
+
+  color: white;
+  background-color: black;
+}
+
+.optionBlockContainer.uncollapsible {
+  grid-template-rows: 1fr 1fr;
+}
+
+.optionBlock {
+  /* Ignore default a tag styles */
+  text-decoration: inherit;
+  color: inherit;
+
+  /* Allow for overlay of ::before background image */
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+.optionBlock::before {
+  content: "";
+  position: relative;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: block;
+  
+  background-image: var(--backgroundURL); /* Set from React */
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center 50%;
+  opacity: 25%;
+
+  transition: opacity 250ms ease;
+
+  /* Overlay on top of actual content */
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.optionBlock:hover::before {
+  opacity: 15%;
+}
+
+.optionBlockContainer.hidden .optionBlock::before {
+  opacity: 0;
+}
+
+/* TODO: should this be styled too in grid view? */
+/* .optionBlock.selected {
+} */
+
+/* Selector covers both actual options/tabs as well as the expand/collapse buttons */
+.optionBlockContainer > *, .optionTabContainer > * {
+  /* Match fade out of background image */
+  transition: background-color 250ms ease;
+}
+.optionBlockContainer > :hover, .optionTabContainer > :hover {
+  color: white;
+  background-color: #111;
+}
+
+.optionContainer {
+  padding: 0 2rem;
+
+  /* Overlay on top of ::before background image */
+  grid-column: 1;
+  grid-row: 1;
+
+  /* Center contents */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.optionTitle {
+  font-size: large;
+}
+
+.optionDescription {
+  /* color: gray; */
+  font-size: small;
+}
+
+.wipeUpButton {
+  grid-column: 1/3;
+  grid-row: 3;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* Bottom section styles */
+.optionTabsAndViewContainer {
+  display: grid;
+  grid-template-rows: 1fr 10fr;
+}
+
+.optionTabContainer {
+  display: flex;
+  justify-content: space-evenly;
+
+  background-color: black;
+}
+
+.optionTab{
+  /* Ignore default a tag styles */
+  text-decoration: inherit;
+
+  flex-grow: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: rgba(255, 255, 255, 0.66);
+  border-bottom: 2px solid #222;
+}
+
+.optionTab:hover {
+  color: white;
+  background-color: #111;
+}
+
+.optionTab.selected {
+  color: white;
+  border-bottom-color: white;
+}
