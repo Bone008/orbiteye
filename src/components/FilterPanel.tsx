@@ -3,8 +3,8 @@ import * as d3 from 'd3';
 import React, { useMemo } from 'react';
 import { ALL_ORBIT_CLASSES, OrbitClass, Satellite } from '../model/satellite';
 import { FilterProps, FilterSettings, SetFilterCallback } from '../model/filter_settings';
-import Select, { MultiValue } from "react-select";
-import { OWNER_SHORT_CODE_TO_FULL, fromIsoA3ToSatCat, ORBIT_TYPE_CODE_TO_FULL_NAME,  } from '../model/mapping';
+import Select, { MultiValue, Props as SelectProps } from "react-select";
+import { OWNER_SHORT_CODE_TO_FULL, fromIsoA3ToSatCat, ORBIT_TYPE_CODE_TO_FULL_NAME, } from '../model/mapping';
 import { InfoCircleIcon } from './Icons'
 
 
@@ -128,6 +128,17 @@ export default function FilterPanel(props: FilterPanelProps) {
     return <span key={opt.value}>{opt.label}{opt.count !== undefined && countSpan}</span>;
   };
 
+  const commonSelectProps: SelectProps<FilterOption, true> = {
+    className: 'DropDown',
+    classNamePrefix: 'DropDown',
+    isMulti: true,
+    isClearable: true,
+    closeMenuOnSelect: false,
+    hideSelectedOptions: false,
+    // To avoid being cut off by panel overflow.
+    menuPortalTarget: document.body,
+  };
+
   return (
     <div className="FilterPanel">
       <h1 className='headerName'>OrbitEye</h1>
@@ -136,61 +147,43 @@ export default function FilterPanel(props: FilterPanelProps) {
       <label className='FilterRowDiv'>
         <p className='FilterNameTag'>Orbit type: <InfoCircleIcon onClick={props.openOrbitExplainer} /></p>
         <Select
-          className='DropDown'
-          classNamePrefix='DropDown'
+          {...commonSelectProps}
           formatOptionLabel={labelFormatter}
           options={orbitOptions}
           value={orbitOptions.filter(opt => opt.selected)}
-          isMulti
-          isClearable
-          closeMenuOnSelect={false}
-          hideSelectedOptions={false}
           onChange={filterByOrbitClass}
         />
       </label>
       <label className='FilterRowDiv'>
         <p className='FilterNameTag'>Sector:</p>
         <Select
-          className='DropDown'
-          classNamePrefix='DropDown'
+          {...commonSelectProps}
           formatOptionLabel={labelFormatter}
           options={usageOptions}
           value={usageOptions.filter(opt => opt.selected)}
-          isMulti
-          isClearable
-          closeMenuOnSelect={false}
-          hideSelectedOptions={false}
           onChange={filterByUsage}
         />
       </label>
       <label className='FilterRowDiv'>
         <p className='FilterNameTag'>Purpose:</p>
         <Select
-          className='DropDown'
+          {...commonSelectProps}
           options={purposeOptions}
           value={purposeOptions.filter(opt => opt.selected)}
-          isMulti
-          isClearable
-          closeMenuOnSelect={false}
-          hideSelectedOptions={false}
           onChange={filterByPurpose}
         />
       </label>
       <label className='FilterRowDiv'>
         <p className='FilterNameTag'>Owner:</p>
         <Select
-          className='DropDown'
-          classNamePrefix='DropDown'
+          {...commonSelectProps}
           formatOptionLabel={labelFormatter}
           options={ownerOptions}
           value={ownerOptions.filter(opt => opt.selected)
               /* Note: cannot use defaultValue instead of value because ownerOptions is initialized
                        with a delay (when allSatellites is available). */}
-          isMulti
-          isClearable
-          closeMenuOnSelect={false}
-          hideSelectedOptions={false}
           onChange={filterByOwner}
+          menuPortalTarget={document.body}
         />
       </label>
       <label className='FilterRowDiv'>
