@@ -42,18 +42,13 @@
 
 .optionBlock::before {
   content: "";
-  position: relative;
-  left: 0;
-  right: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
-  display: block;
   
   /* Background image is set in separate class */
   background-repeat: no-repeat;
   background-size: contain;
-  background-position: center 50%;
+  background-position: center;
   opacity: 25%;
 
   transition: opacity 250ms ease;
