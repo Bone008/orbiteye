@@ -121,7 +121,7 @@ function Orbit(props: OrbitProps) {
 
   // TODO: Opacity < 1 doesn't work properly (parts of the line appear in full opacity, others at the selected value)
   const material = {
-    color: (hovered || selected) ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass],
+    color: (hovered || selected) ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray',
     transparent: props.orbitOpacity !== 1,
     opacity: props.orbitOpacity,
     lineWidth: (selected ? 3 : hovered ? 2 : 1) * props.orbitLineWidth,

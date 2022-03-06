@@ -75,7 +75,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
         return pointsStr;
       })
       .attr("fill", "none")
-      .attr("stroke", sat => sat === props.selectedSatellite ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass])
+      .attr("stroke", sat => sat === props.selectedSatellite ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray')
       .attr("stroke-width", sat => sat === props.selectedSatellite ? "5px" : "1px")
       .attr("stroke-linecap", "round")
       .on('mouseover', (e, sat) => {
