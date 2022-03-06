@@ -10,6 +10,8 @@ import { Euler, Vector2 } from 'three';
 import { COLOR_PALETTE_ORBITS } from '../util/colors';
 import Legend from './Legend';
 
+import WorldMapImg from '../assets/NASA-Visible-Earth-September-2004.jpg';
+
 
 const EARTH_RADIUS_KM = 6371;
 
@@ -68,7 +70,7 @@ export default function GlobeView(__props: GlobeViewProps) {
 // Separate from parent because R3F hooks must be used inside a Canvas tag
 function SceneObjects(props: Required<GlobeViewProps> & { shownSatellites: Satellite[] }) {
   const sphereRef = useRef<THREE.Mesh>(null!);
-  const texture = useTexture({ map: 'assets/NASA-Visible-Earth-September-2004.jpg' });
+  const texture = useTexture({ map: WorldMapImg });
 
   // Rotate the Earth over time (at one revolution per minute)
   //  - this reduces assumption that you can look at 3D orbits to see where they fly over the surface

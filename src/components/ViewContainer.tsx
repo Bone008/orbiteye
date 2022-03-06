@@ -9,6 +9,9 @@ import SVGWorldMap from './SVGWorldMap';
 import { Satellite } from '../model/satellite';
 import { WorldMapJSON } from '../model/data_loader';
 
+import ModeOrbitImg from '../assets/ModeOrbits.png';
+import ModeOriginImg from '../assets/ModeOrigin.png';
+
 export interface ViewContainerProps {
   filteredSatellites: Satellite[];
   selectedSatellite: Satellite | null;
@@ -35,7 +38,7 @@ export default function ViewControls(props: ViewContainerProps) {
   const optionBlocks = viewOptions.map(opt => {
     // Set up background image
     const style = {
-      "--backgroundURL": `url(/assets/Mode${opt.name}.png)`
+      "--backgroundURL": `url(${opt.img})`
     }
 
     return (
@@ -118,6 +121,7 @@ const viewOptions = [
     name: "Orbits",
     description: "See what different orbit types look like as they rotate around the Earth, as well as the ground tracks they make on the map.",
     href: "/orbits",
+    img: ModeOrbitImg,
   },
   // {
   //   name: "Orbits2d",
@@ -128,6 +132,7 @@ const viewOptions = [
     name: "Origin",
     description: "Learn about which countries are the most active in the satellite space. Filter over time to see how global interest in space has evolved.",
     href: "/origin",
+    img: ModeOriginImg,
   },
   // {
   //   name: "Launch",
@@ -138,5 +143,6 @@ const viewOptions = [
   //   name: "Decay",
   //   description: "Understand the growing problem of space debris often caused by decayed satellites.",
   //   href: "/decay",
+  //   img: ModeDecay,
   // },
 ];

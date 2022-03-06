@@ -7,6 +7,8 @@ import { DefaultValues } from '../util/util';
 import { COLOR_PALETTE_ORBITS } from '../util/colors';
 import Legend from './Legend';
 
+import WorldMapImg from '../assets/NASA-Visible-Earth-September-2004.jpg';
+
 export interface StaticWorldMapProps {
   filteredSatellites: Satellite[];
   selectedSatellite: Satellite | null;
@@ -38,7 +40,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
     const mapLayer = d3.select(svgRef.current).select("g.mapLayer");
     mapLayer.selectAll("*").remove();
     mapLayer.append("svg:image")
-      .attr("xlink:href", "assets/NASA-Visible-Earth-September-2004.jpg")
+      .attr("href", WorldMapImg)
       .attr("width", props.width)
       .attr("height", props.height);
   }, [props.width, props.height]);

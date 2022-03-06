@@ -2,6 +2,12 @@ import './OrbitExplainer.css'
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper";
 
+import OverviewImg from '../assets/orbits.png';
+import EllipticalImg from '../assets/Ellip.png';
+import GEOImg from '../assets/Geo.png';
+import LEOImg from '../assets/Leo.png';
+import MEOImg from '../assets/Meo.png';
+
 
 // Import Swiper styles
 import "swiper/css";
@@ -28,7 +34,7 @@ export default function OrbitExplainer() {
           the orbit determines a lot about what the satellite may be good for! Below is a diagram of the most
           broad categories of orbits. Click through the slides to learn more about each one.
         </p>
-        <img src="assets/orbits.png" />
+        <img src={OverviewImg} />
       </SwiperSlide>
       <SwiperSlide className='OrbitExplainerSlide'>
         <h1>Elliptical Orbits</h1>
@@ -38,7 +44,7 @@ export default function OrbitExplainer() {
           out on the other. This allows them to have unique <i>ground tracks</i>, which is the path they travel over
           the Earth's surface.
         </p>
-        <img src="assets/Ellip.png" />
+        <img src={EllipticalImg} />
       </SwiperSlide>
       <SwiperSlide className='OrbitExplainerSlide'>
         <h1>Low Earth Orbits</h1>
@@ -47,7 +53,7 @@ export default function OrbitExplainer() {
           orbits are the cheapest to launch and keep satellites in quick communication distance. However, since
           they are so close, these satellites have a limited field of view of the Earth.
         </p>
-        <img src="assets/Leo.png" />
+        <img src={LEOImg} />
       </SwiperSlide>
       <SwiperSlide className='OrbitExplainerSlide'>
         <h1>Medium Earth Orbits</h1>
@@ -56,7 +62,7 @@ export default function OrbitExplainer() {
           Most notably, GPS satellites use MEO with a 12 hour orbital period around the equator. This means that
           they pass over the same two spots on Earth every day.
         </p>
-        <img src="assets/Meo.png" />
+        <img src={MEOImg} />
       </SwiperSlide>
       <SwiperSlide className='OrbitExplainerSlide'>
         <h1>Geosynchronous Orbits</h1>
@@ -66,7 +72,7 @@ export default function OrbitExplainer() {
           When the satellite is rotating exactly around the equator, the ground track is just a single spot! This special case
           is called a <i>geostationary</i> orbit.
         </p>
-        <img src="assets/Geo.png" />
+        <img src={GEOImg} />
       </SwiperSlide>
     </Swiper>
   );
