@@ -39,7 +39,7 @@ export function groundTraceSync(sat: Satellite, stepMS: number = 10000): LngLat[
       maxTimeMS: orbitPeriodMS * 2, // Give a little leeway
     });
   } catch (e: any) {
-    console.error("Error in calculating orbit:", e);
+    console.error(e);
     return [];
   }
 }
@@ -70,7 +70,7 @@ export function getOrbitECI(sat: Satellite, N: number = 300): THREE.Vector3[] {
       const eci = propagate(satrec, date).position as EciVec3<number>;
 
       // Check if position was established
-      if (!eci) continue;
+      if (!eci) throw Error(`Unable to calculate position of ${sat.id}`);
 
       positions[i] = new THREE.Vector3(eci.x, eci.y, eci.z);
 
@@ -79,9 +79,8 @@ export function getOrbitECI(sat: Satellite, N: number = 300): THREE.Vector3[] {
     }
 
     return positions;
-
   } catch (e: any) {
-    console.error("Error in calculating orbit:", e);
+    console.error(e);
     return [];
   }
 }

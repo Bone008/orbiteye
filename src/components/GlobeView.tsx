@@ -118,6 +118,10 @@ function Orbit(props: OrbitProps) {
   const [hovered, setHovered] = useState<boolean>(false);
   const coordinates = getOrbitECI(sat);
 
+  if (coordinates.length === 0) {
+    return null; // Don't try to display an orbit if there is an error
+  }
+
   const scale_inv = EARTH_RADIUS_KM / props.radius;
   for (let i = 0; i < coordinates.length; i++) {
     coordinates[i].divideScalar(scale_inv);
