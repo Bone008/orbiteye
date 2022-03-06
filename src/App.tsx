@@ -11,6 +11,7 @@ import Modal from 'react-modal';
 import OrbitExplainer from './components/OrbitExplainer';
 import ReactModal from 'react-modal';
 import { XIcon } from './components/Icons';
+import { HashRouter } from 'react-router-dom';
 
 const DEFAULT_FILTER_SETTINGS = new FilterSettings({ activeStatus: true });
 
@@ -52,7 +53,9 @@ export default function App() {
     <div className="App">
       <div className='mainView'>
         <div className='mapView'>
-          <ViewContainer filteredSatellites={filteredSatellites} selectedSatellite={selectedSatellite} setSelectedSatellite={updateSelected} worldJson={worldJson} />
+          <HashRouter>
+            <ViewContainer filteredSatellites={filteredSatellites} selectedSatellite={selectedSatellite} setSelectedSatellite={updateSelected} worldJson={worldJson} />
+          </HashRouter>
         </div >
         <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} selectedSatellite={selectedSatellite} openOrbitExplainer={() => setOrbitExplainerOpen(true)} />
       </div >
