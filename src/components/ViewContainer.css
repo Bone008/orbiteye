@@ -50,7 +50,7 @@
   z-index: 1;
   display: block;
   
-  background-image: var(--backgroundURL); /* Set from React */
+  /* Background image is set in separate class */
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center 50%;
@@ -153,4 +153,18 @@
 .optionTab.selected {
   color: white;
   border-bottom-color: white;
+}
+
+
+/* Background images */
+.__Orbits_img::before {
+  background-image: url(../assets/ModeOrbits.png);
+}
+
+.__Origin_img::before {
+  background-image: url(../assets/ModeOrigin.png);
+}
+
+.__Decay_img::before {
+  background-image: url(../assets/ModeDecay.png);
 }

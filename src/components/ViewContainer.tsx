@@ -9,9 +9,6 @@ import SVGWorldMap from './SVGWorldMap';
 import { Satellite } from '../model/satellite';
 import { WorldMapJSON } from '../model/data_loader';
 
-import ModeOrbitImg from '../assets/ModeOrbits.png';
-import ModeOriginImg from '../assets/ModeOrigin.png';
-
 export interface ViewContainerProps {
   filteredSatellites: Satellite[];
   selectedSatellite: Satellite | null;
@@ -37,17 +34,15 @@ export default function ViewControls(props: ViewContainerProps) {
 
   const optionBlocks = viewOptions.map(opt => {
     // Set up background image
-    const style = {
-      "--backgroundURL": `url(${opt.img})`
-    }
+    const backgroundImg = "__" + opt.name + "_img"
 
     return (
       <NavLink
         key={opt.name + "_block"}
-        className={({ isActive }) => "optionBlock" + (isActive ? ' selected' : '')}
+        className={({ isActive }) => `optionBlock ${backgroundImg}` + (isActive ? ' selected' : '')}
         to={opt.href}
         onClick={showBot}
-        style={style as React.CSSProperties}
+        // style={style as React.CSSProperties}
       >
         <div className="optionContainer">
           <p className="optionTitle">{opt.name}</p>
@@ -101,6 +96,7 @@ export default function ViewControls(props: ViewContainerProps) {
             <Route path="/orbits/globe" element={<GlobeView {...props} />} />
             <Route path="/orbits/map" element={<StaticWorldMap {...props} width={500} height={250} />} />
             <Route path="/origin" element={<SVGWorldMap filteredSatellites={props.filteredSatellites} worldJson={props.worldJson} width={500} height={250} />} />
+
             <Route path="/launch" element={<h2 style={({ color: 'white' })}>TODO</h2>} />
             <Route path="/decay" element={<h2 style={({ color: 'white' })}>TODO</h2>} />
 
@@ -121,7 +117,6 @@ const viewOptions = [
     name: "Orbits",
     description: "See what different orbit types look like as they rotate around the Earth, as well as the ground tracks they make on the map.",
     href: "/orbits",
-    img: ModeOrbitImg,
   },
   // {
   //   name: "Orbits2d",
@@ -132,7 +127,6 @@ const viewOptions = [
     name: "Origin",
     description: "Learn about which countries are the most active in the satellite space. Filter over time to see how global interest in space has evolved.",
     href: "/origin",
-    img: ModeOriginImg,
   },
   // {
   //   name: "Launch",
@@ -143,6 +137,5 @@ const viewOptions = [
   //   name: "Decay",
   //   description: "Understand the growing problem of space debris often caused by decayed satellites.",
   //   href: "/decay",
-  //   img: ModeDecay,
   // },
 ];
