@@ -40,6 +40,8 @@ const defaultProps: DefaultValues<GlobeViewProps> = {
 export default function GlobeView(__props: GlobeViewProps) {
   const props = { ...defaultProps, ...__props } as Required<GlobeViewProps>;
 
+  const shownSatellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.orbitLimit);
+
   const onClickNothing = (e: MouseEvent) => {
     props.setSelectedSatellite(null);
   };
@@ -51,19 +53,20 @@ export default function GlobeView(__props: GlobeViewProps) {
           <color attach="background" args={["black"]} />
           <ambientLight />
           <TrackballControls maxDistance={props.maxDistance} minDistance={props.minDistance} noPan />
-          <SceneObjects {...props} />
+          <SceneObjects {...props} shownSatellites={shownSatellites} />
           <Stars fade />
         </Canvas>
       </Suspense>
       <Legend type="orbitTypes" />
       <Legend type="switch2d3d" />
+      <Legend type="warnShowingLimited" numShown={shownSatellites.length} numTotal={props.filteredSatellites.length} orbitLimit={props.orbitLimit} />
     </div>
   );
 }
 
 
 // Separate from parent because R3F hooks must be used inside a Canvas tag
-function SceneObjects(props: Required<GlobeViewProps>) {
+function SceneObjects(props: Required<GlobeViewProps> & { shownSatellites: Satellite[] }) {
   const sphereRef = useRef<THREE.Mesh>(null!);
   const texture = useTexture({ map: 'assets/NASA-Visible-Earth-September-2004.jpg' });
 
@@ -91,8 +94,7 @@ function SceneObjects(props: Required<GlobeViewProps>) {
     },
   };
 
-  const satellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.orbitLimit);
-  const orbits = satellites.map(sat => <Orbit key={sat.id} satellite={sat} {...props} />);
+  const orbits = props.shownSatellites.map(sat => <Orbit key={sat.id} satellite={sat} {...props} />);
 
   return (
     <>

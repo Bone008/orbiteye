@@ -44,6 +44,9 @@ export default function WorldMap(__props: StaticWorldMapProps) {
   }, [props.width, props.height]);
 
 
+  // Filter to satellites with orbital data
+  const shownSatellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.traceLimit);
+
   // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
   useEffect(() => {
     const traceLayer = d3.select(svgRef.current).select("g.traceLayer");
@@ -51,14 +54,11 @@ export default function WorldMap(__props: StaticWorldMapProps) {
     // Reset the container
     traceLayer.selectAll("*").remove();
 
-    // Filter to satellites with orbital data
-    const satellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.traceLimit);
-
     // Calculate all traces
     traceLayer.selectAll("path")
-      .data(satellites)
+      .data(shownSatellites)
       .enter().append("path")
-      .attr("d", sat => {
+      .attr("d", (sat, i) => {
         const trace: [number, number][] = groundTraceSync(sat).map(lngLat => [lngLat[0], lngLat[1]]);
         const lineGen = d3.line()
           .x(p => p[0])
@@ -122,6 +122,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
       </svg>
       <Legend type="orbitTypes" />
       <Legend type="switch2d3d" />
+      <Legend type="warnShowingLimited" numShown={shownSatellites.length} numTotal={props.filteredSatellites.length} orbitLimit={props.traceLimit} />
     </div>
   );
 }

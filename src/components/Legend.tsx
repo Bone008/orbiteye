@@ -2,17 +2,21 @@ import './Legend.css'
 
 import { COLOR_PALETTE_ORBITS } from "../util/colors";
 import { NavLink } from 'react-router-dom';
-import { GlobeIcon, MapIcon } from './Icons';
+import { ExclamationTriangleFillIcon, GlobeIcon, MapIcon } from './Icons';
 
-export interface LegendProps {
-  // Can be extended with more types of legends in the future.
-  type: "orbitTypes" | "switch2d3d";
-}
+export type LegendProps =
+  {
+    type: "orbitTypes" | "switch2d3d"
+  } |
+  {
+    type: "warnShowingLimited"
+  } & WarnShowingLimitedProps;
 
 export default function Legend(props: LegendProps) {
   switch (props.type) {
     case "orbitTypes": return <OrbitTypesLegend />;
     case "switch2d3d": return <SwitchMode />;
+    case "warnShowingLimited": return <WarnShowingLimited {...props} />;
   }
 }
 
@@ -41,6 +45,26 @@ function SwitchMode(props: {}) {
         <MapIcon className="icon" width="24" height="24" />
         <span>Map</span>
       </NavLink>
+    </div>
+  );
+}
+
+export type WarnShowingLimitedProps = { numShown: number, numTotal: number, orbitLimit: number };
+function WarnShowingLimited({ numShown, numTotal, orbitLimit }: WarnShowingLimitedProps) {
+  if (numShown >= numTotal) {
+    return null;
+  }
+  let reason: string;
+  if (numShown < orbitLimit) {
+    reason = 'because orbital parameters are not available for all satellites';
+  } else {
+    reason = 'to avoid overloading your browser';
+  }
+
+  return (
+    <div className="WarnShowingLimited">
+      <ExclamationTriangleFillIcon />
+      <span>Showing only {numShown} of {numTotal} possible orbits {reason}.</span>
     </div>
   );
 }
