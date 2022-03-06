@@ -6,7 +6,7 @@ import { useRef, Suspense, useState } from 'react';
 import { DefaultValues } from '../util/util';
 import { Satellite } from '../model/satellite';
 import { getOrbitECI } from '../util/orbits';
-import { Euler } from 'three';
+import { Euler, Vector2 } from 'three';
 import { COLOR_PALETTE_ORBITS } from '../util/colors';
 import Legend from './Legend';
 
@@ -72,13 +72,22 @@ function SceneObjects(props: Required<GlobeViewProps>) {
   useFrame((state, delta) => { sphereRef.current.rotation.y = Date.now() / 1000 * 2 * Math.PI / 60; })
 
 
+  const lastMouseDown = new Vector2();
   // Block hover events from orbits behind Earth
-  const occludeInput = {
+  const occludeInput: typeof Sphere.defaultProps = {
     onPointerEnter: (e: ThreeEvent<PointerEvent>) => { e.stopPropagation(); },
     onPointerLeave: (e: ThreeEvent<PointerEvent>) => { e.stopPropagation(); },
+    onPointerDown: (e: ThreeEvent<PointerEvent>) => {
+      lastMouseDown.x = e.sourceEvent.clientX;
+      lastMouseDown.y = e.sourceEvent.clientY;
+    },
     onClick: (e: ThreeEvent<MouseEvent>) => {
       e.stopPropagation();
-      props.setSelectedSatellite(null);
+      // Only deselect on non-dragged clicks.
+      const loc = new Vector2(e.sourceEvent.clientX, e.sourceEvent.clientY);
+      if (loc.equals(lastMouseDown)) {
+        props.setSelectedSatellite(null);
+      }
     },
   };
 
