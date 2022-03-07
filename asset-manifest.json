@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "./static/css/main.404de09c.css",
-    "main.js": "./static/js/main.9185e418.js",
+    "main.js": "./static/js/main.982bfaeb.js",
     "static/js/787.104a8f9a.chunk.js": "./static/js/787.104a8f9a.chunk.js",
     "static/media/NASA-Visible-Earth-September-2004.jpg": "./static/media/NASA-Visible-Earth-September-2004.bd083e50c1368f72effe.jpg",
     "static/media/orbits.png": "./static/media/orbits.38b21d674adda6b5f352.png",
@@ -14,11 +14,11 @@
     "static/media/Leo.png": "./static/media/Leo.f6ba7e77406f76d77e7c.png",
     "index.html": "./index.html",
     "main.404de09c.css.map": "./static/css/main.404de09c.css.map",
-    "main.9185e418.js.map": "./static/js/main.9185e418.js.map",
+    "main.982bfaeb.js.map": "./static/js/main.982bfaeb.js.map",
     "787.104a8f9a.chunk.js.map": "./static/js/787.104a8f9a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.404de09c.css",
-    "static/js/main.9185e418.js"
+    "static/js/main.982bfaeb.js"
   ]
 }
