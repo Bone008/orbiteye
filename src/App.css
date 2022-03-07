@@ -4,6 +4,7 @@
   flex-direction: column;
   justify-content: stretch;
   text-align: center;
+  overflow: hidden;
 }
 
 .mainView{

@@ -27,9 +27,6 @@ export default function WorldMap(reqProps: WorldMapProps) {
 
   // Reference to the main SVG element
   const svgRef = useRef<SVGSVGElement>(null!);
-  /*   const test = document.getElementById('test')?.offsetHeight
-    const test2 = document.getElementById('test')?.clientHeight
-    console.log(test, test2, window.innerHeight) */
 
   // Projector to Lat/Long to Mercator
   const mapProjection = props.projection
@@ -49,6 +46,8 @@ export default function WorldMap(reqProps: WorldMapProps) {
 
   const tooltip = d3.select('body')
     .append('div')
+    .attr('height', 0)
+    .attr('width', 0)
     .attr('id', 'tooltip')
 
   function updateMap() {
@@ -82,6 +81,8 @@ export default function WorldMap(reqProps: WorldMapProps) {
     function mouseOut(e: any) {
       tooltip
         .style('opacity', 0)
+        .attr('height', 0)
+        .attr('width', 0)
 
       d3.select(e.srcElement)
         .style("opacity", 1)
@@ -89,7 +90,6 @@ export default function WorldMap(reqProps: WorldMapProps) {
     }
 
     function colorCountry(d: any) {
-      //console.log("1", d.properties?.iso_a3)
       const satCatCode = d.properties?.iso_a3;
       const countOfSatellite = nbSatellitePerCountry.get(fromIsoA3ToSatCat[satCatCode])
 
@@ -127,7 +127,6 @@ export default function WorldMap(reqProps: WorldMapProps) {
   // Render/update world map
   useEffect(() => {
     updateMap()
-    console.log("test", props.filteredSatellites, props.worldJson.features)
   }, [props.filteredSatellites, props.worldJson.features, mapProjection]);
 
   // Set up zoom and panning
