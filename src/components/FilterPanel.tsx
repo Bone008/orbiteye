@@ -115,9 +115,11 @@ export default function FilterPanel(props: FilterPanelProps) {
     [props.allSatellites]
   );
   const purposeOptions: FilterOption[] = uniquePurposes.map(purpose => {
+    const count = countWithUpdatedFilter({ purposes: [purpose] });
     return {
       value: purpose,
       label: purpose,
+      count,
       selected: currentFilter.purposes.includes(purpose),
     };
   });
@@ -179,6 +181,7 @@ export default function FilterPanel(props: FilterPanelProps) {
         <p className='FilterNameTag'>Purpose:</p>
         <Select
           {...commonSelectProps}
+          formatOptionLabel={labelFormatter}
           options={purposeOptions}
           value={purposeOptions.filter(opt => opt.selected)}
           onChange={filterByPurpose}
