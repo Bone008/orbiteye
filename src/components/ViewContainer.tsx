@@ -8,9 +8,11 @@ import StaticWorldMap from './StaticWorldMap';
 import SVGWorldMap from './SVGWorldMap';
 import { Satellite } from '../model/satellite';
 import { WorldMapJSON } from '../model/data_loader';
+import { SetFilterCallback } from '../model/filter_settings';
 
 export interface ViewContainerProps {
   filteredSatellites: Satellite[];
+  onUpdateFilter: SetFilterCallback;
   selectedSatellite: Satellite | null;
   setSelectedSatellite: (newSatellite: Satellite | null) => void;
   worldJson: WorldMapJSON;
@@ -42,7 +44,7 @@ export default function ViewControls(props: ViewContainerProps) {
         className={({ isActive }) => `optionBlock ${backgroundImg}` + (isActive ? ' selected' : '')}
         to={opt.href}
         onClick={showBot}
-        // style={style as React.CSSProperties}
+      // style={style as React.CSSProperties}
       >
         <div className="optionContainer">
           <p className="optionTitle">{opt.name}</p>
@@ -95,7 +97,7 @@ export default function ViewControls(props: ViewContainerProps) {
             <Route path="/orbits" element={<Navigate to="/orbits/globe" replace />} />
             <Route path="/orbits/globe" element={<GlobeView {...props} />} />
             <Route path="/orbits/map" element={<StaticWorldMap {...props} width={500} height={250} />} />
-            <Route path="/origin" element={<SVGWorldMap filteredSatellites={props.filteredSatellites} worldJson={props.worldJson} width={500} height={250} />} />
+            <Route path="/origin" element={<SVGWorldMap filteredSatellites={props.filteredSatellites} onUpdateFilter={props.onUpdateFilter} worldJson={props.worldJson} width={500} height={250} />} />
 
             <Route path="/launch" element={<h2 style={({ color: 'white' })}>TODO</h2>} />
             <Route path="/decay" element={<h2 style={({ color: 'white' })}>TODO</h2>} />

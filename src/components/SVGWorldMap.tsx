@@ -6,9 +6,11 @@ import { DefaultValues } from '../util/util';
 import { Feature } from 'geojson';
 import { WorldMapJSON } from "../model/data_loader";
 import { fromIsoA3ToSatCat } from '../model/mapping';
+import { FilterSettings, SetFilterCallback } from '../model/filter_settings';
 
 export interface WorldMapProps {
   filteredSatellites: Satellite[],
+  onUpdateFilter: SetFilterCallback;
   worldJson: WorldMapJSON,
   width: number,
   height: number,
@@ -24,6 +26,11 @@ const defaultProps: DefaultValues<WorldMapProps> = {
 /** React component to render 2D world map with visualizations on top. */
 export default function WorldMap(reqProps: WorldMapProps) {
   const props = { ...defaultProps, ...reqProps } as Required<WorldMapProps>; // Use defaults where necessary
+
+  useEffect(() => {
+    // Quickfix: Reset the first time this is opened.
+    props.onUpdateFilter(new FilterSettings({}));
+  }, []);
 
   // Reference to the main SVG element
   const svgRef = useRef<SVGSVGElement>(null!);

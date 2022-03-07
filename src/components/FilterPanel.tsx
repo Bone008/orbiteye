@@ -145,6 +145,17 @@ export default function FilterPanel(props: FilterPanelProps) {
       <p className='SatCountText'>Matches: {props.filteredSatellites.length} of {props.allSatellites.length} satellites.</p>
 
       <label className='FilterRowDiv'>
+        <div>
+          <span className='FilterNameTag'>Only active satellites:&nbsp;</span>
+          <input
+            name='activeToggle'
+            type='checkbox'
+            onChange={e => filterOnActive(e)}
+            defaultChecked={currentFilter.activeStatus === true}
+          />
+        </div>
+      </label>
+      <label className='FilterRowDiv'>
         <p className='FilterNameTag'>Orbit type: <InfoCircleIcon onClick={props.openOrbitExplainer} /></p>
         <Select
           {...commonSelectProps}
@@ -185,17 +196,6 @@ export default function FilterPanel(props: FilterPanelProps) {
           onChange={filterByOwner}
           menuPortalTarget={document.body}
         />
-      </label>
-      <label className='FilterRowDiv'>
-        <div>
-          <span className='FilterNameTag'>Only active satellites:&nbsp;</span>
-          <input
-            name='activeToggle'
-            type='checkbox'
-            onChange={e => filterOnActive(e)}
-            defaultChecked={currentFilter.activeStatus === true}
-          />
-        </div>
       </label>
     </div>
   );
