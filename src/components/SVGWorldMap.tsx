@@ -38,7 +38,6 @@ export default function WorldMap(reqProps: WorldMapProps) {
     .center([0, 0])
     .translate([props.width / 2, props.height / 2]);
 
-  const mapLayer = d3.select(svgRef.current).select("g.mapLayer");
 
   // Projections path generator
   const pathGenerator = d3.geoPath().projection(mapProjection);
@@ -64,7 +63,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
         .transition()
         .duration(2000)
         .style('opacity', 1)
-        .text(d.properties?.name + " " + nbSat)
+        .text(d.properties?.name + ": " + nbSat + " satellites with selected filters.")
 
       d3.select(e.srcElement)
         .style("opacity", .8)
@@ -83,21 +82,25 @@ export default function WorldMap(reqProps: WorldMapProps) {
     function mouseOut(e: any) {
       tooltip
         .style('opacity', 0)
+
       d3.select(e.srcElement)
         .style("opacity", 1)
         .style("stroke", "grey")
     }
 
     function colorCountry(d: any) {
+      //console.log("1", d.properties?.iso_a3)
       const satCatCode = d.properties?.iso_a3;
       const countOfSatellite = nbSatellitePerCountry.get(fromIsoA3ToSatCat[satCatCode])
 
       // If undefined/unknown, we put it in grey
       if (!countOfSatellite) return "lightgrey"
 
-      // Otherwise we put it in a color scale TODO check with mapping
+      // Otherwise we put it in a color scale
       return colorScale(countOfSatellite)
     }
+
+    const mapLayer = d3.select(svgRef.current).select("g.mapLayer");
 
     // Creating the path to make the map
     const groupMap = mapLayer.selectAll("path")
@@ -117,12 +120,14 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .transition()
       .duration(800)
       .attr("fill", colorCountry)
+
     groupMap.exit().remove()
   }
 
   // Render/update world map
   useEffect(() => {
     updateMap()
+    console.log("test", props.filteredSatellites, props.worldJson.features)
   }, [props.filteredSatellites, props.worldJson.features, mapProjection]);
 
   // Set up zoom and panning
