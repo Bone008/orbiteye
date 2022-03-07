@@ -7,8 +7,11 @@ import { FilterSettings } from './model/filter_settings';
 import Timeline from './components/Timeline';
 import ViewContainer from './components/ViewContainer';
 import RightSidePanel from './components/RightSidePanel';
-import WorldMap from './components/StaticWorldMap';
-import { Feature } from 'geojson';
+import Modal from 'react-modal';
+import OrbitExplainer from './components/OrbitExplainer';
+import ReactModal from 'react-modal';
+import { XIcon } from './components/Icons';
+import { HashRouter } from 'react-router-dom';
 
 const DEFAULT_FILTER_SETTINGS = new FilterSettings({ activeStatus: true });
 
@@ -17,6 +20,7 @@ export default function App() {
   const [filterSettings, setFilterSettings] = useState(DEFAULT_FILTER_SETTINGS);
   const [selectedSatellite, setSelectedSatellite] = useState<Satellite | null>(null);
   const [worldJson, setWorldJson] = useState<WorldMapJSON>({ type: "", name: "", crs: [""], features: [] })
+  const [orbitExplainerOpen, setOrbitExplainerOpen] = useState(false);
 
   const updateSelected = (newSatellite: Satellite | null) => {
     if (newSatellite !== selectedSatellite) {
@@ -42,22 +46,29 @@ export default function App() {
 
   useEffect(() => { initialize(); }, []);
 
-  /*Test data to show in the panel. Will be deleted later for actual data, but will do for now */
-  const test = {
-    name: 'Name A',
-    launchDate: '2022-02-26',
-    status: 'Operational'
-  }
+  // Modal library requires this for accessibility
+  ReactModal.setAppElement("#root");
 
   return (
     <div className="App">
       <div className='mainView'>
         <div className='mapView'>
-          <ViewContainer filteredSatellites={filteredSatellites} selectedSatellite={selectedSatellite} setSelectedSatellite={updateSelected} worldJson={worldJson} />
+          <HashRouter>
+            <ViewContainer filteredSatellites={filteredSatellites} selectedSatellite={selectedSatellite} setSelectedSatellite={updateSelected} worldJson={worldJson} />
+          </HashRouter>
         </div >
-        <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} name={test.name} launchDate={test.launchDate} status={test.status} />
+        <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} selectedSatellite={selectedSatellite} openOrbitExplainer={() => setOrbitExplainerOpen(true)} />
       </div >
       <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
+
+      <Modal
+        isOpen={orbitExplainerOpen}
+        onRequestClose={() => setOrbitExplainerOpen(false)}
+        contentLabel="Orbit Type Explainer Modal"
+      >
+        <XIcon onClick={() => setOrbitExplainerOpen(false)} height="2em" width="2em" style={{ position: "absolute", right: "5px", top: "5px", zIndex: 2 }} />
+        <OrbitExplainer />
+      </Modal>
     </div >
   );
 }

@@ -3,12 +3,14 @@ import './GlobeView.css'
 import { Canvas, ThreeEvent, useFrame } from '@react-three/fiber'
 import { Line, Sphere, Stars, TrackballControls, useTexture } from '@react-three/drei'
 import { useRef, Suspense, useState } from 'react';
-import { DefaultValues } from '../util/optional_props';
+import { DefaultValues } from '../util/util';
 import { Satellite } from '../model/satellite';
 import { getOrbitECI } from '../util/orbits';
-import { Euler } from 'three';
+import { Euler, Vector2 } from 'three';
 import { COLOR_PALETTE_ORBITS } from '../util/colors';
 import Legend from './Legend';
+
+import WorldMapImg from '../assets/NASA-Visible-Earth-September-2004.jpg';
 
 
 const EARTH_RADIUS_KM = 6371;
@@ -40,6 +42,8 @@ const defaultProps: DefaultValues<GlobeViewProps> = {
 export default function GlobeView(__props: GlobeViewProps) {
   const props = { ...defaultProps, ...__props } as Required<GlobeViewProps>;
 
+  const shownSatellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.orbitLimit);
+
   const onClickNothing = (e: MouseEvent) => {
     props.setSelectedSatellite(null);
   };
@@ -51,38 +55,48 @@ export default function GlobeView(__props: GlobeViewProps) {
           <color attach="background" args={["black"]} />
           <ambientLight />
           <TrackballControls maxDistance={props.maxDistance} minDistance={props.minDistance} noPan />
-          <SceneObjects {...props} />
+          <SceneObjects {...props} shownSatellites={shownSatellites} />
           <Stars fade />
         </Canvas>
       </Suspense>
       <Legend type="orbitTypes" />
+      <Legend type="switch2d3d" />
+      <Legend type="warnShowingLimited" numShown={shownSatellites.length} numTotal={props.filteredSatellites.length} orbitLimit={props.orbitLimit} />
     </div>
   );
 }
 
 
 // Separate from parent because R3F hooks must be used inside a Canvas tag
-function SceneObjects(props: Required<GlobeViewProps>) {
+function SceneObjects(props: Required<GlobeViewProps> & { shownSatellites: Satellite[] }) {
   const sphereRef = useRef<THREE.Mesh>(null!);
-  const texture = useTexture({ map: 'assets/NASA-Visible-Earth-September-2004.jpg' });
+  const texture = useTexture({ map: WorldMapImg });
 
   // Rotate the Earth over time (at one revolution per minute)
   //  - this reduces assumption that you can look at 3D orbits to see where they fly over the surface
-  useFrame((state, delta) => { sphereRef.current.rotation.y += 2 * Math.PI * delta / 60; })
+  useFrame((state, delta) => { sphereRef.current.rotation.y = Date.now() / 1000 * 2 * Math.PI / 60; })
 
 
+  const lastMouseDown = new Vector2();
   // Block hover events from orbits behind Earth
-  const occludeInput = {
+  const occludeInput: typeof Sphere.defaultProps = {
     onPointerEnter: (e: ThreeEvent<PointerEvent>) => { e.stopPropagation(); },
     onPointerLeave: (e: ThreeEvent<PointerEvent>) => { e.stopPropagation(); },
+    onPointerDown: (e: ThreeEvent<PointerEvent>) => {
+      lastMouseDown.x = e.sourceEvent.clientX;
+      lastMouseDown.y = e.sourceEvent.clientY;
+    },
     onClick: (e: ThreeEvent<MouseEvent>) => {
       e.stopPropagation();
-      props.setSelectedSatellite(null);
+      // Only deselect on non-dragged clicks.
+      const loc = new Vector2(e.sourceEvent.clientX, e.sourceEvent.clientY);
+      if (loc.equals(lastMouseDown)) {
+        props.setSelectedSatellite(null);
+      }
     },
   };
 
-  const satellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.orbitLimit);
-  const orbits = satellites.map(sat => <Orbit key={sat.id} satellite={sat} {...props} />);
+  const orbits = props.shownSatellites.map(sat => <Orbit key={sat.id} satellite={sat} {...props} />);
 
   return (
     <>
@@ -104,6 +118,10 @@ function Orbit(props: OrbitProps) {
   const [hovered, setHovered] = useState<boolean>(false);
   const coordinates = getOrbitECI(sat);
 
+  if (coordinates.length === 0) {
+    return null; // Don't try to display an orbit if there is an error
+  }
+
   const scale_inv = EARTH_RADIUS_KM / props.radius;
   for (let i = 0; i < coordinates.length; i++) {
     coordinates[i].divideScalar(scale_inv);
@@ -111,7 +129,7 @@ function Orbit(props: OrbitProps) {
 
   // TODO: Opacity < 1 doesn't work properly (parts of the line appear in full opacity, others at the selected value)
   const material = {
-    color: (hovered || selected) ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass],
+    color: (hovered || selected) ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray',
     transparent: props.orbitOpacity !== 1,
     opacity: props.orbitOpacity,
     lineWidth: (selected ? 3 : hovered ? 2 : 1) * props.orbitLineWidth,

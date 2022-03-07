@@ -1,13 +1,23 @@
 import './Legend.css'
 
 import { COLOR_PALETTE_ORBITS } from "../util/colors";
+import { NavLink } from 'react-router-dom';
+import { ExclamationTriangleFillIcon, GlobeIcon, MapIcon } from './Icons';
 
-export interface LegendProps {
-  type: "orbitTypes"; // Can be extended with more types of legends in the future.
-}
+export type LegendProps =
+  {
+    type: "orbitTypes" | "switch2d3d"
+  } |
+  {
+    type: "warnShowingLimited"
+  } & WarnShowingLimitedProps;
 
 export default function Legend(props: LegendProps) {
-  return <OrbitTypesLegend />;
+  switch (props.type) {
+    case "orbitTypes": return <OrbitTypesLegend />;
+    case "switch2d3d": return <SwitchMode />;
+    case "warnShowingLimited": return <WarnShowingLimited {...props} />;
+  }
 }
 
 function OrbitTypesLegend(props: {}) {
@@ -20,6 +30,41 @@ function OrbitTypesLegend(props: {}) {
           <div className="entryLabel">{name}</div>
         </div>
       )}
+    </div>
+  );
+}
+
+function SwitchMode(props: {}) {
+  return (
+    <div className="SwitchMode">
+      <NavLink to="/orbits/globe" className={({ isActive }) => "SwitchLink" + (isActive ? " selected" : "")}>
+        <GlobeIcon className="icon" width="24" height="24" />
+        <span>Globe</span>
+      </NavLink>
+      <NavLink to="/orbits/map" className={({ isActive }) => "SwitchLink" + (isActive ? " selected" : "")}>
+        <MapIcon className="icon" width="24" height="24" />
+        <span>Map</span>
+      </NavLink>
+    </div>
+  );
+}
+
+export type WarnShowingLimitedProps = { numShown: number, numTotal: number, orbitLimit: number };
+function WarnShowingLimited({ numShown, numTotal, orbitLimit }: WarnShowingLimitedProps) {
+  if (numShown >= numTotal) {
+    return null;
+  }
+  let reason: string;
+  if (numShown < orbitLimit) {
+    reason = 'because orbital parameters are not available for all satellites';
+  } else {
+    reason = 'to avoid overloading your browser';
+  }
+
+  return (
+    <div className="WarnShowingLimited">
+      <ExclamationTriangleFillIcon />
+      <span>Showing only {numShown} of {numTotal} possible orbits {reason}.</span>
     </div>
   );
 }

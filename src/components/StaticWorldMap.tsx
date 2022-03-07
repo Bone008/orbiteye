@@ -3,9 +3,11 @@ import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { Satellite } from '../model/satellite';
 import { groundTraceSync } from '../util/orbits';
-import { DefaultValues } from '../util/optional_props';
+import { DefaultValues } from '../util/util';
 import { COLOR_PALETTE_ORBITS } from '../util/colors';
 import Legend from './Legend';
+
+import WorldMapImg from '../assets/NASA-Visible-Earth-September-2004.jpg';
 
 export interface StaticWorldMapProps {
   filteredSatellites: Satellite[];
@@ -38,11 +40,14 @@ export default function WorldMap(__props: StaticWorldMapProps) {
     const mapLayer = d3.select(svgRef.current).select("g.mapLayer");
     mapLayer.selectAll("*").remove();
     mapLayer.append("svg:image")
-      .attr("xlink:href", "assets/NASA-Visible-Earth-September-2004.jpg")
+      .attr("href", WorldMapImg)
       .attr("width", props.width)
       .attr("height", props.height);
   }, [props.width, props.height]);
 
+
+  // Filter to satellites with orbital data
+  const shownSatellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.traceLimit);
 
   // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
   useEffect(() => {
@@ -51,14 +56,11 @@ export default function WorldMap(__props: StaticWorldMapProps) {
     // Reset the container
     traceLayer.selectAll("*").remove();
 
-    // Filter to satellites with orbital data
-    const satellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.traceLimit);
-
     // Calculate all traces
     traceLayer.selectAll("path")
-      .data(satellites)
+      .data(shownSatellites)
       .enter().append("path")
-      .attr("d", sat => {
+      .attr("d", (sat, i) => {
         const trace: [number, number][] = groundTraceSync(sat).map(lngLat => [lngLat[0], lngLat[1]]);
         const lineGen = d3.line()
           .x(p => p[0])
@@ -75,7 +77,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
         return pointsStr;
       })
       .attr("fill", "none")
-      .attr("stroke", sat => sat === props.selectedSatellite ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass])
+      .attr("stroke", sat => sat === props.selectedSatellite ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray')
       .attr("stroke-width", sat => sat === props.selectedSatellite ? "5px" : "1px")
       .attr("stroke-linecap", "round")
       .on('mouseover', (e, sat) => {
@@ -121,6 +123,8 @@ export default function WorldMap(__props: StaticWorldMapProps) {
         <g className="traceLayer"></g>
       </svg>
       <Legend type="orbitTypes" />
+      <Legend type="switch2d3d" />
+      <Legend type="warnShowingLimited" numShown={shownSatellites.length} numTotal={props.filteredSatellites.length} orbitLimit={props.traceLimit} />
     </div>
   );
 }
