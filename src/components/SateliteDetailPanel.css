@@ -5,32 +5,52 @@
 
 .DetailDiv{
   padding-bottom: 1em;
+  height: fit-content;
 }
 
 .DetailButton{
+  cursor: pointer;
   height: 40px;
-  border-color: #397371;
+  border-color: transparent;
+  background-color: #294644;
   color: white;
   width: 100%;
   padding: 1em;
 }
 
-.DetailRowText{
-  position: relative;
-  text-align: left;
-  color: white;
-  padding-left:1em;
-  padding-right: 1em;
+.DetailButton:hover{
+  background-color: #304948;
 }
 
-.DetailRowText a {
+.DetailRow{
+  text-align: left;
+  display: flex;
+  height: 2em;
+}
+
+.DetailRowLabel{
   color: white;
+  opacity: 0.8;
+  padding-left:1em;
+
+}
+
+.DetailRowValue{
+  color: white;
+  font-weight: bold;
+  padding-left:0.5em;
+}
+
+.DetailRow a {
+  color: white;
+  padding-top: 15px;
 }
 
 .NoSelection {
   margin: 1em 0;
   font-style: italic;
   color: white;
+  opacity: 0.8;
 }
 
 .help {

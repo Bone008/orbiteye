@@ -158,7 +158,7 @@ export default function FilterPanel(props: FilterPanelProps) {
         </div>
       </label>
       <label className='FilterRowDiv'>
-        <p className='FilterNameTag'>Orbit type: <InfoCircleIcon onClick={props.openOrbitExplainer} /></p>
+        <p className='FilterNameTag'>Orbit type: <InfoCircleIcon className='infoIcon' onClick={props.openOrbitExplainer} /></p>
         <Select
           {...commonSelectProps}
           formatOptionLabel={labelFormatter}

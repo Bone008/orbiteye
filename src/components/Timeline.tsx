@@ -19,7 +19,6 @@ export interface TimelineProps {
 /** React component to render the timeline and date range selection UI. */
 export default function Timeline(props: TimelineProps) {
 
-
   // Use memoization to make sure this is only computed once.
   const [datasetMinDate, datasetMaxDate] = useMemo(() => {
     const launchDates = props.allSatellites.map(sat => sat.launchDate);
@@ -32,8 +31,6 @@ export default function Timeline(props: TimelineProps) {
       minDate: props.filterSettings.filter.minDate ? undefined : new Date('2000-01-01'),
       maxDate: props.filterSettings.filter.minDate ? undefined : new Date('2020-12-31'),
     });
-
-    console.log("filter")
     props.onUpdateFilter(newFilter);
   };
 

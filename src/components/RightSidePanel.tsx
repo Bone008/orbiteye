@@ -29,18 +29,18 @@ export default function RightSidePanel(props: RightPanelProps) {
 
   useLayoutEffect(() => {
     if (showDetailPanel) {
-      ref.current.style.height = '75%'
+      ref.current.style.height = '80%'
     } else {
-      ref.current.style.height = '90%'
+      ref.current.style.height = 'auto'
     }
   }, []);
 
   return (
     <div className='RightPanel'>
-      <div ref={ref} className='FilterPart'>
+      <div className='FilterPart'>
         <FilterPanel allSatellites={props.allSatellites} filteredSatellites={props.filteredSatellites} filterSettings={props.filterSettings} onUpdateFilter={props.setFilterSettings} openOrbitExplainer={props.openOrbitExplainer} />
       </div>
-      <div className='DetailPart'>
+      <div ref={ref} className='DetailPart'>
         <SateliteDetailPanel satellite={props.selectedSatellite} showDetail={showDetailPanel} setShowDetail={setShowDetailPanel} />
       </div>
     </div>

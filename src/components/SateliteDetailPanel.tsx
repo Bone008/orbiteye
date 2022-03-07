@@ -2,7 +2,9 @@ import './SateliteDetailPanel.css'
 import { SetStateAction } from 'react'
 import { ChevronDownIcon, ChevronUpIcon } from './Icons';
 import { ACTIVE_OPERATIONAL_STATUS_SET, OperationalStatus, Satellite } from '../model/satellite';
+import { OWNER_SHORT_CODE_TO_FULL, ORBIT_TYPE_CODE_TO_FULL_NAME } from '../model/mapping'
 import { formatISODate } from '../util/util';
+import { BoxArrowUp } from './Icons';
 
 export interface DetailPanelProps {
   satellite: Satellite | null;
@@ -45,14 +47,62 @@ function DetailComponent({ sat }: { sat: Satellite | null }) {
 
   return (
     <div className="DetailDiv">
-      <p className='DetailRowText'>
-        <span className='label help' title='This is an international identifier assigned to artificial objects in space by the UN Committee on Space Research.'>COSPAR ID: </span>
-        <a href={'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=' + encodeURIComponent(sat.id)} target='_blank'>{sat.id}</a>
-      </p>
-      <p className='DetailRowText'>Name: {sat.name}</p>
-      <p className='DetailRowText'>Launch date: {formatISODate(sat.launchDate)}</p>
-      <p className='DetailRowText'>Status: {OP_STATUS_LABELS[sat.operationalStatus] +
-        (sat.decayDate ? ' at ' + formatISODate(sat.decayDate) : '')}</p>
+
+      <div className='DetailRow'>
+        <p className='DetailRowLabel'>
+          <span className='label help' title='This is an international identifier assigned to artificial objects in space by the UN Committee on Space Research.'>International ID: </span>
+        </p>
+        <p className='DetailRowValue'>{sat.id}</p>
+        <a className='DetailRowValue' href={'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=' + encodeURIComponent(sat.id)} target='_blank'>NASA<BoxArrowUp />
+        </a>
+      </div>
+
+
+      <div className='DetailRow'>
+        <p className='DetailRowLabel'>Name: </p>
+        <p className='DetailRowValue'>{sat.name}</p>
+      </div>
+
+      <div className='DetailRow'>
+        <p className='DetailRowLabel'>Launch date: </p>
+        <p className='DetailRowValue'>{formatISODate(sat.launchDate)}</p>
+      </div>
+
+      <div className='DetailRow'>
+        <p className='DetailRowLabel'>Status: </p>
+        <p className='DetailRowValue'>{OP_STATUS_LABELS[sat.operationalStatus] +
+          (sat.decayDate ? ' at ' + formatISODate(sat.decayDate) : '')}</p>
+      </div>
+
+      <div className='DetailRow'>
+        <p className='DetailRowLabel'>Orbit Type: </p>
+        <p className='DetailRowValue'>{ORBIT_TYPE_CODE_TO_FULL_NAME[sat.orbitClass]}</p>
+      </div>
+
+      <div className='DetailRow'>
+        <p className='DetailRowLabel'>Sector: </p>
+        {sat.users.length > 0 &&
+          <p className='DetailRowValue'>{sat.users + ' '}</p>
+        }
+        {sat.users.length == 0 &&
+          <p className='DetailRowValue'>{'Unkown'}</p>
+        }
+      </div>
+
+      <div className='DetailRow'>
+        <p className='DetailRowLabel'>Purpose: </p>
+        {sat.purpose.length > 0 &&
+          <p className='DetailRowValue'>{sat.purpose + ' '}</p>
+        }
+        {sat.purpose.length == 0 &&
+          <p className='DetailRowValue'>{'Unkown'}</p>
+        }
+      </div>
+
+      <div className='DetailRow'>
+        <p className='DetailRowLabel'>Owner: </p>
+        <p className='DetailRowValue'>{OWNER_SHORT_CODE_TO_FULL[sat.owner]}</p>
+      </div>
     </div>
   );
 }
