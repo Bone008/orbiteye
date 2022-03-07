@@ -252,9 +252,9 @@ export const fromIsoA3ToSatCat: Record<string, string> =
 export const ORBIT_TYPE_CODE_TO_FULL_NAME: Record<string, string> =
 {
   LEO: "Low Earth Orbit", // that is orbitClass: "orbitType",
-  GEO: "Geostationary Earth Orbit",
   MEO: "Medium Earth Orbit",
-  Elliptical: "Elliptical"
+  GEO: "Geosynchronous Orbit",
+  Elliptical: "Elliptical Orbit"
   //NGSO: "Non-Geostationary Orbit"
 }
 

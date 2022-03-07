@@ -84,19 +84,19 @@ export default function FilterPanel(props: FilterPanelProps) {
 
   /** Deduplicated owner values from all satellites. */
   const uniqueOwners: string[] = useMemo(
-    () => Array.from(new Set(props.allSatellites.map(sat => sat.owner))).sort(),
+    () => Array.from(new Set(props.allSatellites.map(sat => sat.owner))),
     [props.allSatellites]);
   const ownerOptions: FilterOption[] = uniqueOwners.map(owner => {
     return {
       value: owner,
-      label: OWNER_SHORT_CODE_TO_FULL[owner],
+      label: OWNER_SHORT_CODE_TO_FULL[owner] || owner,
       selected: currentFilter.owners.includes(owner),
     };
-  });
+  }).sort((a, b) => a.label.localeCompare(b.label));
 
   /**Called "Sector" in the filter */
   const uniqueUsers: string[] = useMemo(
-    () => uniqueListFromArrayValue(props.allSatellites, 'users'),
+    () => uniqueListFromArrayValue(props.allSatellites, 'users').sort(),
     [props.allSatellites]
   );
   const usageOptions: FilterOption[] = uniqueUsers.map(user => {
@@ -111,7 +111,7 @@ export default function FilterPanel(props: FilterPanelProps) {
 
   /** Deduplicated purpose values from all satellites. */
   const uniquePurposes: string[] = useMemo(
-    () => uniqueListFromArrayValue(props.allSatellites, 'purpose'),
+    () => uniqueListFromArrayValue(props.allSatellites, 'purpose').sort(),
     [props.allSatellites]
   );
   const purposeOptions: FilterOption[] = uniquePurposes.map(purpose => {
