@@ -153,7 +153,7 @@ export default function FilterPanel(props: FilterPanelProps) {
             name='activeToggle'
             type='checkbox'
             onChange={e => filterOnActive(e)}
-            defaultChecked={currentFilter.activeStatus === true}
+            checked={currentFilter.activeStatus === true}
           />
         </div>
       </label>

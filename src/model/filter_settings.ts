@@ -4,8 +4,8 @@ export type SetFilterCallback = (newSettings: FilterSettings) => void;
 
 /** Stores values that are filtered by. A null value or empty array means the filter for that dimension is inactive. */
 export interface FilterProps {
-  minDate: Date | null;
-  maxDate: Date | null;
+  minLaunchTimestamp: number | null;
+  maxLaunchTimestamp: number | null;
   orbitClasses: readonly OrbitClass[];
   userTypes: readonly string[];
   owners: readonly string[];
@@ -14,8 +14,8 @@ export interface FilterProps {
 }
 
 const defaultFilterProps: Readonly<FilterProps> = {
-  minDate: null,
-  maxDate: null,
+  minLaunchTimestamp: null,
+  maxLaunchTimestamp: null,
   orbitClasses: [],
   userTypes: [],
   owners: [],
@@ -42,10 +42,10 @@ export class FilterSettings {
     if (this.filter.activeStatus !== null && this.filter.activeStatus !== isSatelliteActive(satellite)) {
       return false;
     }
-    if (this.filter.minDate && satellite.launchDate < this.filter.minDate) {
+    if (this.filter.minLaunchTimestamp !== null && satellite.launchDate.getTime() < this.filter.minLaunchTimestamp) {
       return false;
     }
-    if (this.filter.maxDate && satellite.launchDate > this.filter.maxDate) {
+    if (this.filter.maxLaunchTimestamp !== null && satellite.launchDate.getTime() > this.filter.maxLaunchTimestamp) {
       return false;
     }
     if (this.filter.orbitClasses.length > 0 && !this.filter.orbitClasses.includes(satellite.orbitClass)) {
