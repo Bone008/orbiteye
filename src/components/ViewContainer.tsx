@@ -97,7 +97,7 @@ export default function ViewControls(props: ViewContainerProps) {
             <Route path="/orbits" element={<Navigate to="/orbits/globe" replace />} />
             <Route path="/orbits/globe" element={<GlobeView {...props} />} />
             <Route path="/orbits/map" element={<StaticWorldMap {...props} width={500} height={250} />} />
-            <Route path="/origin" element={<SVGWorldMap filteredSatellites={props.filteredSatellites} onUpdateFilter={props.onUpdateFilter} worldJson={props.worldJson} width={500} height={250} />} />
+            <Route path="/origins" element={<SVGWorldMap filteredSatellites={props.filteredSatellites} onUpdateFilter={props.onUpdateFilter} worldJson={props.worldJson} width={500} height={250} />} />
 
             <Route path="/launch" element={<h2 style={({ color: 'white' })}>TODO</h2>} />
             <Route path="/decay" element={<h2 style={({ color: 'white' })}>TODO</h2>} />
@@ -126,9 +126,9 @@ const viewOptions = [
   //   href: "/orbits/map",
   // },
   {
-    name: "Origin",
+    name: "Origins",
     description: "Learn about which countries are the most active in the satellite space. Filter over time to see how global interest in space has evolved.",
-    href: "/origin",
+    href: "/origins",
   },
   // {
   //   name: "Launch",
