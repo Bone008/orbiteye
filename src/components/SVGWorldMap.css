@@ -14,15 +14,14 @@
 }
 
 .legendContainer {
-  width: 10vw;
-  height: 34vh;
+  width: 10%;
+  height: 40%;
   position: absolute;
   float: left;
   top: 1em;
   left: 1em;
-/*   padding: .33em .5em;
-  font-size: 80%; *//* 
-  background-color: rgba(0, 0, 0, 0.3); */
-  color: white;
+  padding: .33em .5em;
+  font-size: 120%;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 

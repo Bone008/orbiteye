@@ -113,7 +113,7 @@ export const ACTIVE_OPERATIONAL_STATUS_SET = new Set<OperationalStatus>([
 
 
 export const ALL_ORBIT_CLASSES = [
-  'LEO', 'GEO', 'MEO', 'Elliptical'
+  'LEO', 'MEO', 'GEO', 'Elliptical'
 ] as const;
 /** Orbit's high-level categorization. */
 export type OrbitClass = typeof ALL_ORBIT_CLASSES[number];

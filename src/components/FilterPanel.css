@@ -1,17 +1,14 @@
 /*The root of the filter panel*/
 .FilterPanel {
-/*   min-width: 350px;
-  max-width: 400px; */
-  width: 100%;
   padding: 0 1em;
-  background-color: #3e5958;
   height: inherit;
 }
 
 .FilterNameTag{
   font-size:medium;
   color: white;
-  width: 90px;
+  width: 100px;
+  margin: 0.5em 0px 0.5em 0px;
 }
 
 /*Each rows root*/
@@ -26,9 +23,9 @@
 }
 
 .DropDown{
-  width: 15rem;
-  max-width: 15rem;
-  padding-left: 0.5em;
+  width: 17rem;
+  max-width: 20rem;
+  padding-left: 1em;
   position: absolute;
   right: 5px;
 }
@@ -44,11 +41,22 @@
 
 .SatCountText{
   color: white;
+  margin: 1em 0em 1em 0em;
 }
 
 /*Project name at top*/
 .headerName{
   background: transparent;
   position: relative;
+  color: white;
+  font-size: x-large;
+}
+
+.infoIcon{
+  cursor: pointer;
+  color: #fddd02;
+}
+
+.infoIcon:hover{
   color: white;
 }

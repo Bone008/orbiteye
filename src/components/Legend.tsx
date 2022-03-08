@@ -3,6 +3,7 @@ import './Legend.css'
 import { COLOR_PALETTE_ORBITS } from "../util/colors";
 import { NavLink } from 'react-router-dom';
 import { ExclamationTriangleFillIcon, GlobeIcon, MapIcon } from './Icons';
+import { ORBIT_TYPE_CODE_TO_FULL_NAME } from '../model/mapping';
 
 export type LegendProps =
   {
@@ -27,7 +28,7 @@ function OrbitTypesLegend(props: {}) {
       {Object.entries(COLOR_PALETTE_ORBITS).map(([name, color]) =>
         <div key={name} className="entry">
           <div className="entryColor" style={{ backgroundColor: color }}></div>
-          <div className="entryLabel">{name}</div>
+          <div className="entryLabel">{ORBIT_TYPE_CODE_TO_FULL_NAME[name]}</div>
         </div>
       )}
     </div>

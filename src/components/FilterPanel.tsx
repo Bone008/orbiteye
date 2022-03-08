@@ -84,19 +84,19 @@ export default function FilterPanel(props: FilterPanelProps) {
 
   /** Deduplicated owner values from all satellites. */
   const uniqueOwners: string[] = useMemo(
-    () => Array.from(new Set(props.allSatellites.map(sat => sat.owner))).sort(),
+    () => Array.from(new Set(props.allSatellites.map(sat => sat.owner))),
     [props.allSatellites]);
   const ownerOptions: FilterOption[] = uniqueOwners.map(owner => {
     return {
       value: owner,
-      label: OWNER_SHORT_CODE_TO_FULL[owner],
+      label: OWNER_SHORT_CODE_TO_FULL[owner] || owner,
       selected: currentFilter.owners.includes(owner),
     };
-  });
+  }).sort((a, b) => a.label.localeCompare(b.label));
 
   /**Called "Sector" in the filter */
   const uniqueUsers: string[] = useMemo(
-    () => uniqueListFromArrayValue(props.allSatellites, 'users'),
+    () => uniqueListFromArrayValue(props.allSatellites, 'users').sort(),
     [props.allSatellites]
   );
   const usageOptions: FilterOption[] = uniqueUsers.map(user => {
@@ -111,13 +111,15 @@ export default function FilterPanel(props: FilterPanelProps) {
 
   /** Deduplicated purpose values from all satellites. */
   const uniquePurposes: string[] = useMemo(
-    () => uniqueListFromArrayValue(props.allSatellites, 'purpose'),
+    () => uniqueListFromArrayValue(props.allSatellites, 'purpose').sort(),
     [props.allSatellites]
   );
   const purposeOptions: FilterOption[] = uniquePurposes.map(purpose => {
+    const count = countWithUpdatedFilter({ purposes: [purpose] });
     return {
       value: purpose,
       label: purpose,
+      count,
       selected: currentFilter.purposes.includes(purpose),
     };
   });
@@ -145,7 +147,18 @@ export default function FilterPanel(props: FilterPanelProps) {
       <p className='SatCountText'>Matches: {props.filteredSatellites.length} of {props.allSatellites.length} satellites.</p>
 
       <label className='FilterRowDiv'>
-        <p className='FilterNameTag'>Orbit type: <InfoCircleIcon onClick={props.openOrbitExplainer} /></p>
+        <div>
+          <span className='FilterNameTag'>Only active satellites:&nbsp;</span>
+          <input
+            name='activeToggle'
+            type='checkbox'
+            onChange={e => filterOnActive(e)}
+            defaultChecked={currentFilter.activeStatus === true}
+          />
+        </div>
+      </label>
+      <label className='FilterRowDiv'>
+        <p className='FilterNameTag'>Orbit type: <InfoCircleIcon className='infoIcon' onClick={props.openOrbitExplainer} /></p>
         <Select
           {...commonSelectProps}
           formatOptionLabel={labelFormatter}
@@ -168,6 +181,7 @@ export default function FilterPanel(props: FilterPanelProps) {
         <p className='FilterNameTag'>Purpose:</p>
         <Select
           {...commonSelectProps}
+          formatOptionLabel={labelFormatter}
           options={purposeOptions}
           value={purposeOptions.filter(opt => opt.selected)}
           onChange={filterByPurpose}
@@ -185,17 +199,6 @@ export default function FilterPanel(props: FilterPanelProps) {
           onChange={filterByOwner}
           menuPortalTarget={document.body}
         />
-      </label>
-      <label className='FilterRowDiv'>
-        <div>
-          <span className='FilterNameTag'>Only active satellites:&nbsp;</span>
-          <input
-            name='activeToggle'
-            type='checkbox'
-            onChange={e => filterOnActive(e)}
-            defaultChecked={currentFilter.activeStatus === true}
-          />
-        </div>
       </label>
     </div>
   );

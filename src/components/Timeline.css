@@ -1,4 +1,5 @@
-.Timeline {
-  padding: 1em;
-  background-color: #becbd7;
+.SliderContainer {
+  justify-content: center;
+  background-color: black;
+  padding: 1.2em 2em 0em 2em
 }

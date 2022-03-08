@@ -6,10 +6,12 @@ import { DefaultValues } from '../util/util';
 import { Feature } from 'geojson';
 import { WorldMapJSON } from "../model/data_loader";
 import { fromIsoA3ToSatCat } from '../model/mapping';
-import Legend from './Legend';
+import { FilterSettings, SetFilterCallback } from '../model/filter_settings';
+import { height } from '@mui/system';
 
 export interface WorldMapProps {
   filteredSatellites: Satellite[],
+  onUpdateFilter: SetFilterCallback;
   worldJson: WorldMapJSON,
   width: number,
   height: number,
@@ -26,8 +28,13 @@ const defaultProps: DefaultValues<WorldMapProps> = {
 export default function WorldMap(reqProps: WorldMapProps) {
   const props = { ...defaultProps, ...reqProps } as Required<WorldMapProps>; // Use defaults where necessary
 
-  const marginLeft = 10
-  const marginTop = 10
+  const marginLeft = -10
+  const marginTop = 15
+
+  useEffect(() => {
+    // Quickfix: Reset the first time this is opened.
+    props.onUpdateFilter(new FilterSettings({}));
+  }, []);
 
   // Reference to the main SVG element
   const svgRef = useRef<SVGSVGElement>(null!);
@@ -150,8 +157,17 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .select("g.mapLegend")
       .attr("transform", "translate(" + marginLeft + "," + marginTop + ")");
 
+
     const legendStep = 10
     const h = (max - min) / 10
+
+    mapLegend.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", - ((legendStep - 1) * 15) / 2 - 8)
+      .attr("y", -3)
+      .style("text-anchor", "middle")
+      .text("Number of satellite");
+
     //const legendArray = [min, (max - min) / 2, max]
     const legendArray = Array(legendStep)
 
@@ -168,8 +184,6 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .attr("rx", 3)
       .attr("ry", 3)
       .style("fill", function (d, i) {
-        console.log(i)
-
         if (!i) return 'lightgrey';
         if (i == 1) return colorScale(min);
         if (i == 9) {
@@ -217,16 +231,18 @@ export default function WorldMap(reqProps: WorldMapProps) {
   return (
     <div className="WorldMap">
       <div>
-      <svg ref={svgRef}
-        viewBox={`0 0 ${props.width}, ${props.height}`}
-        preserveAspectRatio="xMidYMid meet"
-        className="WorldMap" style={{ backgroundColor: "lightblue", padding: "0" }}
-      >
+        <svg ref={svgRef}
+          viewBox={`0 0 ${props.width}, ${props.height}`}
+          preserveAspectRatio="xMidYMid meet"
+          className="WorldMap" style={{ backgroundColor: "lightblue", padding: "0" }}
+        >
           <g className="mapLayer"></g>
         </svg>
       </div>
       <div>
         <svg ref={svgRef2}
+          viewBox={`0 0 ${15}, ${200}`}
+          preserveAspectRatio="xMidYMid meet"
           className="legendContainer"
         >
           <g className="mapLegend"></g>
