@@ -12,3 +12,17 @@
   border-radius: 5px;
   padding: 5px;
 }
+
+.legendContainer {
+  width: 10vw;
+  height: 34vh;
+  position: absolute;
+  float: left;
+  top: 1em;
+  left: 1em;
+/*   padding: .33em .5em;
+  font-size: 80%; *//* 
+  background-color: rgba(0, 0, 0, 0.3); */
+  color: white;
+}
+

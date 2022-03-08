@@ -6,6 +6,7 @@ import { DefaultValues } from '../util/util';
 import { Feature } from 'geojson';
 import { WorldMapJSON } from "../model/data_loader";
 import { fromIsoA3ToSatCat } from '../model/mapping';
+import Legend from './Legend';
 
 export interface WorldMapProps {
   filteredSatellites: Satellite[],
@@ -25,8 +26,12 @@ const defaultProps: DefaultValues<WorldMapProps> = {
 export default function WorldMap(reqProps: WorldMapProps) {
   const props = { ...defaultProps, ...reqProps } as Required<WorldMapProps>; // Use defaults where necessary
 
+  const marginLeft = 10
+  const marginTop = 10
+
   // Reference to the main SVG element
   const svgRef = useRef<SVGSVGElement>(null!);
+  const svgRef2 = useRef<SVGSVGElement>(null!);
 
   // Projector to Lat/Long to Mercator
   const mapProjection = props.projection
@@ -35,14 +40,8 @@ export default function WorldMap(reqProps: WorldMapProps) {
     .center([0, 0])
     .translate([props.width / 2, props.height / 2]);
 
-
   // Projections path generator
   const pathGenerator = d3.geoPath().projection(mapProjection);
-
-  //Color scale
-  const colorScale = d3.scaleLog<string>()
-    .range(["lightgreen", "green"])
-    .domain([1, 100])
 
   const tooltip = d3.select('body')
     .append('div')
@@ -54,6 +53,18 @@ export default function WorldMap(reqProps: WorldMapProps) {
     //Computing the number of satellite per country within the filtered satellites dataset
     const nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => 1), d => d.owner);
 
+    const array = Array.from(nbSatellitePerCountry)
+    const max = d3.max(array, d => d[1]) as number
+    const min = d3.min(array, d => d[1]) as number
+
+    //Color scale
+    const colorScale = d3.scaleLog<string>()
+      .range(["lightgreen", "darkgreen"])
+      .domain([min, max])  //TODO make it min/max
+
+    //const max = d3.max(nbSatellitePerCountry, (d) => d);
+
+
     function mouseOver(e: any, d: any) {
       const satCatCode = d.properties?.iso_a3;
       var nbSat = nbSatellitePerCountry.get(fromIsoA3ToSatCat[satCatCode])
@@ -62,7 +73,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
         .transition()
         .duration(2000)
         .style('opacity', 1)
-        .text(d.properties?.name + ": " + nbSat + " satellites with selected filters.")
+        .text(d.properties?.name + ": " + nbSat + " satellite(s) with selected filters.")
 
       d3.select(e.srcElement)
         .style("opacity", .8)
@@ -122,6 +133,80 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .attr("fill", colorCountry)
 
     groupMap.exit().remove()
+
+    // Set up zoom and panning
+    const zoom = d3.zoom<SVGSVGElement, unknown>()
+      .scaleExtent([1, 4])
+      .translateExtent([[0, 0], [props.width, props.height]])
+      .on('zoom', e => {
+        d3.select(svgRef.current).selectAll('g')
+          .attr('transform', e.transform);
+      });
+
+    d3.select(svgRef.current)
+      .call(zoom);
+
+    const mapLegend = d3.select(svgRef2.current)
+      .select("g.mapLegend")
+      .attr("transform", "translate(" + marginLeft + "," + marginTop + ")");
+
+    const legendStep = 10
+    const h = (max - min) / 10
+    //const legendArray = [min, (max - min) / 2, max]
+    const legendArray = Array(legendStep)
+
+    const groupLegend = mapLegend
+      .selectAll('rect')
+      .data(legendArray)
+
+    groupLegend
+      .enter()
+      .append("rect")
+      .merge(groupLegend as any)
+      .transition()
+      .duration(800)
+      .attr("rx", 3)
+      .attr("ry", 3)
+      .style("fill", function (d, i) {
+        console.log(i)
+
+        if (!i) return 'lightgrey';
+        if (i == 1) return colorScale(min);
+        if (i == 9) {
+          return colorScale(max);
+        }
+        return colorScale(i * h);
+      })
+      .attr("y", function (d, i) { return i * 15; })
+      .attr('width', 15)
+      .attr('height', 15)
+
+    groupLegend.exit().remove()
+
+    const mapLegendText = d3.select(svgRef2.current)
+      .select("g.mapLegendText")
+      .attr("transform", "translate(" + (marginLeft + 17) + "," + (marginTop + 13) + ")");
+
+    const groupLegendText = mapLegendText
+      .selectAll('text')
+      .data(legendArray)
+
+    groupLegendText
+      .enter()
+      .append("text")
+      .merge(groupLegendText as any)
+      .text((d, i) => {
+        if (!(i * h) && i != 0) return "";
+        if (!i) return '0';
+        if (i == 1) return min;
+        if (i == 9) return max;
+        return (Math.floor(i * h))
+      })
+      .transition()
+      .duration(800)
+      .attr("y", function (d, i) { return i * 15; })
+
+    groupLegendText.exit().remove()
   }
 
   // Render/update world map
@@ -129,28 +214,27 @@ export default function WorldMap(reqProps: WorldMapProps) {
     updateMap()
   }, [props.filteredSatellites, props.worldJson.features, mapProjection]);
 
-  // Set up zoom and panning
-  const zoom = d3.zoom<SVGSVGElement, unknown>()
-    .scaleExtent([1, 4])
-    .translateExtent([[0, 0], [props.width, props.height]])
-    .on('zoom', e => {
-      d3.select(svgRef.current).selectAll('g')
-        .attr('transform', e.transform);
-    });
-
-  d3.select(svgRef.current)
-    .call(zoom);
-
   return (
     <div className="WorldMap">
+      <div>
       <svg ref={svgRef}
         viewBox={`0 0 ${props.width}, ${props.height}`}
         preserveAspectRatio="xMidYMid meet"
         className="WorldMap" style={{ backgroundColor: "lightblue", padding: "0" }}
       >
-        <g className="mapLayer"></g>
+          <g className="mapLayer"></g>
+        </svg>
+      </div>
+      <div>
+        <svg ref={svgRef2}
+          className="legendContainer"
+        >
+          <g className="mapLegend"></g>
+          <g className="mapLegendText"></g>
+        </svg>
+      </div>
 
-      </svg>
     </div>
+
   );
 }

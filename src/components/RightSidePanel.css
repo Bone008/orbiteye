@@ -5,7 +5,7 @@
   background-color: #3e5958;
   justify-content: space-between;
 
-  width: 350px; /* TODO: this is a band-aid fix. See #69 */
+  width: 25vw; /* TODO: this is a band-aid fix. See #69 */
 }
 
 .FilterPart{

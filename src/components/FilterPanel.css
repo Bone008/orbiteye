@@ -1,7 +1,8 @@
 /*The root of the filter panel*/
 .FilterPanel {
-  min-width: 350px;
-  max-width: 400px;
+/*   min-width: 350px;
+  max-width: 400px; */
+  width: 100%;
   padding: 0 1em;
   background-color: #3e5958;
   height: inherit;
