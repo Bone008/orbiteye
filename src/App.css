@@ -5,6 +5,7 @@
   justify-content: stretch;
   text-align: center;
   overflow: hidden;
+  background-color: lightblue;
 }
 
 .mainView{
@@ -18,3 +19,4 @@
   flex: 1 1 0;
   min-width: 200px;
 }
+

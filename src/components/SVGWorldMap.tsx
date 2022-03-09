@@ -70,8 +70,8 @@ export default function WorldMap(reqProps: WorldMapProps) {
     // Color scale
     const colorScale =/*  d3.scaleLog<string>() */
       d3.scaleLinear<string>()
-      .range(["lightgreen", "darkgreen"])
-        .domain([min, max])
+        .range(["lightgreen", "green", "darkgreen", "red"])
+        .domain([min, min + (max - min) / 15, min + (max - min) / 2, max])
 
     // Mouse over -> tooltip appears and opacity changes on the country
     function mouseOver(e: any, d: any) {
@@ -195,7 +195,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .attr("ry", 3)
       .style("fill", function (_, i) {
         if (!i) return 'lightgrey';
-        return colorScale(min + Math.floor(i * h));
+        return colorScale(min + Math.floor((i - 1) * h));
       })
       .attr("y", function (_, i) { return i * 15; })
       .attr('width', 15)
@@ -221,7 +221,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .text((_, i) => {
         if (!(i * h) && i != 0) return "";
         if (!i) return '0';
-        return (min + Math.floor(i * h))
+        return (min + Math.floor((i - 1) * h))
       })
       .transition()
       .duration(800)

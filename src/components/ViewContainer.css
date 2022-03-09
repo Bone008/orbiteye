@@ -163,3 +163,7 @@
 .__Decay_img::before {
   background-image: url(../assets/ModeDecay.png);
 }
+
+.mapView {
+  background-color: red;
+}

@@ -1,7 +1,6 @@
 .WorldMap {
   padding: 0;
-  background-color: "lightblue";
-  color: red
+  background-color: "red";
 }
 
 #tooltip {
