@@ -1,5 +1,6 @@
 import './Timeline.css';
 import {
+  useEffect,
   useMemo,
   useState
 } from 'react';
@@ -9,6 +10,12 @@ import { FilterSettings, SetFilterCallback } from '../model/filter_settings';
 import Slider from '@mui/material/Slider';
 import { styled } from '@mui/material/styles';
 
+/** Time in milliseconds to delay updating the filter after the slider has been dragged. */
+const DEBOUNCE_FILTER_UPDATE_MS = 400;
+const FALLBACK_DATE_RANGE = { min: 1957, max: 2022 };
+const MARK_STEP_SIZE_YEARS = 5;
+
+let globalUpdateTimeoutId = 0;
 
 export interface TimelineProps {
   allSatellites: Satellite[];
@@ -20,42 +27,53 @@ export interface TimelineProps {
 export default function Timeline(props: TimelineProps) {
 
   // Use memoization to make sure this is only computed once.
-  const [datasetMinDate, datasetMaxDate] = useMemo(() => {
-    const launchDates = props.allSatellites.map(sat => sat.launchDate);
-    return d3.extent(launchDates);
+  const [datasetMinYear, datasetMaxYear] = useMemo(() => {
+    const [min, max] = d3.extent(props.allSatellites, sat => sat.launchDate);
+    return [min?.getFullYear() || 0, max?.getFullYear() || 0];
   }, [props.allSatellites]);
 
-  const changeSelectedRange = () => {
+  const changeSelectedRange = (minYear: number, maxYear: number) => {
     const newFilter = props.filterSettings.update({
-      // TODO: replace hard-coded values with user selection
-      minDate: props.filterSettings.filter.minDate ? undefined : new Date('2000-01-01'),
-      maxDate: props.filterSettings.filter.minDate ? undefined : new Date('2020-12-31'),
+      // Performance optimization: If equal to range boundary, set to null.
+      // Use timestamps directly because comparing Date objects is apparently very slow.
+      minLaunchTimestamp: minYear === datasetMinYear ? null : new Date(minYear, 0, 1).getTime(),
+      maxLaunchTimestamp: maxYear === datasetMaxYear ? null : new Date(maxYear, 11, 31).getTime(),
     });
     props.onUpdateFilter(newFilter);
   };
 
   const currentFilter = props.filterSettings.filter;
-  const minDate = currentFilter.minDate || datasetMinDate;
-  const maxDate = currentFilter.maxDate || datasetMaxDate;
+  const currentMinYear = currentFilter.minLaunchTimestamp ? new Date(currentFilter.minLaunchTimestamp).getFullYear() : datasetMinYear;
+  const currentMaxYear = currentFilter.maxLaunchTimestamp ? new Date(currentFilter.maxLaunchTimestamp).getFullYear() : datasetMaxYear;
 
-  const [rangeValue, setRangeValue] = useState<number[]>(() => {
-    const min = datasetMinDate?.getFullYear() as number
-    const max = datasetMaxDate?.getFullYear() as number //Currently is undefined in the begining of the render. 
-    return [min, max]
-  });
+  const [rangeSliderValue, setRangeSliderValue] = useState<[number, number]>([currentMinYear, currentMaxYear]);
+  // Reset to max range whenever the underlying data changes.
+  useEffect(() => setRangeSliderValue([datasetMinYear, datasetMaxYear]), [datasetMinYear, datasetMaxYear]);
 
-  /*The slider component uses this onChange to set nuew values when the thumbs are moved*/
+  /*The slider component uses this onChange to set new values when the thumbs are moved*/
   const rangeChange = (e: Event, input: number | number[]) => {
-    setRangeValue(input as number[]);
-    changeSelectedRange();
+    const [min, max] = input as [number, number];
+    setRangeSliderValue([min, max]);
+
+    window.clearTimeout(globalUpdateTimeoutId);
+    globalUpdateTimeoutId = window.setTimeout(() => {
+      changeSelectedRange(min, max);
+    }, DEBOUNCE_FILTER_UPDATE_MS);
   };
+
+  const marks = useMemo(() => calculateMarks(datasetMinYear, datasetMaxYear), [datasetMinYear, datasetMaxYear]);
+
+  // Do not actually render the slider before the data is loaded to avoid showing it without a valid extent.
+  if (!props.allSatellites.length) {
+    return null;
+  }
 
   return (
     <div className='SliderContainer'>
       <CustomSlider
-        value={rangeValue}
-        min={1957}
-        max={2022}
+        value={rangeSliderValue}
+        min={datasetMinYear}
+        max={datasetMaxYear}
         marks={marks}
         onChange={rangeChange}
         valueLabelDisplay="on"
@@ -64,36 +82,14 @@ export default function Timeline(props: TimelineProps) {
   )
 }
 
-// Hard coded for now, could be created based on dataset+
-const marks = [{
-  value: 1960,
-  label: '1960',
-},
-{
-  value: 1970,
-  label: '1970',
-},
-{
-  value: 1980,
-  label: '1980',
-},
-{
-  value: 1990,
-  label: '1990',
-},
-{
-  value: 2000,
-  label: '2000',
-},
-{
-  value: 2010,
-  label: '2010',
-},
-{
-  value: 2020,
-  label: '2020',
+function calculateMarks(minYear: number, maxYear: number) {
+  // Round up to nearest decade.
+  const firstMark = minYear % MARK_STEP_SIZE_YEARS === 0 ? minYear : minYear + MARK_STEP_SIZE_YEARS - (minYear % MARK_STEP_SIZE_YEARS);
+  // Round down to nearest decade.
+  const lastMark = maxYear - (maxYear % MARK_STEP_SIZE_YEARS);
+
+  return d3.range(firstMark, maxYear + 1, MARK_STEP_SIZE_YEARS).map(value => ({ value, label: String(value) }));
 }
-];
 
 /**Styling for the slider, using styled from Material UI https://mui.com/system/styled/ */
 const CustomSlider = styled(Slider)(() => ({
