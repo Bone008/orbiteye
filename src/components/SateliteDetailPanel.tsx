@@ -32,9 +32,12 @@ export default function SateliteDetailPanel(props: DetailPanelProps) {
     <div className='MainDetailPanel'>
       <button type="button" className='DetailButton' onClick={openDetails}>See satellite details {Arrow()}
       </button>
+      <div className="detailsTest">
       {props.showDetail ?
         <DetailComponent sat={props.satellite} />
         : null}
+      </div>
+
     </div>
   );
 }
@@ -45,10 +48,46 @@ function DetailComponent({ sat }: { sat: Satellite | null }) {
     return <div className='NoSelection'>No satellite selected.</div>;
   }
 
+  function OperationalStatusComponent(sat: Satellite) {
+    const status = OP_STATUS_LABELS[sat.operationalStatus]
+    if (status == "unknown") return "The operational status is now unknown"
+    const op = OP_STATUS_LABELS[sat.operationalStatus] + (sat.decayDate ? ' at ' + formatISODate(sat.decayDate) : '')
+    return "It is now " + op
+  }
+
+  function SectorComponent(sat: Satellite) {
+    const sectors = sat.users
+    if (!sectors.length) return "and the sector of usage of this satellite is unknown."
+    function sectorTextMapping(sectors: string[]) {
+      return "in the " + sectors.map((s, i) => {
+        if (sectors.length == 1) return s + " sector."
+        if (i + 1 == sectors.length) return " and " + s + " sectors."
+        return s
+      })
+    }
+    return <strong>{sectorTextMapping(sectors)}</strong>
+  }
+
   return (
     <div className="DetailDiv">
 
-      <div className='DetailRow'>
+      <h3>
+        <a
+          href={'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=' + encodeURIComponent(sat.id)}
+          target='_blank'>
+          {sat.name} <BoxArrowUp className='boxArrowUp' />
+        </a>
+      </h3>
+      <p>
+        Launched in <strong>{formatISODate(sat.launchDate)}</strong>, this satellite from <strong>{OWNER_SHORT_CODE_TO_FULL[sat.owner]}</strong> has a <strong>{ORBIT_TYPE_CODE_TO_FULL_NAME[sat.orbitClass]}</strong> orbit type.
+        It is used for <strong>{sat.purpose}</strong> {SectorComponent(sat)} <strong>{OperationalStatusComponent(sat)}</strong>.
+      </p>
+      <p>
+        International ID: {sat.id}
+      </p>
+
+
+      {/*  <div className='DetailRow'>
         <p className='DetailRowLabel'>
           <span className='label help' title='This is an international identifier assigned to artificial objects in space by the UN Committee on Space Research.'>International ID: </span>
         </p>
@@ -102,7 +141,7 @@ function DetailComponent({ sat }: { sat: Satellite | null }) {
       <div className='DetailRow'>
         <p className='DetailRowLabel'>Owner: </p>
         <p className='DetailRowValue'>{OWNER_SHORT_CODE_TO_FULL[sat.owner]}</p>
-      </div>
+      </div> */}
     </div>
   );
 }

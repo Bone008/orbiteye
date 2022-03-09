@@ -1,12 +1,15 @@
 .WorldMap {
   padding: 0;
-  background-color: "lightblue"
+  background-color: "lightblue";
+  color: red
 }
 
 #tooltip {
   position: absolute;
   opacity: 1;
-  background-color: antiquewhite;
+  color: white;
+  background-color: rgba(128, 128, 128, 0.637);
+  color: "dark";
   border: solid;
   border-width: 1px;
   border-radius: 5px;
@@ -14,14 +17,14 @@
 }
 
 .legendContainer {
-  width: 10%;
+  width: 15%;
   height: 40%;
   position: absolute;
   float: left;
   top: 1em;
   left: 1em;
   padding: .33em .5em;
-  font-size: 120%;
+  /* font-size: 90%; */
   background-color: rgba(0, 0, 0, 0.3);
 }
 
