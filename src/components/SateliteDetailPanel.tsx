@@ -71,7 +71,7 @@ function DetailComponent({ sat }: { sat: Satellite | null }) {
   return (
     <div className="DetailDiv">
 
-      <h3>
+      {/*       <h3>
         <a
           href={'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=' + encodeURIComponent(sat.id)}
           target='_blank'>
@@ -84,10 +84,10 @@ function DetailComponent({ sat }: { sat: Satellite | null }) {
       </p>
       <p>
         International ID: {sat.id}
-      </p>
+      </p> */}
 
 
-      {/*  <div className='DetailRow'>
+      <div className='DetailRow'>
         <p className='DetailRowLabel'>
           <span className='label help' title='This is an international identifier assigned to artificial objects in space by the UN Committee on Space Research.'>International ID: </span>
         </p>
@@ -141,7 +141,7 @@ function DetailComponent({ sat }: { sat: Satellite | null }) {
       <div className='DetailRow'>
         <p className='DetailRowLabel'>Owner: </p>
         <p className='DetailRowValue'>{OWNER_SHORT_CODE_TO_FULL[sat.owner]}</p>
-      </div> */}
+      </div>
     </div>
   );
 }

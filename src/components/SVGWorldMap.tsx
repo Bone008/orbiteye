@@ -171,7 +171,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
     // Legend title
     mapLegend.append("text")
       .attr("transform", "rotate(-90)")
-      .attr("x", - ((legendStep - 1) * 15) / 2 - 8)
+      .attr("x", - ((legendStep - 1) * 15) / 2 - 15)
       .attr("y", -3)
       .style("text-anchor", "middle")
       .text("Number of satellite")
