@@ -55,8 +55,39 @@
 .infoIcon{
   cursor: pointer;
   color: #fddd02;
+  vertical-align: middle;
 }
 
 .infoIcon:hover{
   color: white;
+}
+
+input[type="checkbox"] {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.checkbox {
+  display: inline-block; 
+  vertical-align: middle;
+  height: 20px;
+  width: 20px;
+  background: #fff;
+  border: 4px #ddd solid;
+  border-radius: 1em;
+  margin-right: 4px;
+}
+
+.checkbox:hover {
+  background-color: rgb(129, 123, 123);
+}
+
+.checkbox--active {
+  border-color: rgb(211, 219, 211);
+  background: rgb(46, 53, 46)
 }

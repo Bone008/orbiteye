@@ -146,7 +146,6 @@ export const fromIsoA3ToSatCat: Record<string, string> =
   //CHBZ: "China/Brazil",
   CHL: "CHLE",
   RUS: "CIS",
-  //CIS: "Commonwealth of Independent States (former USSR)",
   COL: "COL",
 
   CRI: "CRI",

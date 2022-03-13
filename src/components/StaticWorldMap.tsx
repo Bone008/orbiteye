@@ -51,31 +51,18 @@ export default function WorldMap(__props: StaticWorldMapProps) {
 
   // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
   useEffect(() => {
-    const traceLayer = d3.select(svgRef.current).select("g.traceLayer");
+    const traceLayer = d3.select(svgRef.current).select("g.traceLayer").selectAll("path")
+      .data(shownSatellites);
 
     // Reset the container
-    traceLayer.selectAll("*").remove();
+    //traceLayer.selectAll("*").remove();
 
     // Calculate all traces
-    traceLayer.selectAll("path")
-      .data(shownSatellites)
-      .enter().append("path")
-      .attr("d", (sat, i) => {
-        const trace: [number, number][] = groundTraceSync(sat).map(lngLat => [lngLat[0], lngLat[1]]);
-        const lineGen = d3.line()
-          .x(p => p[0])
-          .y(p => p[1]);
-
-        let pointsStr = lineGen(trace.map(p => mapProjection(p) || [Infinity, Infinity]));
-        // Special case for geosynchronous: Draw box around the position.
-        if (sat.orbitClass === 'GEO' && trace.length > 0) {
-          const [px, py] = mapProjection(trace[0]) || [Infinity, Infinity];
-          const s = 5;
-          // SVG path instructions can just be concatenated
-          pointsStr += lineGen([[px - s, py - s], [px + s, py - s], [px + s, py + s], [px - s, py + s], [px - s, py - s]])!;
-        }
-        return pointsStr;
-      })
+    traceLayer
+      /*       .enter()
+            .append("path")
+            .merge(traceLayer as any) */
+      .join("path")
       .attr("fill", "none")
       .attr("stroke", sat => sat === props.selectedSatellite ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray')
       .attr("stroke-width", sat => sat === props.selectedSatellite ? "5px" : "1px")
@@ -93,7 +80,27 @@ export default function WorldMap(__props: StaticWorldMapProps) {
       .on('click', (e: MouseEvent, sat) => {
         e.stopPropagation();
         props.setSelectedSatellite(sat);
-      });
+      })
+      .attr("d", (sat, i) => {
+        const trace: [number, number][] = groundTraceSync(sat).map(lngLat => [lngLat[0], lngLat[1]]);
+        const lineGen = d3.line()
+          .x(p => p[0])
+          .y(p => p[1]);
+
+        let pointsStr = lineGen(trace.map(p => mapProjection(p) || [Infinity, Infinity]));
+        // Special case for geosynchronous: Draw box around the position.
+        if (sat.orbitClass === 'GEO' && trace.length > 0) {
+          const [px, py] = mapProjection(trace[0]) || [Infinity, Infinity];
+          const s = 5;
+          // SVG path instructions can just be concatenated
+          pointsStr += lineGen([[px - s, py - s], [px + s, py - s], [px + s, py + s], [px - s, py + s], [px - s, py - s]])!;
+        }
+        return pointsStr;
+      })
+
+
+    //traceLayer.exit().remove()
+
   }, [props.filteredSatellites, props.traceLimit, mapProjection]);
 
   // Set up zoom and pan
@@ -114,9 +121,10 @@ export default function WorldMap(__props: StaticWorldMapProps) {
       <svg ref={svgRef}
         //width={props.width}
         //height={props.height}
-        viewBox={`0 0 ${props.width}, ${props.height}`}
+        viewBox={`0 0 ${500}, ${250}`}
         preserveAspectRatio="xMidYMid meet"
-        className="WorldMap" style={{ padding: "0" }}
+        className="WorldMap"
+        style={{ padding: "0" }}
         onClick={e => props.setSelectedSatellite(null)}
       >
         <g className="mapLayer"></g>

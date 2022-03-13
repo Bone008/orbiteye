@@ -1,12 +1,11 @@
 import './FilterPanel.css';
 import * as d3 from 'd3';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ALL_ORBIT_CLASSES, OrbitClass, Satellite } from '../model/satellite';
 import { FilterProps, FilterSettings, SetFilterCallback } from '../model/filter_settings';
 import Select, { MultiValue, Props as SelectProps } from "react-select";
 import { OWNER_SHORT_CODE_TO_FULL, fromIsoA3ToSatCat, ORBIT_TYPE_CODE_TO_FULL_NAME, } from '../model/mapping';
 import { InfoCircleIcon } from './Icons'
-
 
 
 export interface FilterPanelProps {
@@ -141,19 +140,39 @@ export default function FilterPanel(props: FilterPanelProps) {
     menuPortalTarget: document.body,
   };
 
+  const [isChecked, setIsChecked] = useState(false)
+
   return (
     <div className="FilterPanel">
+      <input className='checkBox' type='checkbox'></input>
+
       <h1 className='headerName'>OrbitEye</h1>
       <p className='SatCountText'>Matches: {props.filteredSatellites.length} of {props.allSatellites.length} satellites.</p>
-
+      {/* <label className='FilterRowDiv'>
+        <span>Only active satellites:&nbsp;</span>
+        <input
+          type="checkbox"
+          onChange={e => {
+            setIsChecked(!isChecked)
+            filterOnActive(e)
+          }}
+        />
+        <span
+          className={`checkbox ${currentFilter.activeStatus ? "checkbox--active" : ""}`}
+          aria-hidden="true"
+        />
+      </label> */}
       <label className='FilterRowDiv'>
         <div>
           <span className='FilterNameTag'>Only active satellites:&nbsp;</span>
+
           <input
-            name='activeToggle'
+            //name='activeToggle'
             type='checkbox'
+            className='checkBox'
             onChange={e => filterOnActive(e)}
             checked={currentFilter.activeStatus === true}
+
           />
         </div>
       </label>
