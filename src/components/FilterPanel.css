@@ -63,6 +63,10 @@
 }
 
 input[type="checkbox"] {
+  vertical-align: middle;
+}
+
+/*input[type="checkbox"] {
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
   height: 1px;
@@ -71,6 +75,7 @@ input[type="checkbox"] {
   white-space: nowrap;
   width: 1px;
 }
+
 
 .checkbox {
   display: inline-block; 
@@ -90,4 +95,4 @@ input[type="checkbox"] {
 .checkbox--active {
   border-color: rgb(211, 219, 211);
   background: rgb(46, 53, 46)
-}
+} */
