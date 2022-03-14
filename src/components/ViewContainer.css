@@ -22,7 +22,7 @@
   grid-template-rows: 5fr 5fr 1fr;
 
   color: white;
-  background-color: black;
+  background-color: #222624;
 }
 
 .optionBlockContainer.uncollapsible {
@@ -124,7 +124,7 @@
   display: flex;
   justify-content: space-evenly;
 
-  background-color: black;
+  background-color: #222624;
 }
 
 .optionTab{
@@ -138,8 +138,7 @@
   justify-content: center;
   
   color: rgba(255, 255, 255, 0.66);
-  border-bottom: 2px solid #222;
-  background-color: #222922;
+  border-bottom: 2px solid transparent;
 }
 
 .optionTab:hover {
@@ -148,13 +147,18 @@
   border-bottom-color: #111;
 }
 
-.optionTab.selected {
+.optionTab.selected, .optionBlock.selected {
   color: white;
   background-color: black;
-  border-bottom-color: white;
+  border-bottom: 2px solid white;
 }
 
 .optionTab .icon {
+  margin-right: 10px;
+}
+
+.optionBlock .optionTitle .icon {
+  vertical-align: middle;
   margin-right: 10px;
 }
 

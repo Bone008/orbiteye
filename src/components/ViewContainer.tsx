@@ -50,7 +50,10 @@ export default function ViewControls(props: ViewContainerProps) {
         style={style}
       >
         <div className="optionContainer">
-          <p className="optionTitle">{opt.name}</p>
+          <p className="optionTitle">
+            {opt.icon({ width: 21, height: 21, className: 'icon' })}
+            {opt.name}
+          </p>
           <p className="optionDescription">{opt.description}</p>
         </div>
       </NavLink>
