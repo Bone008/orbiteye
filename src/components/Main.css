@@ -1,0 +1,53 @@
+.App {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  text-align: center;
+  overflow: hidden;
+}
+
+.mainView{
+  flex: 1 1 0;
+  min-height: 200px;
+  display: flex;
+  justify-content: stretch;
+}
+
+.mapView{
+  flex: 1 1 0;
+  min-width: 200px;
+}
+
+/* Expanded home page styles */
+/* TODO: transitions don't actually do anything currently */
+.mainView {
+  transition: height 200ms ease;
+  transition: width 200ms ease;
+}
+
+.App.expanded .mainView {
+  height: 100%;
+  width: 100%;
+}
+
+.App > .SliderContainer {
+  transition: height 200ms ease;
+}
+
+.App.expanded > .SliderContainer {
+  min-height: 0;
+  padding: 0;
+  height: 0;
+  overflow: hidden;
+} 
+
+.App > .mainView > .RightPanel {
+  transition: width 200ms ease;
+}
+
+.App.expanded > .mainView > .RightPanel {
+  min-width: 0;
+  padding: 0;
+  width: 0;
+}
