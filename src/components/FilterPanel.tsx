@@ -211,12 +211,19 @@ export default function FilterPanel(props: FilterPanelProps) {
 type ArrayValuedKeys<T> = { [K in keyof T]-?: T[K] extends string[] ? K : never }[keyof T];
 
 /** Returns a sorted, unique list of all values occuring in an array-valued column of a satellite. */
-function uniqueListFromArrayValue(data: Satellite[], satelliteKey: ArrayValuedKeys<Satellite>) {
+function uniqueListFromArrayValue(data: Satellite[], satelliteKey: ArrayValuedKeys<Satellite>): string[] {
   const valueSet = new Set<string>();
   for (const sat of data) {
-    for (const user of sat[satelliteKey]) {
-      valueSet.add(user);
+    for (const value of sat[satelliteKey]) {
+      valueSet.add(value);
     }
   }
-  return Array.from(valueSet).sort();
+
+  // Hacky monkeypatch: "Earth Observation" is not a "purpose/user", but 1 row
+  // contains it as such. Do not poison our drop down with it.
+  // TODO Should be fixed upstream instead in the source.
+  if (satelliteKey === 'users') {
+    valueSet.delete('Earth Observation');
+  }
+  return Array.from(valueSet);
 }
