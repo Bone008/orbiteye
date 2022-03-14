@@ -1,10 +1,11 @@
 import './StaticWorldMap.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as d3 from 'd3';
 import { Satellite } from '../model/satellite';
 import { groundTraceSync } from '../util/orbits';
 import { DefaultValues } from '../util/util';
 import { COLOR_PALETTE_ORBITS } from '../util/colors';
+import { smartSampleSatellites } from '../util/sampling';
 import Legend from './Legend';
 
 import WorldMapImg from '../assets/NASA-Visible-Earth-September-2004.jpg';
@@ -47,7 +48,10 @@ export default function WorldMap(__props: StaticWorldMapProps) {
 
 
   // Filter to satellites with orbital data
-  const shownSatellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.traceLimit);
+  const shownSatellites = useMemo(
+    () => smartSampleSatellites(props.filteredSatellites.filter(sat => !!sat.tle), props.traceLimit),
+    [props.filteredSatellites, props.traceLimit]
+  );
 
   // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
   const selectedSatellite = props.selectedSatellite;

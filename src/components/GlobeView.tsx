@@ -2,12 +2,13 @@ import './GlobeView.css'
 
 import { Canvas, ThreeEvent, useFrame } from '@react-three/fiber'
 import { Line, Sphere, Stars, TrackballControls, useTexture } from '@react-three/drei'
-import { useRef, Suspense, useState } from 'react';
+import { useRef, Suspense, useState, useMemo } from 'react';
 import { DefaultValues } from '../util/util';
 import { Satellite } from '../model/satellite';
 import { getOrbitECI } from '../util/orbits';
 import { Euler, Vector2 } from 'three';
 import { COLOR_PALETTE_ORBITS } from '../util/colors';
+import { smartSampleSatellites } from '../util/sampling';
 import Legend from './Legend';
 
 import WorldMapImg from '../assets/NASA-Visible-Earth-September-2004.jpg';
@@ -42,7 +43,10 @@ const defaultProps: DefaultValues<GlobeViewProps> = {
 export default function GlobeView(__props: GlobeViewProps) {
   const props = { ...defaultProps, ...__props } as Required<GlobeViewProps>;
 
-  const shownSatellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.orbitLimit);
+  const shownSatellites = useMemo(
+    () => smartSampleSatellites(props.filteredSatellites.filter(sat => !!sat.tle), props.orbitLimit),
+    [props.filteredSatellites, props.orbitLimit]
+  );
 
   const onClickNothing = (e: MouseEvent) => {
     props.setSelectedSatellite(null);
