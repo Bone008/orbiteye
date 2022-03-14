@@ -97,6 +97,11 @@
 
 .optionTitle {
   font-size: large;
+  display: flex;
+}
+
+.optionBlock .optionTitle .icon {
+  margin-right: 10px;
 }
 
 .optionDescription {
@@ -123,22 +128,25 @@
 .optionTabContainer {
   display: flex;
   justify-content: space-evenly;
-
+  
   background-color: #222624;
 }
 
-.optionTab{
+.optionTab {
   /* Ignore default a tag styles */
   text-decoration: inherit;
-
+  
   flex-grow: 1;
-
+  
   display: flex;
   align-items: center;
   justify-content: center;
   
   color: rgba(255, 255, 255, 0.66);
-  border-bottom: 2px solid transparent;
+}
+
+.optionTab .icon {
+  margin-right: 10px;
 }
 
 .optionTab:hover {
@@ -147,19 +155,15 @@
   border-bottom-color: #111;
 }
 
+/* Highlight Selected */
+.optionTab, .optionBlock {
+  border-bottom: 2px solid transparent;
+}
+
 .optionTab.selected, .optionBlock.selected {
   color: white;
   background-color: black;
   border-bottom: 2px solid white;
-}
-
-.optionTab .icon {
-  margin-right: 10px;
-}
-
-.optionBlock .optionTitle .icon {
-  vertical-align: middle;
-  margin-right: 10px;
 }
 
 
@@ -178,8 +182,4 @@
 
 .__Decay_img::before {
   background-image: url(../assets/ModeDecay.png);
-}
-
-.mapView {
-  background-color: red;
 }
