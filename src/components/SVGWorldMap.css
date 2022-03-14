@@ -12,16 +12,7 @@
   border-width: 1px;
   border-radius: 5px;
   padding: 5px;
-  z-index: 3;
-}
-
-.legendContainer {
-  width: 15%;
-  height: 40%;
-  position: absolute;
-  top: 1em;
-  left: 1em;
-  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 10;
 }
 
 .assoMapContainer {
@@ -32,6 +23,11 @@
   padding: 0.2em;  
   background-color: rgba(173, 216, 230, 0.3);
   border-top: solid 1px rgb(117, 117, 117);  
+}
+
+.assoLabel {
+  color: red;
+  background-color: red;
 }
 
 

@@ -120,16 +120,15 @@ function Orbit(props: OrbitProps) {
 
   const selected = sat === props.selectedSatellite;
   const [hovered, setHovered] = useState<boolean>(false);
-  const coordinates = getOrbitECI(sat);
+  const coordinatesECI = getOrbitECI(sat);
 
-  if (coordinates.length === 0) {
+  if (coordinatesECI.length === 0) {
     return null; // Don't try to display an orbit if there is an error
   }
 
-  const scale_inv = EARTH_RADIUS_KM / props.radius;
-  for (let i = 0; i < coordinates.length; i++) {
-    coordinates[i].divideScalar(scale_inv);
-  }
+  // Clone (to avoid modifying cache) and scale
+  const scale = props.radius / EARTH_RADIUS_KM;
+  const coordinates = coordinatesECI.map(v => v.clone().multiplyScalar(scale));
 
   // TODO: Opacity < 1 doesn't work properly (parts of the line appear in full opacity, others at the selected value)
   const material = {
