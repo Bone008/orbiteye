@@ -4,15 +4,22 @@
   height: inherit;
 }
 
-.FilterNameTag{
+.FilterNameTag {
   font-size:medium;
   color: white;
   width: 110px;
   margin: 0.5em 0px 0.5em 0px;
 }
 
+.FilterNameTag.withInfo {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 /*Each rows root*/
-.FilterRowDiv{
+.FilterRowDiv {
   display: flex;
   align-items: center;
   justify-content: stretch;
@@ -22,7 +29,7 @@
   min-height: 3px;
 }
 
-.DropDown{
+.DropDown {
   width: 17rem;
   max-width: 20rem;
   padding-left: 1em;
@@ -39,27 +46,32 @@
 }
 
 
-.SatCountText{
+.SatCountText {
   color: white;
   margin: 1em 0em 1em 0em;
 }
 
 /*Project name at top*/
-.headerName{
+.headerName {
   background: transparent;
   position: relative;
   color: white;
   font-size: x-large;
 }
 
-.infoIcon{
+.infoIcon {
   cursor: pointer;
   color: #fddd02;
-  vertical-align: middle;
+  min-width: 30px;
+
+  transition: filter 200ms ease;
 }
 
-.infoIcon:hover{
-  color: white;
+.infoIcon:hover {
+  /* SVG drop shadow from: https://stackoverflow.com/questions/6088409/svg-drop-shadow-using-css3 */
+  --shadow: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
+  -webkit-filter: var(--shadow);
+  filter: var(--shadow);
 }
 
 input[type="checkbox"] {

@@ -175,7 +175,7 @@ export default function FilterPanel(props: FilterPanelProps) {
         </div>
       </label>
       <label className='FilterRowDiv'>
-        <p className='FilterNameTag'>Orbit type <InfoCircleIcon className='infoIcon' onClick={props.openOrbitExplainer} /></p>
+        <p className='FilterNameTag withInfo'><span>Orbit Type</span> <InfoCircleIcon className='infoIcon' onClick={props.openOrbitExplainer} /></p>
         <Select
           {...commonSelectProps}
           formatOptionLabel={labelFormatter}
@@ -185,7 +185,7 @@ export default function FilterPanel(props: FilterPanelProps) {
         />
       </label>
       <label className='FilterRowDiv'>
-        <p className='FilterNameTag'>Sector:</p>
+        <p className='FilterNameTag'>Sector</p>
         <Select
           {...commonSelectProps}
           formatOptionLabel={labelFormatter}
@@ -195,7 +195,7 @@ export default function FilterPanel(props: FilterPanelProps) {
         />
       </label>
       <label className='FilterRowDiv'>
-        <p className='FilterNameTag'>Purpose:</p>
+        <p className='FilterNameTag'>Purpose</p>
         <Select
           {...commonSelectProps}
           formatOptionLabel={labelFormatter}
@@ -205,7 +205,7 @@ export default function FilterPanel(props: FilterPanelProps) {
         />
       </label>
       <label className='FilterRowDiv'>
-        <p className='FilterNameTag'>Owner:</p>
+        <p className='FilterNameTag'>Owner</p>
         <Select
           {...commonSelectProps}
           formatOptionLabel={labelFormatter}
