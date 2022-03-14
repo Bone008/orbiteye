@@ -74,6 +74,7 @@
 .optionBlockContainer > *, .optionTabContainer > * {
   /* Match fade out of background image */
   transition: background-color 250ms ease;
+  cursor: pointer;
 }
 .optionBlockContainer > :hover, .optionTabContainer > :hover {
   color: white;
