@@ -9,6 +9,9 @@ import Legend from './Legend';
 
 import WorldMapImg from '../assets/NASA-Visible-Earth-September-2004.jpg';
 
+const GEO_BOX_THRESHOLD = 2.5;
+const GEO_BOX_SIZE = 5; // Add small buffer for visual appeal
+
 export interface StaticWorldMapProps {
   filteredSatellites: Satellite[];
   selectedSatellite: Satellite | null;
@@ -50,6 +53,8 @@ export default function WorldMap(__props: StaticWorldMapProps) {
   const shownSatellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.traceLimit);
 
   // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
+  const selectedSatellite = props.selectedSatellite;
+  const setSelectedSatellite = props.setSelectedSatellite;
   useEffect(() => {
     const traceLayer = d3.select(svgRef.current).select("g.traceLayer").selectAll("path")
       .data(shownSatellites);
@@ -64,22 +69,22 @@ export default function WorldMap(__props: StaticWorldMapProps) {
             .merge(traceLayer as any) */
       .join("path")
       .attr("fill", "none")
-      .attr("stroke", sat => sat === props.selectedSatellite ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray')
-      .attr("stroke-width", sat => sat === props.selectedSatellite ? "5px" : "1px")
+      .attr("stroke", sat => sat === selectedSatellite ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray')
+      .attr("stroke-width", sat => sat === selectedSatellite ? "2px" : "1px")
       .attr("stroke-linecap", "round")
       .on('mouseover', (e, sat) => {
-        if (sat !== props.selectedSatellite) {
-          d3.select(e.srcElement).attr("stroke-width", "5px");
+        if (sat !== selectedSatellite) {
+          d3.select(e.srcElement).attr("stroke-width", "2px");
         }
       })
       .on('mouseout', (e, d) => {
-        if (d !== props.selectedSatellite) {
+        if (d !== selectedSatellite) {
           d3.select(e.srcElement).attr("stroke-width", "1px");
         }
       })
       .on('click', (e: MouseEvent, sat) => {
         e.stopPropagation();
-        props.setSelectedSatellite(sat);
+        setSelectedSatellite(sat);
       })
       .attr("d", (sat, i) => {
         const trace: [number, number][] = groundTraceSync(sat).map(lngLat => [lngLat[0], lngLat[1]]);
@@ -88,12 +93,25 @@ export default function WorldMap(__props: StaticWorldMapProps) {
           .y(p => p[1]);
 
         let pointsStr = lineGen(trace.map(p => mapProjection(p) || [Infinity, Infinity]));
+
         // Special case for geosynchronous: Draw box around the position.
-        if (sat.orbitClass === 'GEO' && trace.length > 0) {
-          const [px, py] = mapProjection(trace[0]) || [Infinity, Infinity];
-          const s = 5;
-          // SVG path instructions can just be concatenated
-          pointsStr += lineGen([[px - s, py - s], [px + s, py - s], [px + s, py + s], [px - s, py + s], [px - s, py - s]])!;
+        if (sat.orbitClass === 'GEO') {
+          // Calculate bounding box
+          const longs = trace.map(p => p[0]);
+          const lats = trace.map(p => p[1]);
+
+          const longMinMax: [number, number] = [Math.min(...longs), Math.max(...longs)];
+          const latMinMax: [number, number] = [Math.min(...lats), Math.max(...lats)];
+
+          if (longMinMax[1] - longMinMax[0] < GEO_BOX_THRESHOLD && latMinMax[1] - latMinMax[0] < GEO_BOX_THRESHOLD) {
+            const avgLong = (longMinMax[1] + longMinMax[0]) / 2;
+            const avgLat = (latMinMax[1] + latMinMax[0]) / 2;
+            const [px, py] = mapProjection([avgLong, avgLat]) || [Infinity, Infinity];
+
+            const s = GEO_BOX_SIZE;
+            // SVG path instructions can just be concatenated
+            pointsStr += lineGen([[px - s, py - s], [px + s, py - s], [px + s, py + s], [px - s, py + s], [px - s, py - s]])!;
+          }
         }
         return pointsStr;
       })
@@ -101,7 +119,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
 
     //traceLayer.exit().remove()
 
-  }, [props.filteredSatellites, props.traceLimit, mapProjection]);
+  }, [props.filteredSatellites, selectedSatellite, setSelectedSatellite, props.traceLimit, mapProjection, shownSatellites]);
 
   // Set up zoom and pan
   const zoom = d3.zoom()
@@ -131,7 +149,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
         <g className="traceLayer"></g>
       </svg>
       <Legend type="orbitTypes" />
-      <Legend type="switch2d3d" />
+      {/*<Legend type="switch2d3d" />*/}
       <Legend type="warnShowingLimited" numShown={shownSatellites.length} numTotal={props.filteredSatellites.length} orbitLimit={props.traceLimit} />
     </div>
   );

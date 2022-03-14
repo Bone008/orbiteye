@@ -2,7 +2,7 @@ import './ViewContainer.css';
 
 import { useRef } from 'react';
 import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom';
-import { ChevronDownIcon, ChevronUpIcon } from './Icons';
+import { BarChartIcon, ChevronDownIcon, ChevronUpIcon, GlobeIcon, MapIcon } from './Icons';
 import GlobeView from './GlobeView';
 import StaticWorldMap from './StaticWorldMap';
 import SVGWorldMap from './SVGWorldMap';
@@ -34,9 +34,12 @@ export default function ViewControls(props: ViewContainerProps) {
     ref.current.querySelector(".optionTabsAndViewContainer")?.classList.remove("hidden");
   }
 
-  const optionBlocks = viewOptions.map(opt => {
+  const optionBlocks = viewOptions.map((opt, i) => {
     // Set up background image
-    const backgroundImg = "__" + opt.name + "_img"
+    const backgroundImg = "__" + opt.name.replace(' ', '') + "_img";
+
+    const stretchLast: boolean = viewOptions.length % 2 === 1 && i === viewOptions.length - 1;
+    const style: React.CSSProperties = stretchLast ? { gridColumn: "1/3" } : {};
 
     return (
       <NavLink
@@ -44,7 +47,7 @@ export default function ViewControls(props: ViewContainerProps) {
         className={({ isActive }) => `optionBlock ${backgroundImg}` + (isActive ? ' selected' : '')}
         to={opt.href}
         onClick={showBot}
-      // style={style as React.CSSProperties}
+        style={style}
       >
         <div className="optionContainer">
           <p className="optionTitle">{opt.name}</p>
@@ -62,6 +65,7 @@ export default function ViewControls(props: ViewContainerProps) {
         to={opt.href}
         onClick={showBot}
       >
+        {opt.icon({ width: 21, height: 21, className: 'icon' })}
         {opt.name}
       </NavLink>
     );
@@ -91,16 +95,13 @@ export default function ViewControls(props: ViewContainerProps) {
         </div>
 
         {/* Prevent grid blowout https://css-tricks.com/preventing-a-grid-blowout/ */}
-        <div style={{ minWidth: 0, backgroundColor: "black" }}>
+        <div style={{ minWidth: 0, minHeight: 0, backgroundColor: "black" }}>
           <Routes>
             <Route path="/" element={null} />
             <Route path="/orbits" element={<Navigate to="/orbits/globe" replace />} />
             <Route path="/orbits/globe" element={<GlobeView {...props} />} />
             <Route path="/orbits/map" element={<StaticWorldMap {...props} width={500} height={250} />} />
             <Route path="/origins" element={<SVGWorldMap filteredSatellites={props.filteredSatellites} onUpdateFilter={props.onUpdateFilter} worldJson={props.worldJson} width={500} height={250} />} />
-
-            <Route path="/launch" element={<h2 style={({ color: 'white' })}>TODO</h2>} />
-            <Route path="/decay" element={<h2 style={({ color: 'white' })}>TODO</h2>} />
 
             {/* For unmatched paths, give ViewNotFound */}
             <Route path="*" element={<Navigate to="/" />} />
@@ -112,21 +113,30 @@ export default function ViewControls(props: ViewContainerProps) {
 }
 
 
+interface ViewOption {
+  name: string;
+  icon: typeof GlobeIcon;
+  description: string;
+  href: string;
+}
 
 // NOTE: This isn't too extensible! The layout above and in the CSS is built for either 2 or 4 options total
-const viewOptions = [
+const viewOptions: ViewOption[] = [
   {
     name: "Orbits",
-    description: "See what different orbit types look like as they rotate around the Earth, as well as the ground tracks they make on the map.",
-    href: "/orbits",
+    icon: GlobeIcon,
+    description: "Examine the path of different orbit types around the Earth in 3D space.",
+    href: "/orbits/globe",
   },
-  // {
-  //   name: "Orbits2d",
-  //   description: "Temporary link until we implement switching within the view :)",
-  //   href: "/orbits/map",
-  // },
+  {
+    name: "Ground Tracks",
+    icon: MapIcon,
+    description: "See what parts of the Earth different orbit types cover on the world map.",
+    href: "/orbits/map",
+  },
   {
     name: "Origins",
+    icon: BarChartIcon,
     description: "Learn about which countries are the most active in the satellite space. Filter over time to see how global interest in space has evolved.",
     href: "/origins",
   },

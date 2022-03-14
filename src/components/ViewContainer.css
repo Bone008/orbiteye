@@ -74,6 +74,7 @@
 .optionBlockContainer > *, .optionTabContainer > * {
   /* Match fade out of background image */
   transition: background-color 250ms ease;
+  cursor: pointer;
 }
 .optionBlockContainer > :hover, .optionTabContainer > :hover {
   color: white;
@@ -116,7 +117,7 @@
 /* Bottom section styles */
 .optionTabsAndViewContainer {
   display: grid;
-  grid-template-rows: 1fr 10fr;
+  grid-template-rows: 50px auto;
 }
 
 .optionTabContainer {
@@ -135,25 +136,36 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
+  
   color: rgba(255, 255, 255, 0.66);
   border-bottom: 2px solid #222;
+  background-color: #222922;
 }
 
 .optionTab:hover {
   color: white;
   background-color: #111;
+  border-bottom-color: #111;
 }
 
 .optionTab.selected {
   color: white;
+  background-color: black;
   border-bottom-color: white;
+}
+
+.optionTab .icon {
+  margin-right: 10px;
 }
 
 
 /* Background images */
 .__Orbits_img::before {
   background-image: url(../assets/ModeOrbits.png);
+}
+
+.__GroundTracks_img::before {
+  background-image: url(../assets/ModeGroundTracks.png);
 }
 
 .__Origins_img::before {

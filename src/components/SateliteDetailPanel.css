@@ -58,12 +58,8 @@
   cursor: help;
 }
 
-a {
+.MainDetailPanel a {
   color: lightblue
-}
-
-p {
-  text-align: justify;
 }
 
 .DetailDiv {

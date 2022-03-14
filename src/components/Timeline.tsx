@@ -12,8 +12,10 @@ import { styled } from '@mui/material/styles';
 
 /** Time in milliseconds to delay updating the filter after the slider has been dragged. */
 const DEBOUNCE_FILTER_UPDATE_MS = 400;
-const FALLBACK_DATE_RANGE = { min: 1957, max: 2022 };
 const MARK_STEP_SIZE_YEARS = 5;
+
+// TODO: Render timeline initially with the following defaults
+// const FALLBACK_DATE_RANGE = { min: 1957, max: 2022 };
 
 let globalUpdateTimeoutId = 0;
 
@@ -88,7 +90,7 @@ function calculateMarks(minYear: number, maxYear: number) {
   // Round down to nearest decade.
   const lastMark = maxYear - (maxYear % MARK_STEP_SIZE_YEARS);
 
-  return d3.range(firstMark, maxYear + 1, MARK_STEP_SIZE_YEARS).map(value => ({ value, label: String(value) }));
+  return d3.range(firstMark, lastMark + 1, MARK_STEP_SIZE_YEARS).map(value => ({ value, label: String(value) }));
 }
 
 /**Styling for the slider, using styled from Material UI https://mui.com/system/styled/ */

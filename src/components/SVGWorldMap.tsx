@@ -34,10 +34,11 @@ export default function WorldMap(reqProps: WorldMapProps) {
   const assoWidth = 170
   const assoHeight = 20
 
+  const onUpdateFilter = props.onUpdateFilter;
   useEffect(() => {
     // Quickfix: Reset the first time this is opened.
-    props.onUpdateFilter(new FilterSettings({}));
-  }, []);
+    onUpdateFilter(new FilterSettings({}));
+  }, [onUpdateFilter]);
 
   // Reference to the main SVG element
   const svgRef = useRef<SVGSVGElement>(null!);
@@ -71,7 +72,9 @@ export default function WorldMap(reqProps: WorldMapProps) {
     // More dynamic in low numbers
     .domain([min, min + (max - min) * 0.125, min + (max - min) * 0.25, min + (max - min) * 0.375, min + (max - min) * 0.5, min + (max - min) * 0.625, min + (max - min) * 0.75, min + (max - min) * 0.875, max])
 
-  function updateMap() {
+
+  // Render/update world map
+  useEffect(() => {
 
     tooltip
       .style('opacity', 0)
@@ -328,12 +331,8 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .attr('width', 2 * sizeCircle)
       .attr('height', 2 * sizeCircle)
       .attr("r", sizeCircle) */
-  }
 
-  // Render/update world map
-  useEffect(() => {
-    updateMap()
-  }, [props.filteredSatellites, props.worldJson.features, mapProjection]);
+  }, [props.filteredSatellites, props.worldJson.features, mapProjection, colorScale, nbSatellitePerCountry, pathGenerator, tooltip]);
 
   return (
     <div className="WorldMap" style={{ padding: "0", background: "lightblue" }}>
