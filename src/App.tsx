@@ -50,12 +50,11 @@ export default function App() {
   ReactModal.setAppElement("#root");
 
   return (
+    <HashRouter>
     <div className="App">
       <div className='mainView'>
-        <div className='mapView'>
-          <HashRouter>
+          <div className='mapView'>
             <ViewContainer filteredSatellites={filteredSatellites} onUpdateFilter={setFilterSettings} selectedSatellite={selectedSatellite} setSelectedSatellite={updateSelected} worldJson={worldJson} />
-          </HashRouter>
         </div >
         <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} selectedSatellite={selectedSatellite} openOrbitExplainer={() => setOrbitExplainerOpen(true)} />
       </div >
@@ -65,10 +64,11 @@ export default function App() {
         isOpen={orbitExplainerOpen}
         onRequestClose={() => setOrbitExplainerOpen(false)}
         contentLabel="Orbit Type Explainer Modal"
-      >
+        >
         <XIcon onClick={() => setOrbitExplainerOpen(false)} height="2em" width="2em" style={{ position: "absolute", right: "5px", top: "5px", zIndex: 2 }} />
         <OrbitExplainer />
       </Modal>
     </div >
+    </HashRouter>
   );
 }
