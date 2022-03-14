@@ -56,6 +56,13 @@ export default function WorldMap(__props: StaticWorldMapProps) {
     [props.filteredSatellites, props.traceLimit]
   );
 
+  // If shown, move selected satellite to end of array so it is rendered on top.
+  const indexOfSelected = shownSatellites.indexOf(props.selectedSatellite!);
+  if (indexOfSelected >= 0) {
+    shownSatellites.splice(indexOfSelected, 1);
+    shownSatellites.push(props.selectedSatellite!);
+  }
+
   // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
   const selectedSatellite = props.selectedSatellite;
   const setSelectedSatellite = props.setSelectedSatellite;
