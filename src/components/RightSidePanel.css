@@ -3,13 +3,13 @@
   flex-direction: column;
   height: 100%;
   background-color: #3e5958;
-  justify-content: space-between;
   min-width: 25vw;
   max-width: 30vw; /* TODO: this is a band-aid fix. See #69 */
 }
 
 .FilterPart{
   overflow: hidden auto;
+  flex-grow: 1;
 }
 
 .DetailPart{
