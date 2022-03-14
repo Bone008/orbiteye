@@ -24,7 +24,7 @@ export default function Legend(props: LegendProps) {
 function OrbitTypesLegend(props: {}) {
   return (
     <div className="Legend">
-      <div className="title">Orbit types</div>
+      <div className="title">Orbit Types</div>
       {Object.entries(COLOR_PALETTE_ORBITS).map(([name, color]) =>
         <div key={name} className="entry">
           <div className="entryColor" style={{ backgroundColor: color }}></div>

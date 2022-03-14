@@ -34,9 +34,12 @@ export default function ViewControls(props: ViewContainerProps) {
     ref.current.querySelector(".optionTabsAndViewContainer")?.classList.remove("hidden");
   }
 
-  const optionBlocks = viewOptions.map(opt => {
+  const optionBlocks = viewOptions.map((opt, i) => {
     // Set up background image
-    const backgroundImg = "__" + opt.name.replace(' ', '') + "_img"
+    const backgroundImg = "__" + opt.name.replace(' ', '') + "_img";
+
+    const stretchLast: boolean = viewOptions.length % 2 == 1 && i == viewOptions.length - 1;
+    const style: React.CSSProperties = stretchLast ? { gridColumn: "1/3" } : {};
 
     return (
       <NavLink
@@ -44,7 +47,7 @@ export default function ViewControls(props: ViewContainerProps) {
         className={({ isActive }) => `optionBlock ${backgroundImg}` + (isActive ? ' selected' : '')}
         to={opt.href}
         onClick={showBot}
-      // style={style as React.CSSProperties}
+        style={style}
       >
         <div className="optionContainer">
           <p className="optionTitle">{opt.name}</p>
@@ -100,9 +103,6 @@ export default function ViewControls(props: ViewContainerProps) {
             <Route path="/orbits/map" element={<StaticWorldMap {...props} width={500} height={250} />} />
             <Route path="/origins" element={<SVGWorldMap filteredSatellites={props.filteredSatellites} onUpdateFilter={props.onUpdateFilter} worldJson={props.worldJson} width={500} height={250} />} />
 
-            <Route path="/launch" element={<h2 style={({ color: 'white' })}>TODO</h2>} />
-            <Route path="/decay" element={<h2 style={({ color: 'white' })}>TODO</h2>} />
-
             {/* For unmatched paths, give ViewNotFound */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
@@ -125,13 +125,13 @@ const viewOptions: ViewOption[] = [
   {
     name: "Orbits",
     icon: GlobeIcon,
-    description: "See what different orbit types look like as they rotate around the Earth.",
+    description: "Examine the path of different orbit types around the Earth in 3D space.",
     href: "/orbits/globe",
   },
   {
     name: "Ground Tracks",
     icon: MapIcon,
-    description: "Find out what ground tracks different orbit types make on the world map.",
+    description: "See what parts of the Earth different orbit types cover on the world map.",
     href: "/orbits/map",
   },
   {
