@@ -31,9 +31,9 @@ export default function LegendMap(props: LegendProps) {
     mapLegend.append("text")
       .attr("transform", "rotate(-90)")
       .attr("x", margin - props.height / 2)
-      .attr("y", -3)
+      .attr("y", -4)
       .style("text-anchor", "middle")
-      .text("Number of satellite")
+      .text("Number of satellites")
       .style("fill", "white");
 
     const groupLegend = mapLegend
@@ -59,8 +59,8 @@ export default function LegendMap(props: LegendProps) {
       .style("fill", "lightgrey")
       .attr("width", 10)
       .attr("height", margin)
-      .attr("y", 3 * margin + legendStep * sizeRect)
-      .attr("x", -23)
+      .attr("y", 3 * margin + legendStep * sizeRect - 2) //changes location in the y axis of gray color square of 'No data' in the legend
+      .attr("x", 0) //changes location in x axis of gray color square of 'No data' in the legend
 
     const mapLegendText = d3.select(svgRef.current)
       .select("g.mapLegendText")
@@ -100,8 +100,8 @@ export default function LegendMap(props: LegendProps) {
       .append('text')
       .text('No data')
       .style("fill", "white")
-      .attr("y", 4 * margin + legendStep * sizeRect)
-      .attr("x", 2 - 13)
+      .attr("y", 4 * margin-2 + legendStep * sizeRect)
+      .attr("x", 2 + 10)
 
   }, [props]);
 
