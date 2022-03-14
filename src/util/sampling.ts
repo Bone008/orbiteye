@@ -39,7 +39,7 @@ export function smartSampleSatellites(satellites: Satellite[], limit: number): S
     remainingOutCount -= satellitesByClass.size;
   }
 
-  for (const [orbitClass, satellitesInClass] of satellitesByClass.entries()) {
+  for (const [, satellitesInClass] of satellitesByClass.entries()) {
     const currentInCount = satellitesInClass.length - bonusEachClass;
     const currentOutCount = Math.round(currentInCount / remainingInCount * remainingOutCount) || 0;
     remainingInCount -= currentInCount;
@@ -49,7 +49,6 @@ export function smartSampleSatellites(satellites: Satellite[], limit: number): S
     for (const sat of sampleFromSingleClass(satellitesInClass, totalFromThisClass)) {
       result.push(sat);
     }
-    console.log(`smartSampleSatellites: took ${totalFromThisClass} from ${orbitClass}`);
   }
 
   return result;
@@ -62,7 +61,6 @@ function* sampleFromSingleClass(satellitesInClass: Satellite[], num: number): It
   // For satellites this ensures that both "old" and "new" satellites are represented in the sample.
   const numFromFront = Math.ceil(num / 2);
   const numFromBack = num - numFromFront;
-  console.log(satellitesInClass);
   for (let i = 0; i < numFromFront; i++) {
     yield satellitesInClass[i];
   }
