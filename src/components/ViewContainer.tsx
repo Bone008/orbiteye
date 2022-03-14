@@ -91,7 +91,7 @@ export default function ViewControls(props: ViewContainerProps) {
         </div>
 
         {/* Prevent grid blowout https://css-tricks.com/preventing-a-grid-blowout/ */}
-        <div style={{ minWidth: 0, backgroundColor: "black" }}>
+        <div style={{ minWidth: 0, minHeight: 0, backgroundColor: "black" }}>
           <Routes>
             <Route path="/" element={null} />
             <Route path="/orbits" element={<Navigate to="/orbits/globe" replace />} />

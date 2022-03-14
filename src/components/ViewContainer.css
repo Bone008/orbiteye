@@ -117,7 +117,7 @@
 /* Bottom section styles */
 .optionTabsAndViewContainer {
   display: grid;
-  grid-template-rows: 1fr 10fr;
+  grid-template-rows: 50px auto;
 }
 
 .optionTabContainer {
