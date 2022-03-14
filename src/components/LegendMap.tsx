@@ -19,25 +19,17 @@ export default function LegendMap(props: LegendProps) {
     const mapLegend = d3.select(svgRef.current)
       .select("g.mapLegend")
 
-    /*     const array = Array.from(props.satelliteNumber)
-        const max = d3.max(array, d => d[1]) as number
-        const min = d3.min(array, d => d[1]) as number
-     */
-    /*     // Color scale
-        const colorScale = d3.scaleLinear<string>()
-          .range(["lightgreen", "green", "darkgreen", "orange"])
-          // More dynamic in low numbers
-          .domain([min, min + (max - min) / 15, min + (max - min) / 2, max]) */
+    const margin = 10
 
-    const legendStep = 9
-    const h = (props.max - props.min) / 10
+    const legendStep = 50
+    const h = (props.max - props.min) / (legendStep + 1)
     const legendArray = Array((legendStep + 2))
-    const sizeRect = 15
+    const sizeRect = (props.height - 4 * margin) / (legendStep + 1)
 
     // Legend title
     mapLegend.append("text")
       .attr("transform", "rotate(-90)")
-      .attr("x", - props.height / 2)
+      .attr("x", margin - props.height / 2)
       .attr("y", -3)
       .style("text-anchor", "middle")
       .text("Number of satellite")
@@ -53,12 +45,21 @@ export default function LegendMap(props: LegendProps) {
       .transition()
       .duration(800)
       .style("fill", function (_, i) {
-        if (!i) return 'lightgrey';
         return props.colorScale(props.min + Math.floor(i * h));
       })
-      .attr("y", function (_, i) { return 7.5 + i * sizeRect; })
-      .attr('width', sizeRect)
+      .attr("y", function (_, i) {
+        return margin + i * sizeRect;
+      })
+      .attr('width', 10)
       .attr('height', sizeRect)
+
+    mapLegend
+      .append('rect')
+      .style("fill", "lightgrey")
+      .attr("width", 10)
+      .attr("height", margin)
+      .attr("y", 3 * margin + legendStep * sizeRect)
+      .attr("x", -23)
 
     const mapLegendText = d3.select(svgRef.current)
       .select("g.mapLegendText")
@@ -67,19 +68,39 @@ export default function LegendMap(props: LegendProps) {
       .selectAll('text')
       .data(legendArray)
 
+    function roundNumber(nb: number) {
+      if (nb > 1000) {
+        return Math.round(nb / 1000) * 1000
+      } else if (nb > 100) {
+        return Math.round(nb / 100) * 100
+      } else if (nb > 10) {
+        return Math.round(nb / 10) * 10
+      }
+      return nb
+    }
+
     // Legend text D3 with updates
     groupLegendText
       .join('text')
       .text((_, i) => {
         if (!(i * h) && i != 0) return "";
         if (!i) return '0';
-        return (props.min + Math.floor(i * h))
+        if (i % 10 === 5) return roundNumber(props.min + Math.floor(i * h))
+        if (i === legendStep) return props.max
+        return ""//(props.min + Math.floor(i * h))
       })
       .transition()
       .duration(800)
       .attr("y", function (_, i) { return 20.5 + i * sizeRect }) //Don't get why 13 (+ 7.5)
-      .attr("x", sizeRect + 2)
+      .attr("x", 10 + 2)
       .style("fill", "white");
+
+    mapLegendText
+      .append('text')
+      .text('No data')
+      .style("fill", "white")
+      .attr("y", 4 * margin + legendStep * sizeRect)
+      .attr("x", 2 - 13)
   }
 
   useEffect(() => update(), [props.satelliteNumber])

@@ -5,7 +5,7 @@ import { Satellite } from '../model/satellite';
 import { DefaultValues } from '../util/util';
 import { Feature } from 'geojson';
 import { WorldMapJSON } from "../model/data_loader";
-import { fromIsoA3ToSatCat } from '../model/mapping';
+import { fromIsoA3ToSatCat, OWNER_SHORT_CODE_TO_FULL } from '../model/mapping';
 import { FilterSettings, SetFilterCallback } from '../model/filter_settings';
 import LegendMap from './LegendMap';
 
@@ -28,7 +28,7 @@ const defaultProps: DefaultValues<WorldMapProps> = {
 export default function WorldMap(reqProps: WorldMapProps) {
   const props = { ...defaultProps, ...reqProps } as Required<WorldMapProps>; // Use defaults where necessary
 
-  const height = 250
+  const height = 300
   const width = 600
 
   const assoWidth = 170
@@ -57,15 +57,19 @@ export default function WorldMap(reqProps: WorldMapProps) {
 
   const nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => 1), d => d.owner);
 
+  //console.log(d3.rollup(props.filteredSatellites, v => d3.sum(v, d => d.launchMassKg), d => d.owner))
+  //const nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => d.launchMassKg), d => d.owner);
+
   const array = Array.from(nbSatellitePerCountry)
   const max = d3.max(array, d => d[1]) as number
   const min = d3.min(array, d => d[1]) as number
 
   // Color scale
-  const colorScale = d3.scaleLinear<string>()
-    .range(["lightgreen", "green", "darkgreen", "orange"])
+  const colorScale = d3.scaleLog<string>() ///CHange scale color / round number
+    //.range(["darkblue", "green", "lightgreen", "orange", "darkblue", "green", "lightgreen", "orange", "yellow"])
+    .range(["#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c", "#f9d057", "#f29e2e", "#e76818", "#d7191c"])
     // More dynamic in low numbers
-    .domain([min, min + (max - min) / 15, min + (max - min) / 2, max])
+    .domain([min, min + (max - min) * 0.125, min + (max - min) * 0.25, min + (max - min) * 0.375, min + (max - min) * 0.5, min + (max - min) * 0.625, min + (max - min) * 0.75, min + (max - min) * 0.875, max])
 
   function updateMap() {
 
@@ -126,7 +130,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
       const countOfSatellite = nbSatellitePerCountry.get(fromIsoA3ToSatCat[satCatCode])
 
       // If undefined/unknown, we put it in grey
-      if (!countOfSatellite) return "lightgrey"
+      if (!countOfSatellite && countOfSatellite !== 0) return "lightgrey"
 
       // Otherwise we put it in a color scale
       return colorScale(countOfSatellite)
@@ -145,6 +149,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .attr("d", d => pathGenerator(d))
       .attr("stroke", "grey")
       .attr("stroke-width", "0.1px")
+      .style("cursor", "pointer")
       // Some mouse interactions
       .on('mouseover', mouseOver)
       .on('mousemove', mouseMove)
@@ -152,7 +157,6 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .transition()
       .duration(800)
       .attr("fill", colorCountry)
-
 
     // Set up zoom and panning
     const zoom = d3.zoom<SVGSVGElement, unknown>()
@@ -166,86 +170,17 @@ export default function WorldMap(reqProps: WorldMapProps) {
     d3.select(svgRef.current)
       .call(zoom);
 
-   /*  const mapLegend = d3.select(svgRef2.current)
-      .select("g.mapLegend")
-
-    const legendStep = 9
-    const h = (max - min) / 10
-    const legendArray = Array((legendStep + 2))
-    const sizeRect = 15
-
-    // Legend title
-    mapLegend.append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("x", - legendHeight / 2)
-      .attr("y", -3)
-      .style("text-anchor", "middle")
-      .text("Number of satellite")
-      .style("fill", "white");
-
-    const groupLegend = mapLegend
-      .selectAll('rect')
-      .data(legendArray)
-
-    // Legend d3 with update
-    groupLegend
-      .join('rect')
-      .transition()
-      .duration(800)
-      .style("fill", function (_, i) {
-        if (!i) return 'lightgrey';
-        return colorScale(min + Math.floor(i * h));
-      })
-      .attr("y", function (_, i) { return 7.5 + i * sizeRect; })
-      .attr('width', sizeRect)
-      .attr('height', sizeRect)
-
-    const mapLegendText = d3.select(svgRef2.current)
-      .select("g.mapLegendText")
-
-    const groupLegendText = mapLegendText
-      .selectAll('text')
-      .data(legendArray)
-
-    // Legend text D3 with updates
-    groupLegendText
-      .join('text')
-      .text((_, i) => {
-        if (!(i * h) && i != 0) return "";
-        if (!i) return '0';
-        return (min + Math.floor(i * h))
-      })
-      .transition()
-      .duration(800)
-      .attr("y", function (_, i) { return 20.5 + i * sizeRect }) //Don't get why 13 (+ 7.5)
-      .attr("x", sizeRect + 2)
-      .style("fill", "white"); */
-
-
     // Mouse over -> tooltip appears and opacity changes on the country
     function mouseOver2(e: any, d: any) {
       var nbSat = nbSatellitePerCountry.get(d)
       if (!nbSat) nbSat = 0
       tooltip
         .style('opacity', 1)
-        .text(d + ": " + nbSat + " satellite(s) with selected filters.")
-
-      d3.select(e.srcElement)
-        .style("opacity", .8)
-        .style("stroke", "black")
+        .text(OWNER_SHORT_CODE_TO_FULL[d] + ": " + nbSat + " satellite(s) with selected filters.")
     }
 
     // Mouse move -> tooltip moves
     function mouseMove2(e: any) {
-      /*       console.log(e.pageX, window.innerWidth / 2)
-      
-            if (e.pageX > window.innerWidth / 2) {
-              console.log("right")
-              tooltip
-                .style('left', (e.pageX - 100) + 'px')
-                .style('top', (e.pageY - 100) + 'px')
-                .style('opacity', 0.5)
-            } */
       tooltip
         .style('left', (e.pageX + 10) + 'px')
         .style('top', (e.pageY - 100) + 'px')
@@ -259,32 +194,28 @@ export default function WorldMap(reqProps: WorldMapProps) {
         .text('')
         .style('opacity', 0)
         .style('left', '10000px')
-
-      d3.select(e.srcElement)
-        .style("opacity", 1)
-        .style("stroke", "grey")
     }
-    const assoMap = d3.select(svgRef3.current)
+    const assoMap = d3.select(svgRef.current)
       .select("g.assoMap")
 
     //const countArray = new Array(29)
     const countArray = ["AB", "ABS", "AC", "CHBZ"
-      , "ESA", "ESRO", "EUME", "EUTE", "AB", "ABS"
-      , "ESA", "ESRO", "EUME", "EUTE", "AB", "ABS"
-      , "ESA", "ESRO", "AB", "ABS", "AC", "CHBZ"
-      , "ESA", "ESRO", "EUME", "EUTE", "AB", "ABS"
-      , "ESA"]
+      , "ESA", "ESRO", "EUME", "EUTE", "FGER", "FRIT", "GLOB", "GRSA", "IM", "IRID"
+      , "ISRO", "ISS", "ITSO", "NATO", "O3B", "ORB", "PRES", "RASC", "SEAL", "SES",
+      "SGJP", "STCT", "TMMC", "USBZ"]
 
-    const sizeCircle = 3
-    const marginBetweenCircles = (assoWidth - countArray.length * sizeCircle * 2) / (countArray.length + 1)
+    const sizeCircle = 15
+    const marginBetweenCircles = (width - 4 * sizeCircle - countArray.length * sizeCircle * 2) / (countArray.length + 1)
+
+    const marginTop = 260;
 
     assoMap
       .append("text")
-      .attr("x", assoWidth / 2)
-      .attr("y", 4)
+      .attr("x", width / 2)
+      .attr("y", marginTop - sizeCircle - 5)
       .style("text-anchor", "middle")
-      .style("font-size", sizeCircle)
-      .text("Union of countries")
+      .style("font-size", 2 * sizeCircle / 3)
+      .text("Partnerships / Collaborations")
       .style("fill", "white");
 
     const groupAssoMap = assoMap
@@ -295,10 +226,11 @@ export default function WorldMap(reqProps: WorldMapProps) {
 
     const radialpoints = [
       [0, sizeCircle],
-      [Math.PI * 0.4, sizeCircle],
-      [Math.PI * 0.8, sizeCircle],
-      [Math.PI * 1.2, sizeCircle],
-      [Math.PI * 1.6, sizeCircle],
+      [Math.PI * 0.33, sizeCircle],
+      [Math.PI * 0.66, sizeCircle],
+      [Math.PI * 0.99, sizeCircle],
+      [Math.PI * 1.33, sizeCircle],
+      [Math.PI * 1.66, sizeCircle],
       [Math.PI * 2, sizeCircle]
     ];
 
@@ -308,9 +240,20 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .join('path')
       .attr("stroke", "grey")
       .attr("stroke-width", "0.1px")
-      .on('mouseover', mouseOver2)
+      .style("cursor", "pointer")
+      .on('mouseover', (e, d) => {
+        mouseOver2(e, d)
+        d3.select(e.srcElement)
+          .style("opacity", .8)
+          .style("stroke", "black")
+      })
       .on('mousemove', mouseMove2)
-      .on('mouseout', mouseOut2)
+      .on('mouseout', (e, d) => {
+        mouseOut2(e)
+        d3.select(e.srcElement)
+          .style("opacity", 1)
+          .style("stroke", "grey")
+      })
       .attr('d', radialData)
       .transition()
       .duration(800)
@@ -324,9 +267,36 @@ export default function WorldMap(reqProps: WorldMapProps) {
         return colorScale(countOfSatellite)
       })
       .attr("transform", function (_, i) {
-        if (i % 2) return "translate(" + (sizeCircle + marginBetweenCircles + i * (sizeCircle * 2 + marginBetweenCircles)) + "," + 15 + ")"
-        return "translate(" + (sizeCircle + marginBetweenCircles + i * (sizeCircle * 2 + marginBetweenCircles)) + "," + 10 + ")"
+        if (i % 2) return "translate(" + (3 * sizeCircle + marginBetweenCircles + i * (sizeCircle * 2 + marginBetweenCircles)) + "," + (marginTop + sizeCircle + 2 * sizeCircle / 3) + ")"
+        //if (i % 3 == 1) return "translate(" + (sizeCircle + marginBetweenCircles + i * (sizeCircle * 2 + marginBetweenCircles)) + "," + (marginTop + 13) + ")"
+        return "translate(" + (3 * sizeCircle + marginBetweenCircles + i * (sizeCircle * 2 + marginBetweenCircles)) + "," + marginTop + ")"
       });
+
+    const groupAssoLabel = assoMap
+      .selectAll('text')
+      .data(countArray)
+
+    groupAssoLabel
+      .join('text')
+      .style("text-anchor", "middle")
+      .style("font-size", 2 * sizeCircle / 3)
+      .attr("class", "assoLabel")
+      .attr('fill', "black")
+      .style("cursor", "pointer")
+      .on('mouseover', mouseOver2)
+      .on('mousemove', mouseMove2)
+      .on('mouseout', mouseOut2)
+      .transition()
+      .duration(800)
+      .attr("x", function (_, i) {
+        if (i % 2) return (3 * sizeCircle + marginBetweenCircles + i * (sizeCircle * 2 + marginBetweenCircles))
+        return (3 * sizeCircle + marginBetweenCircles + i * (sizeCircle * 2 + marginBetweenCircles))
+      })
+      .attr("y", function (_, i) {
+        if (i % 2) return marginTop + sizeCircle + 2 * sizeCircle / 3 + sizeCircle / 4
+        return marginTop + sizeCircle / 4
+      })
+      .text(d => d)
 
     // Legend d3 with update
     /* groupAssoMap
@@ -370,22 +340,23 @@ export default function WorldMap(reqProps: WorldMapProps) {
       <div id="tooltip"></div>
       <div>
         <svg ref={svgRef}
-          viewBox={`10 10 ${width}, ${height}`}
+          viewBox={`0 0 ${width}, ${height}`}
           preserveAspectRatio="xMidYMid meet"
           className="WorldMap" style={{ backgroundColor: "lightblue", padding: "0" }}
         >
           <g className="mapLayer"></g>
+          <g className="assoMap"></g>
         </svg>
       </div>
       <LegendMap satelliteNumber={nbSatellitePerCountry} width={15} height={180} colorScale={colorScale} max={max} min={min}></LegendMap>
-      <div className="assoMapContainer">
+      {/*       <div className="assoMapContainer">
         <svg ref={svgRef3}
           viewBox={`0 0 ${assoWidth}, ${assoHeight}`}
           preserveAspectRatio="xMidYMid meet"
         >
           <g className="assoMap"></g>
         </svg>
-      </div>
+      </div> */}
     </div>
   );
 }
