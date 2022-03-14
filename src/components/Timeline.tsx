@@ -49,8 +49,16 @@ export default function Timeline(props: TimelineProps) {
   const currentMaxYear = currentFilter.maxLaunchTimestamp ? new Date(currentFilter.maxLaunchTimestamp).getFullYear() : datasetMaxYear;
 
   const [rangeSliderValue, setRangeSliderValue] = useState<[number, number]>([currentMinYear, currentMaxYear]);
+
   // Reset to max range whenever the underlying data changes.
   useEffect(() => setRangeSliderValue([datasetMinYear, datasetMaxYear]), [datasetMinYear, datasetMaxYear]);
+  // Reset to filter value whenever it is changed from the outside.
+  useEffect(() => {
+    const hasChanged = currentMinYear !== rangeSliderValue[0] || currentMaxYear !== rangeSliderValue[1];
+    if (!globalUpdateTimeoutId && hasChanged) {
+      setRangeSliderValue([currentMinYear, currentMaxYear]);
+    }
+  }, [currentMinYear, currentMaxYear, rangeSliderValue]);
 
   /*The slider component uses this onChange to set new values when the thumbs are moved*/
   const rangeChange = (e: Event, input: number | number[]) => {
@@ -60,6 +68,7 @@ export default function Timeline(props: TimelineProps) {
     window.clearTimeout(globalUpdateTimeoutId);
     globalUpdateTimeoutId = window.setTimeout(() => {
       changeSelectedRange(min, max);
+      globalUpdateTimeoutId = 0;
     }, DEBOUNCE_FILTER_UPDATE_MS);
   };
 
