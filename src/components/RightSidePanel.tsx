@@ -23,7 +23,7 @@ export default function RightSidePanel(props: RightPanelProps) {
     if (showDetailPanel !== shouldShow) {
       setShowDetailPanel(shouldShow);
     }
-  }, [props.selectedSatellite, showDetailPanel]);
+  }, [props.selectedSatellite, /*showDetailPanel <-- This is intentionally NOT part of the deps since it would just reset itself again.*/]);
 
   const ref = useRef<HTMLDivElement>(null!);
 
