@@ -72,26 +72,12 @@ export default function WorldMap(reqProps: WorldMapProps) {
     // More dynamic in low numbers
     .domain([min, min + (max - min) * 0.125, min + (max - min) * 0.25, min + (max - min) * 0.375, min + (max - min) * 0.5, min + (max - min) * 0.625, min + (max - min) * 0.75, min + (max - min) * 0.875, max])
 
-
   // Render/update world map
   useEffect(() => {
 
     tooltip
       .style('opacity', 0)
       .style('left', '10000px')
-
-    //Computing the number of satellite per country within the filtered satellites dataset
-    //const nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => 1), d => d.owner);
-
-  /*     const array = Array.from(nbSatellitePerCountry)
-      const max = d3.max(array, d => d[1]) as number
-      const min = d3.min(array, d => d[1]) as number
-  
-      // Color scale
-      const colorScale = d3.scaleLinear<string>()
-          .range(["lightgreen", "green", "darkgreen", "orange"])
-          // More dynamic in low numbers
-          .domain([min, min + (max - min) / 15, min + (max - min) / 2, max]) */
 
     // Mouse over -> tooltip appears and opacity changes on the country
     function mouseOver(e: any, d: any) {
@@ -188,7 +174,6 @@ export default function WorldMap(reqProps: WorldMapProps) {
         .style('left', (e.pageX + 10) + 'px')
         .style('top', (e.pageY - 100) + 'px')
         .style('opacity', 1)
-
     }
 
     // Mouse over -> tooltip disappears and opacity changes back to normal on the country
@@ -258,8 +243,6 @@ export default function WorldMap(reqProps: WorldMapProps) {
           .style("stroke", "grey")
       })
       .attr('d', radialData)
-      .transition()
-      .duration(800)
       .style("fill", (d, _) => {
         const countOfSatellite = nbSatellitePerCountry.get(d)
 
@@ -282,15 +265,12 @@ export default function WorldMap(reqProps: WorldMapProps) {
     groupAssoLabel
       .join('text')
       .style("text-anchor", "middle")
-      .style("font-size", 2 * sizeCircle / 3)
       .attr("class", "assoLabel")
       .attr('fill', "black")
       .style("cursor", "pointer")
       .on('mouseover', mouseOver2)
       .on('mousemove', mouseMove2)
       .on('mouseout', mouseOut2)
-      .transition()
-      .duration(800)
       .attr("x", function (_, i) {
         if (i % 2) return (3 * sizeCircle + marginBetweenCircles + i * (sizeCircle * 2 + marginBetweenCircles))
         return (3 * sizeCircle + marginBetweenCircles + i * (sizeCircle * 2 + marginBetweenCircles))

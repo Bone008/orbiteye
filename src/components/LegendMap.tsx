@@ -21,9 +21,17 @@ export default function LegendMap(props: LegendProps) {
       .select("g.mapLegend")
 
     const margin = 10
+    const deltah = props.max - props.min
+
+    const colorScale = d3.scaleLinear<string>() ///CHange scale color / round number
+      //.range(["darkblue", "green", "lightgreen", "orange", "darkblue", "green", "lightgreen", "orange", "yellow"])
+      .range(["#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c", "#f9d057", "#f29e2e", "#e76818", "#d7191c"])
+      // More dynamic in low numbers
+      .domain([props.min, props.min + deltah * 0.125, props.min + deltah * 0.25, props.min + deltah * 0.375, props.min + deltah * 0.5, props.min + deltah * 0.625, props.min + deltah * 0.75, props.min + deltah * 0.875, props.max])
+
 
     const legendStep = 50
-    const h = (props.max - props.min) / (legendStep + 1)
+    const h = deltah / (legendStep + 1)
     const legendArray = Array((legendStep + 2))
     const sizeRect = (props.height - 4 * margin) / (legendStep + 1)
 
@@ -46,7 +54,8 @@ export default function LegendMap(props: LegendProps) {
       .transition()
       .duration(800)
       .style("fill", function (_, i) {
-        return props.colorScale(props.min + Math.floor(i * h));
+        return colorScale(props.min + Math.floor(i * h));
+
       })
       .attr("y", function (_, i) {
         return margin + i * sizeRect;
