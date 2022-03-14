@@ -60,7 +60,7 @@ export default function GlobeView(__props: GlobeViewProps) {
         </Canvas>
       </Suspense>
       <Legend type="orbitTypes" />
-      <Legend type="switch2d3d" />
+      {/*<Legend type="switch2d3d" />*/}
       <Legend type="warnShowingLimited" numShown={shownSatellites.length} numTotal={props.filteredSatellites.length} orbitLimit={props.orbitLimit} />
     </div>
   );

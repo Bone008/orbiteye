@@ -2,7 +2,7 @@ import './ViewContainer.css';
 
 import { useRef } from 'react';
 import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom';
-import { ChevronDownIcon, ChevronUpIcon } from './Icons';
+import { BarChartIcon, ChevronDownIcon, ChevronUpIcon, GlobeIcon, MapIcon } from './Icons';
 import GlobeView from './GlobeView';
 import StaticWorldMap from './StaticWorldMap';
 import SVGWorldMap from './SVGWorldMap';
@@ -36,7 +36,7 @@ export default function ViewControls(props: ViewContainerProps) {
 
   const optionBlocks = viewOptions.map(opt => {
     // Set up background image
-    const backgroundImg = "__" + opt.name + "_img"
+    const backgroundImg = "__" + opt.name.replace(' ', '') + "_img"
 
     return (
       <NavLink
@@ -62,6 +62,7 @@ export default function ViewControls(props: ViewContainerProps) {
         to={opt.href}
         onClick={showBot}
       >
+        {opt.icon({ width: 21, height: 21, className: 'icon' })}
         {opt.name}
       </NavLink>
     );
@@ -112,21 +113,30 @@ export default function ViewControls(props: ViewContainerProps) {
 }
 
 
+interface ViewOption {
+  name: string;
+  icon: typeof GlobeIcon;
+  description: string;
+  href: string;
+}
 
 // NOTE: This isn't too extensible! The layout above and in the CSS is built for either 2 or 4 options total
-const viewOptions = [
+const viewOptions: ViewOption[] = [
   {
     name: "Orbits",
-    description: "See what different orbit types look like as they rotate around the Earth, as well as the ground tracks they make on the map.",
-    href: "/orbits",
+    icon: GlobeIcon,
+    description: "See what different orbit types look like as they rotate around the Earth.",
+    href: "/orbits/globe",
   },
-  // {
-  //   name: "Orbits2d",
-  //   description: "Temporary link until we implement switching within the view :)",
-  //   href: "/orbits/map",
-  // },
+  {
+    name: "Ground Tracks",
+    icon: MapIcon,
+    description: "Find out what ground tracks different orbit types make on the world map.",
+    href: "/orbits/map",
+  },
   {
     name: "Origins",
+    icon: BarChartIcon,
     description: "Learn about which countries are the most active in the satellite space. Filter over time to see how global interest in space has evolved.",
     href: "/origins",
   },

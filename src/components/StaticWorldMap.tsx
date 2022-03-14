@@ -131,7 +131,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
         <g className="traceLayer"></g>
       </svg>
       <Legend type="orbitTypes" />
-      <Legend type="switch2d3d" />
+      {/*<Legend type="switch2d3d" />*/}
       <Legend type="warnShowingLimited" numShown={shownSatellites.length} numTotal={props.filteredSatellites.length} orbitLimit={props.traceLimit} />
     </div>
   );

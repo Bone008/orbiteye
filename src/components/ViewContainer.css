@@ -136,9 +136,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
+  
   color: rgba(255, 255, 255, 0.66);
   border-bottom: 2px solid #222;
+  background-color: #222922;
 }
 
 .optionTab:hover {
@@ -148,13 +149,22 @@
 
 .optionTab.selected {
   color: white;
+  background-color: black;
   border-bottom-color: white;
+}
+
+.optionTab .icon {
+  margin-right: 10px;
 }
 
 
 /* Background images */
 .__Orbits_img::before {
   background-image: url(../assets/ModeOrbits.png);
+}
+
+.__GroundTracks_img::before {
+  /* TODO: add img */
 }
 
 .__Origins_img::before {

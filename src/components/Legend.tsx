@@ -35,6 +35,7 @@ function OrbitTypesLegend(props: {}) {
   );
 }
 
+/** Obsolete, has been replaced by a separate navigation tab as of 2022-03-16. */
 function SwitchMode(props: {}) {
   return (
     <div className="SwitchMode">
