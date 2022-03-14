@@ -1,7 +1,7 @@
 import './SateliteDetailPanel.css'
 import { SetStateAction } from 'react'
 import { ChevronDownIcon, ChevronUpIcon } from './Icons';
-import { ACTIVE_OPERATIONAL_STATUS_SET, OperationalStatus, Satellite } from '../model/satellite';
+import { OperationalStatus, Satellite } from '../model/satellite';
 import { OWNER_SHORT_CODE_TO_FULL, ORBIT_TYPE_CODE_TO_FULL_NAME } from '../model/mapping'
 import { formatISODate } from '../util/util';
 import { BoxArrowUp } from './Icons';
@@ -48,25 +48,25 @@ function DetailComponent({ sat }: { sat: Satellite | null }) {
     return <div className='NoSelection'>No satellite selected.</div>;
   }
 
-  function OperationalStatusComponent(sat: Satellite) {
-    const status = OP_STATUS_LABELS[sat.operationalStatus]
-    if (status == "unknown") return "The operational status is now unknown"
-    const op = OP_STATUS_LABELS[sat.operationalStatus] + (sat.decayDate ? ' at ' + formatISODate(sat.decayDate) : '')
-    return "It is now " + op
-  }
+  // function OperationalStatusComponent(sat: Satellite) {
+  //   const status = OP_STATUS_LABELS[sat.operationalStatus]
+  //   if (status === "unknown") return "The operational status is now unknown"
+  //   const op = OP_STATUS_LABELS[sat.operationalStatus] + (sat.decayDate ? ' at ' + formatISODate(sat.decayDate) : '')
+  //   return "It is now " + op
+  // }
 
-  function SectorComponent(sat: Satellite) {
-    const sectors = sat.users
-    if (!sectors.length) return "and the sector of usage of this satellite is unknown."
-    function sectorTextMapping(sectors: string[]) {
-      return "in the " + sectors.map((s, i) => {
-        if (sectors.length == 1) return s + " sector."
-        if (i + 1 == sectors.length) return " and " + s + " sectors."
-        return s
-      })
-    }
-    return <strong>{sectorTextMapping(sectors)}</strong>
-  }
+  // function SectorComponent(sat: Satellite) {
+  //   const sectors = sat.users
+  //   if (!sectors.length) return "and the sector of usage of this satellite is unknown."
+  //   function sectorTextMapping(sectors: string[]) {
+  //     return "in the " + sectors.map((s, i) => {
+  //       if (sectors.length === 1) return s + " sector."
+  //       if (i + 1 === sectors.length) return " and " + s + " sectors."
+  //       return s
+  //     })
+  //   }
+  //   return <strong>{sectorTextMapping(sectors)}</strong>
+  // }
 
   return (
     <div className="DetailDiv">
@@ -92,7 +92,7 @@ function DetailComponent({ sat }: { sat: Satellite | null }) {
           <span className='label help' title='This is an international identifier assigned to artificial objects in space by the UN Committee on Space Research.'>International ID: </span>
         </p>
         <p className='DetailRowValue'>{sat.id}</p>
-        <a className='DetailRowValue' href={'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=' + encodeURIComponent(sat.id)} target='_blank'>NASA<BoxArrowUp />
+        <a className='DetailRowValue' href={'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=' + encodeURIComponent(sat.id)} target='_blank' rel="noreferrer">NASA<BoxArrowUp />
         </a>
       </div>
 
@@ -123,7 +123,7 @@ function DetailComponent({ sat }: { sat: Satellite | null }) {
         {sat.users.length > 0 &&
           <p className='DetailRowValue'>{sat.users + ' '}</p>
         }
-        {sat.users.length == 0 &&
+        {sat.users.length === 0 &&
           <p className='DetailRowValue'>{'Unkown'}</p>
         }
       </div>
@@ -133,7 +133,7 @@ function DetailComponent({ sat }: { sat: Satellite | null }) {
         {sat.purpose.length > 0 &&
           <p className='DetailRowValue'>{sat.purpose + ' '}</p>
         }
-        {sat.purpose.length == 0 &&
+        {sat.purpose.length === 0 &&
           <p className='DetailRowValue'>{'Unkown'}</p>
         }
       </div>

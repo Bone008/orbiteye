@@ -15,7 +15,8 @@ export type LegendProps =
 export default function LegendMap(props: LegendProps) {
   const svgRef = useRef<SVGSVGElement>(null!);
 
-  function update() {
+  // Main update function
+  useEffect(() => {
     const mapLegend = d3.select(svgRef.current)
       .select("g.mapLegend")
 
@@ -71,7 +72,7 @@ export default function LegendMap(props: LegendProps) {
     groupLegendText
       .join('text')
       .text((_, i) => {
-        if (!(i * h) && i != 0) return "";
+        if (!(i * h) && i !== 0) return "";
         if (!i) return '0';
         return (props.min + Math.floor(i * h))
       })
@@ -80,9 +81,8 @@ export default function LegendMap(props: LegendProps) {
       .attr("y", function (_, i) { return 20.5 + i * sizeRect }) //Don't get why 13 (+ 7.5)
       .attr("x", sizeRect + 2)
       .style("fill", "white");
-  }
 
-  useEffect(() => update(), [props.satelliteNumber])
+  }, [props]);
 
   return <div className="legendContainer">
     <svg ref={svgRef}

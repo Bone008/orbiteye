@@ -23,7 +23,7 @@ export default function RightSidePanel(props: RightPanelProps) {
     if (showDetailPanel !== shouldShow) {
       setShowDetailPanel(shouldShow);
     }
-  }, [props.selectedSatellite]);
+  }, [props.selectedSatellite, showDetailPanel]);
 
   const ref = useRef<HTMLDivElement>(null!);
 
@@ -33,7 +33,7 @@ export default function RightSidePanel(props: RightPanelProps) {
     } else {
       ref.current.style.height = 'auto'
     }
-  }, []);
+  }, [showDetailPanel]);
 
   return (
     <div className='RightPanel'>

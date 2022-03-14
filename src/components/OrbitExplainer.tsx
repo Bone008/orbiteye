@@ -34,7 +34,7 @@ export default function OrbitExplainer() {
           the orbit determines a lot about what the satellite may be good for! Below is a diagram of the most
           broad categories of orbits. Click through the slides to learn more about each one.
         </p>
-        <img src={OverviewImg} />
+        <img src={OverviewImg} alt="Diagram of orbit types around the globe." />
       </SwiperSlide>
       <SwiperSlide className='OrbitExplainerSlide'>
         <h1>Elliptical Orbits</h1>
@@ -44,7 +44,7 @@ export default function OrbitExplainer() {
           out on the other. This allows them to have unique <i>ground tracks</i>, which is the path they travel over
           the Earth's surface.
         </p>
-        <img src={EllipticalImg} />
+        <img src={EllipticalImg} alt="Diagram of an elliptical orbit around the globe." />
       </SwiperSlide>
       <SwiperSlide className='OrbitExplainerSlide'>
         <h1>Low Earth Orbits</h1>
@@ -53,7 +53,7 @@ export default function OrbitExplainer() {
           orbits are the cheapest to launch and keep satellites in quick communication distance. However, since
           they are so close, these satellites have a limited field of view of the Earth.
         </p>
-        <img src={LEOImg} />
+        <img src={LEOImg} alt="Diagram of a Low Earth orbit around the globe." />
       </SwiperSlide>
       <SwiperSlide className='OrbitExplainerSlide'>
         <h1>Medium Earth Orbits</h1>
@@ -62,7 +62,7 @@ export default function OrbitExplainer() {
           Most notably, GPS satellites use MEO with a 12 hour orbital period around the equator. This means that
           they pass over the same two spots on Earth every day.
         </p>
-        <img src={MEOImg} />
+        <img src={MEOImg} alt="Diagram of a Medium Earth orbit around the globe." />
       </SwiperSlide>
       <SwiperSlide className='OrbitExplainerSlide'>
         <h1>Geosynchronous Orbits</h1>
@@ -72,7 +72,7 @@ export default function OrbitExplainer() {
           When the satellite is rotating exactly around the equator, the ground track is just a single spot! This special case
           is called a <i>geostationary</i> orbit.
         </p>
-        <img src={GEOImg} />
+        <img src={GEOImg} alt="Diagram of a geosynchronous orbit around the globe." />
       </SwiperSlide>
     </Swiper>
   );

@@ -1,4 +1,4 @@
-import { ACTIVE_OPERATIONAL_STATUS_SET, OperationalStatus, OrbitClass, Satellite } from "./satellite";
+import { ACTIVE_OPERATIONAL_STATUS_SET, OrbitClass, Satellite } from "./satellite";
 
 export type SetFilterCallback = (newSettings: FilterSettings) => void;
 

@@ -1,5 +1,5 @@
 import { Satellite } from "../model/satellite";
-import { getAverageOrbitTimeMS, getLastAntemeridianCrossingTimeMS, getOrbitTrack, getOrbitTrackSync, LngLat } from 'tle.js';
+import { getAverageOrbitTimeMS, getLastAntemeridianCrossingTimeMS, getOrbitTrackSync, LngLat } from 'tle.js';
 import * as THREE from 'three';
 import { twoline2satrec, propagate, EciVec3 } from 'satellite.js';
 

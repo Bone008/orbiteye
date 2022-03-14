@@ -38,7 +38,7 @@ export default function ViewControls(props: ViewContainerProps) {
     // Set up background image
     const backgroundImg = "__" + opt.name.replace(' ', '') + "_img";
 
-    const stretchLast: boolean = viewOptions.length % 2 == 1 && i == viewOptions.length - 1;
+    const stretchLast: boolean = viewOptions.length % 2 === 1 && i === viewOptions.length - 1;
     const style: React.CSSProperties = stretchLast ? { gridColumn: "1/3" } : {};
 
     return (

@@ -50,6 +50,8 @@ export default function WorldMap(__props: StaticWorldMapProps) {
   const shownSatellites = props.filteredSatellites.filter(sat => !!sat.tle).slice(0, props.traceLimit);
 
   // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
+  const selectedSatellite = props.selectedSatellite;
+  const setSelectedSatellite = props.setSelectedSatellite;
   useEffect(() => {
     const traceLayer = d3.select(svgRef.current).select("g.traceLayer").selectAll("path")
       .data(shownSatellites);
@@ -64,22 +66,22 @@ export default function WorldMap(__props: StaticWorldMapProps) {
             .merge(traceLayer as any) */
       .join("path")
       .attr("fill", "none")
-      .attr("stroke", sat => sat === props.selectedSatellite ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray')
-      .attr("stroke-width", sat => sat === props.selectedSatellite ? "5px" : "1px")
+      .attr("stroke", sat => sat === selectedSatellite ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray')
+      .attr("stroke-width", sat => sat === selectedSatellite ? "5px" : "1px")
       .attr("stroke-linecap", "round")
       .on('mouseover', (e, sat) => {
-        if (sat !== props.selectedSatellite) {
+        if (sat !== selectedSatellite) {
           d3.select(e.srcElement).attr("stroke-width", "5px");
         }
       })
       .on('mouseout', (e, d) => {
-        if (d !== props.selectedSatellite) {
+        if (d !== selectedSatellite) {
           d3.select(e.srcElement).attr("stroke-width", "1px");
         }
       })
       .on('click', (e: MouseEvent, sat) => {
         e.stopPropagation();
-        props.setSelectedSatellite(sat);
+        setSelectedSatellite(sat);
       })
       .attr("d", (sat, i) => {
         const trace: [number, number][] = groundTraceSync(sat).map(lngLat => [lngLat[0], lngLat[1]]);
@@ -101,7 +103,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
 
     //traceLayer.exit().remove()
 
-  }, [props.filteredSatellites, props.traceLimit, mapProjection]);
+  }, [props.filteredSatellites, selectedSatellite, setSelectedSatellite, props.traceLimit, mapProjection, shownSatellites]);
 
   // Set up zoom and pan
   const zoom = d3.zoom()
