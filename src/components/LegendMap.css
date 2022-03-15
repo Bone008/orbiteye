@@ -1,8 +1,8 @@
 .legendContainer {
   height: 40%;
+  width: 14%;
   position: absolute;
   padding: 0.3em;
   top: 1em;
   left: 1em;
-  background-color: rgba(0, 0, 0, 0.3);
 }

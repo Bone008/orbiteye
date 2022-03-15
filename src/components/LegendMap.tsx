@@ -120,7 +120,7 @@ export default function LegendMap(props: LegendProps) {
       viewBox={`0 0 ${props.width}, ${props.height}`}
       preserveAspectRatio="xMidYMid meet"
       style={{
-        backgroundColor: "transparent",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
         width: "100%",
         height: "100%",
       }}

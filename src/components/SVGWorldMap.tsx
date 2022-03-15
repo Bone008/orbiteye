@@ -204,7 +204,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .attr("x", width / 2)
       .attr("y", marginTop - sizeCircle - 5)
       .style("text-anchor", "middle")
-      .style("font-size", 2 * sizeCircle / 3)
+      .style("font-size", 2 * sizeCircle / 3 + 'px')
       .text("Partnerships / Collaborations")
       .style("fill", "hsl(0, 3%, 40%)");
 
@@ -283,7 +283,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
     groupAssoLabel
       .join('text')
       .style("text-anchor", "middle")
-      .style("font-size", 2 * sizeCircle / 3 - 1)
+      .style("font-size", "10px")
       .attr("class", "assoLabel")
       .attr('fill', "light")
       .style("cursor", "default")
