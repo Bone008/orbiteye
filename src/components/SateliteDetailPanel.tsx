@@ -100,7 +100,7 @@ function DetailComponent(props: DetailPanelProps) {
       <div className='DetailRow'>
         <div className='DetailRowLabel'>More info</div>
         <div className='DetailRowValue'>
-          {[nasaLink, ...sat.sources].map(link => <SourceLink link={link} />)}
+          {[nasaLink, ...sat.sources].map((link, i) => <SourceLink key={`Source ${i}`} link={link} />)}
           {sat.comments ? <>
             <br />
             <span className='comments'>{sat.comments}</span>
