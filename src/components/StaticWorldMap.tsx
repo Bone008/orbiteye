@@ -148,8 +148,6 @@ export default function WorldMap(__props: StaticWorldMapProps) {
   return (
     <div className="WorldMap" style={{ padding: "0" }}>
       <svg ref={svgRef}
-        //width={props.width}
-        //height={props.height}
         viewBox={`0 0 ${500}, ${250}`}
         preserveAspectRatio="xMidYMid meet"
         className="WorldMap"

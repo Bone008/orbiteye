@@ -1,6 +1,14 @@
 .WorldMap {
+  height: 100%;
+  width: 100%;
   padding: 0;
-  background-color: "red";
+  position: relative; /* To anchor the legend at the correct container. */
+  background-color: black;
+}
+
+.worldMapSVG {
+  background-color: rgb(218, 238, 255);
+  padding: 0;
 }
 
 #tooltip {
@@ -24,11 +32,5 @@
   background-color: rgba(173, 216, 230, 0.3);
   border-top: solid 1px rgb(117, 117, 117);  
 }
-
-.assoLabel {
-  color: red;
-  background-color: red;
-}
-
 
 

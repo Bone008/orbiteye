@@ -21,17 +21,25 @@ export default function LegendMap(props: LegendProps) {
       .select("g.mapLegend")
 
     const margin = 10
+    const deltah = props.max - props.min
 
+    const colorScale = d3.scaleLinear<string>() ///CHange scale color / round number
+      //.range(["darkblue", "green", "lightgreen", "orange", "darkblue", "green", "lightgreen", "orange", "yellow"])
+      .range(["#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c", "#f9d057", "#f29e2e", "#e76818", "#d7191c"])
+      // More dynamic in low numbers
+      .domain([props.min, props.min + deltah * 0.125, props.min + deltah * 0.25, props.min + deltah * 0.375, props.min + deltah * 0.5, props.min + deltah * 0.625, props.min + deltah * 0.75, props.min + deltah * 0.875, props.max])
+
+    const marginLeft = 6
     const legendStep = 50
-    const h = (props.max - props.min) / (legendStep + 1)
+    const h = deltah / (legendStep + 1)
     const legendArray = Array((legendStep + 2))
-    const sizeRect = (props.height - 4 * margin) / (legendStep + 1)
+    const sizeRect = (props.height - 5 * margin) / (legendStep + 1)
 
     // Legend title
     mapLegend.append("text")
       .attr("transform", "rotate(-90)")
-      .attr("x", -1 + margin - props.height / 2)
-      .attr("y", -4)
+      .attr("x", 1.4 * margin - props.height / 2)
+      .attr("y", marginLeft + 10)
       .style("text-anchor", "middle")
       .text("Number of satellites")
       .style("fill", "white");
@@ -46,11 +54,13 @@ export default function LegendMap(props: LegendProps) {
       .transition()
       .duration(800)
       .style("fill", function (_, i) {
-        return props.colorScale(props.min + Math.floor(i * h));
+        return colorScale(props.min + Math.floor(i * h));
+
       })
       .attr("y", function (_, i) {
         return margin + i * sizeRect;
       })
+      .attr("x", 2 * marginLeft + 10)
       .attr('width', 10)
       .attr('height', sizeRect)
 
@@ -59,8 +69,8 @@ export default function LegendMap(props: LegendProps) {
       .style("fill", "lightgrey")
       .attr("width", 10)
       .attr("height", margin)
-      .attr("y", 3 * margin + legendStep * sizeRect -2) //changes location in the y axis of gray color square of 'No data' in the legend
-      .attr("x", -23) //changes location in x axis of gray color square of 'No data' in the legend
+      .attr("y", 3 * margin + legendStep * sizeRect - 2) //changes location in the y axis of gray color square of 'No data' in the legend
+      .attr("x", marginLeft) //changes location in x axis of gray color square of 'No data' in the legend
 
     const mapLegendText = d3.select(svgRef.current)
       .select("g.mapLegendText")
@@ -93,7 +103,7 @@ export default function LegendMap(props: LegendProps) {
       .transition()
       .duration(800)
       .attr("y", function (_, i) { return 20.5 + i * sizeRect }) //Don't get why 13 (+ 7.5)
-      .attr("x", 10 + 2)
+      .attr("x", 3 * marginLeft + 20)
       .style("fill", "white");
 
     mapLegendText
@@ -101,7 +111,7 @@ export default function LegendMap(props: LegendProps) {
       .text('No data')
       .style("fill", "white")
       .attr("y", 4 * margin + legendStep * sizeRect - 2)
-      .attr("x", 2 - 13)
+      .attr("x", 2 * marginLeft + 10)
 
   }, [props]);
 

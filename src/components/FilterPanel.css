@@ -44,6 +44,7 @@
 
 
 .SatCountText {
+  font-style: italic;
   color: white;
   margin: 1em 0em 1em 0em;
 }
