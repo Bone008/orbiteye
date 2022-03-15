@@ -1,3 +1,7 @@
+.ViewContainer {
+  --nav-height: 50px;
+}
+
 /* Wipe control styles */
 .wipeContainer {
   height: 100%;
@@ -19,7 +23,7 @@
 .optionBlockContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 5fr 5fr 1fr;
+  grid-template-rows: 5fr 5fr var(--nav-height);
 
   color: white;
   background-color: var(--nav-light);
@@ -122,7 +126,7 @@
 /* Bottom section styles */
 .optionTabsAndViewContainer {
   display: grid;
-  grid-template-rows: 50px auto;
+  grid-template-rows: var(--nav-height) auto;
 }
 
 .optionTabContainer {

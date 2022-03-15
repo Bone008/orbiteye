@@ -86,7 +86,7 @@ export default function ViewControls(props: ViewContainerProps) {
   const wipeUpButton = isHomePage ? null : <div className="wipeUpButton" onClick={showBot} style={wipeUpButtonStyle}><ChevronUpIcon /></div>;
 
   return (
-    <div ref={ref} className="wipeContainer">
+    <div ref={ref} className="ViewContainer wipeContainer">
       <div className={`wipe ${isHomePage ? "uncollapsible" : "hidden"} optionBlockContainer`} style={optionBlockContainerStyle}>
         {optionBlocks}
         {wipeUpButton}
