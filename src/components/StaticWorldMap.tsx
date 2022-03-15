@@ -70,14 +70,8 @@ export default function WorldMap(__props: StaticWorldMapProps) {
     const traceLayer = d3.select(svgRef.current).select("g.traceLayer").selectAll("path")
       .data(shownSatellites);
 
-    // Reset the container
-    //traceLayer.selectAll("*").remove();
-
     // Calculate all traces
     traceLayer
-      /*       .enter()
-            .append("path")
-            .merge(traceLayer as any) */
       .join("path")
       .attr("fill", "none")
       .attr("stroke", sat => sat === selectedSatellite ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray')
@@ -127,22 +121,21 @@ export default function WorldMap(__props: StaticWorldMapProps) {
         return pointsStr;
       })
 
+    // Set up zoom and pan
+    const zoom = d3.zoom()
+      .scaleExtent([1, 4])
+      .translateExtent([[0, 0], [props.width, props.height]])
+      .on('zoom', e => {
+        d3.select(svgRef.current).selectAll('g')
+          .attr('transform', e.transform);
+      });
 
-    //traceLayer.exit().remove()
+    d3.select(svgRef.current)
+      .call(zoom as any);
 
   }, [props.filteredSatellites, selectedSatellite, setSelectedSatellite, props.traceLimit, mapProjection, shownSatellites]);
 
-  // Set up zoom and pan
-  const zoom = d3.zoom()
-    .scaleExtent([1, 4])
-    .translateExtent([[0, 0], [props.width, props.height]])
-    .on('zoom', e => {
-      d3.select(svgRef.current).selectAll('g')
-        .attr('transform', e.transform);
-    });
 
-  d3.select(svgRef.current)
-    .call(zoom as any);
 
 
   return (
