@@ -22,7 +22,7 @@
   grid-template-rows: 5fr 5fr 1fr;
 
   color: white;
-  background-color: #222624;
+  background-color: var(--nav-light);
 }
 
 .optionBlockContainer.uncollapsible {
@@ -73,12 +73,12 @@
 /* Selector covers both actual options/tabs as well as the expand/collapse buttons */
 .optionBlockContainer > *, .optionTabContainer > * {
   /* Match fade out of background image */
-  transition: background-color 250ms ease;
+  transition: background-color 250ms ease, border-bottom-color 250ms ease;
   cursor: pointer;
 }
 .optionBlockContainer > :hover, .optionTabContainer > :hover {
   color: white;
-  background-color: #111;
+  background-color: var(--nav-dark);
 }
 
 .optionContainer {
@@ -129,7 +129,7 @@
   display: flex;
   justify-content: space-evenly;
   
-  background-color: #222624;
+  background-color: var(--nav-light);
 }
 
 .optionTab {
@@ -151,8 +151,8 @@
 
 .optionTab:hover {
   color: white;
-  background-color: #111;
-  border-bottom-color: #111;
+  background-color: var(--nav-dark);
+  border-bottom-color: var(--nav-dark);
 }
 
 /* Highlight Selected */
@@ -162,7 +162,7 @@
 
 .optionTab.selected, .optionBlock.selected {
   color: white;
-  background-color: black;
+  background-color: var(--nav-dark);
   border-bottom: 2px solid white;
 }
 

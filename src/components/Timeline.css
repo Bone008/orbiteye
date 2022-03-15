@@ -1,5 +1,5 @@
 .SliderContainer {
   justify-content: center;
-  background-color: black;
+  background-color: var(--timeline-dark);
   padding: 1.2em 2em 0em 2em
 }
