@@ -76,7 +76,7 @@
   display: flex;
   align-items: center;
 
-  background-color: rgba(160, 90, 0, 0.3);
+  background-color: var(--warning-red);
   font-size: 80%;
   color: white;
   text-align: left;

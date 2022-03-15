@@ -1,0 +1,29 @@
+:root {
+  /** Color scheme **/
+  /* from https://materialui.co/ */
+  --wet-asphalt: #34495E;
+  --midnight-blue: #2C3E50;
+  --blue-gray-600: #546E7A;
+  --blue-gray-700: #455A64;
+  --blue-gray-800: #37474F;
+  --blue-gray-900: #263238;
+  --deep-purple-700: #512DA8;
+  --deep-purple-800: #4527A0;
+  --deep-purple-900: #311B92;
+  --indigo-700: #303F9F;
+  --indigo-800: #283593;
+  --indigo-900: #1A237E;
+  --silver: #BDC3C7;
+  --gray-800: #424242;
+  --gray-900: #212121;
+  --orange-400-transparent: rgba(255, 167, 38, 0.7);
+
+
+  /** Apply colors to elements **/
+  --nav-light: var(--blue-gray-800);
+  --nav-dark: var(--blue-gray-900);
+  --right-side-light: var(--wet-asphalt);
+  --right-side-dark: var(--midnight-blue);
+  --timeline-dark: var(--gray-900);
+  --warning-red: var(--orange-400-transparent);
+}

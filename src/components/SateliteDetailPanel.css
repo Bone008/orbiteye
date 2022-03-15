@@ -17,14 +17,16 @@
   cursor: pointer;
   height: 40px;
   border: none;
-  background-color: #1f3b70;
-  color: white;
+  background-color: var(--right-side-dark);
+  color: var(--silver);
   width: 100%;
   padding: 1em;
+
+  border: 2px solid transparent;
 }
 
-.DetailButton:hover, .DetailButton:focus {
-  background-color: #1f3b80;
+.DetailButton:hover {
+  color: white;
 }
 
 .DetailTitle {

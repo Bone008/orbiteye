@@ -1,7 +1,7 @@
 .RightPanel{
   display: flex;
   flex-direction: column;
-  background-color: #1f3b50;
+  background-color: var(--right-side-light);
   width: 30vw;
 }
 
