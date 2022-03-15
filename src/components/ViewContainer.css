@@ -129,7 +129,7 @@
   display: flex;
   justify-content: space-evenly;
   
-  background-color: #222624;
+  background-color: #2b3450;
 }
 
 .optionTab {
@@ -162,7 +162,7 @@
 
 .optionTab.selected, .optionBlock.selected {
   color: white;
-  background-color: black;
+  background-color: #2b3440;
   border-bottom: 2px solid white;
 }
 
