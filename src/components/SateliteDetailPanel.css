@@ -1,86 +1,92 @@
-.MainDetailPanel, .DetailButton{
-  width: inherit;
-  background: transparent;
+.MainDetailPanel{
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  text-align: left;
 }
 
 .DetailDiv{
-  padding: 1em 0em 1em 0em;
-  height: fit-content;
+  overflow: hidden auto;
+  padding: 0.5em 0;
+  line-height: 130%;
   color: white;
-  padding: 0 1em 1em 1em;
 }
 
-/*Button style*/
 .DetailButton{
+  width: inherit;
   cursor: pointer;
   height: 40px;
-  border-color: transparent;
+  border: none;
   background-color: #294644;
   color: white;
   width: 100%;
   padding: 1em;
 }
 
-.DetailButton:hover{
+.DetailButton:hover, .DetailButton:focus {
   background-color: #304948;
 }
 
-/*Satelite name style*/
-.DetailHeaderRow{
-  display: flex;
-  margin: 0 0 -1em 0;
-  align-items: center;
+.DetailTitle {
+  padding: 0.2em 16px;
+  font-size: 120%;
+  font-weight: bold;
+  text-align: center;
 }
 
-.DetailHeader{
-  flex: 1 1 0;
-  margin: 0.5em 0 0 0;
-}
-
-.DetailSubHeader{
-  display: flex;
-  align-items: center;
-}
-
-.DetailSubHeaderValue{
-  font-size: small;
-  flex: 1 1 0;
-}
-
-.DetailSubHeaderValue a{
-  padding-left: 0.5em;
-  color: lightblue
-}
-
-
-/*Row style*/
 .DetailRow{
-  text-align: left;
+  padding: 0.2em 16px;
   display: flex;
-  margin: 0em 0 -1em 0;
-  align-items: center;
+}
+
+.DetailRow.spacer{
+  margin-top: 0.8em;
+}
+
+.DetailRow.subtitle {
+  padding-top: 0;
+  text-align: center;
+  font-style: italic;
+  font-weight: lighter;
+  font-size: 90%;
 }
 
 .DetailRowLabel{
+  flex: 0 0 90px;
+  padding-right: 8px;
+  font-size: 90%;
   color: white;
-  padding-left:1em;
-  width: 35%;
-  font-weight: bold;
+  opacity: 0.7;
 }
 
 .DetailRowValue{
+  flex-grow: 1;
   color: white;
-  padding-left:0.5em;
 }
 
-/*No selected sat style*/
+.DetailRow .sourceLink {
+  margin-right: 8px;
+  display: inline-block;
+  font-size: 90%;
+}
+
+.DetailRow .comments {
+  font-size: 90%;
+  font-style: italic;
+}
+
 .NoSelection {
   margin: 1em 0;
   font-style: italic;
   color: white;
   opacity: 0.8;
+  text-align: center;
 }
 
 .help {
   cursor: help;
+}
+
+.MainDetailPanel a {
+  color: lightblue
 }

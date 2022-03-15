@@ -123,7 +123,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
     }
 
     const mapLayer = d3.select(svgRef.current).select("g.mapLayer")
-      //.attr("transform", "translate(10, -20)")
+    //.attr("transform", "translate(10, -20)")
 
     // Creating the path to make the map
     const groupMap = mapLayer.selectAll("path")
@@ -182,7 +182,6 @@ export default function WorldMap(reqProps: WorldMapProps) {
         .style('left', '10000px')
     }
 
-
     const assoMap = d3.select(svgRef.current)
       .select("g.assoMap")
 
@@ -207,7 +206,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .style("text-anchor", "middle")
       .style("font-size", 2 * sizeCircle / 3)
       .text("Partnerships / Collaborations")
-      .style("fill", "white");
+      .style("fill", "hsl(0, 3%, 40%)");
 
     const groupAssoMap = assoMap
       .selectAll('path')
@@ -242,7 +241,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .join('path')
       .attr("stroke", "grey")
       .attr("stroke-width", "0.1px")
-      .style("cursor", "pointer")
+      //.style("cursor", "pointer")
       .on('mouseover', (e, d) => {
         mouseOver2(e, d)
         d3.select(e.srcElement)
@@ -282,9 +281,10 @@ export default function WorldMap(reqProps: WorldMapProps) {
     groupAssoLabel
       .join('text')
       .style("text-anchor", "middle")
+      .style("font-size", 2 * sizeCircle / 3 - 1)
       .attr("class", "assoLabel")
-      .attr('fill', "black")
-      .style("cursor", "pointer")
+      .attr('fill', "light")
+      .style("cursor", "default")
       .on('mouseover', mouseOver2)
       .on('mousemove', mouseMove2)
       .on('mouseout', mouseOut2)

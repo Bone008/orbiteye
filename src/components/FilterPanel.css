@@ -5,6 +5,7 @@
 }
 
 .FilterNameTag {
+  flex-shrink: 0;
   font-size:medium;
   color: white;
   width: 110px;
@@ -14,7 +15,6 @@
 .FilterNameTag.withInfo {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
 }
 
@@ -30,11 +30,8 @@
 }
 
 .DropDown {
-  width: 17rem;
-  max-width: 20rem;
+  flex-grow: 1;
   padding-left: 1em;
-  position: absolute;
-  right: 5px;
 }
 
 .optionValueCount {
@@ -47,6 +44,7 @@
 
 
 .SatCountText {
+  font-style: italic;
   color: white;
   margin: 1em 0em 1em 0em;
 }
@@ -68,7 +66,8 @@ a.headerName > h1 {
 .infoIcon {
   cursor: pointer;
   color: #fddd02;
-  min-width: 30px;
+  margin-left: 8px;
+  vertical-align: middle;
 
   transition: filter 200ms ease;
 }

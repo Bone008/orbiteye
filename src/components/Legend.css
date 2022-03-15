@@ -1,4 +1,5 @@
 .Legend {
+  pointer-events: none;
   position: absolute;
   top: 1em;
   right: 1em;
@@ -28,6 +29,7 @@
 }
 
 .SwitchMode {
+  pointer-events: none;
   position: absolute;
   top: 1em;
   left: 1em;
@@ -64,6 +66,7 @@
 }
 
 .WarnShowingLimited {
+  pointer-events: none;
   position: absolute;
   bottom: 1em;
   left: 50%;

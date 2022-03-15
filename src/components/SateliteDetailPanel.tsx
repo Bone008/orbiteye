@@ -1,15 +1,16 @@
 import './SateliteDetailPanel.css'
 import { SetStateAction } from 'react'
-import { ChevronDownIcon, ChevronUpIcon } from './Icons';
-import { OperationalStatus, Satellite } from '../model/satellite';
+import { ChevronDownIcon, ChevronUpIcon, InfoCircleIcon } from './Icons';
+import { OperationalStatus, OrbitClass, Satellite } from '../model/satellite';
 import { OWNER_SHORT_CODE_TO_FULL, ORBIT_TYPE_CODE_TO_FULL_NAME } from '../model/mapping'
-import { formatISODate } from '../util/util';
+import { formatDuration, formatISODate } from '../util/util';
 import { BoxArrowUp } from './Icons';
 
 export interface DetailPanelProps {
   satellite: Satellite | null;
   showDetail: boolean;
   setShowDetail: React.Dispatch<SetStateAction<boolean>>;
+  openOrbitExplainer: (orbitPage?: OrbitClass) => void;
 }
 
 
@@ -27,87 +28,109 @@ export default function SateliteDetailPanel(props: DetailPanelProps) {
     }
   }
 
-  /*{ButtonDirection()}*/
-
   return (
     <div className='MainDetailPanel'>
       <button type="button" className='DetailButton' onClick={openDetails}>{(props.showDetail ? 'Hide satellite details ' : 'See satellite details ')} {ButtonDirection()}
       </button>
-
-      <div className="detailsTest">
-        {props.showDetail ?
-          <DetailComponent sat={props.satellite} />
-          : null}
-      </div>
-
+      {props.showDetail ?
+        <DetailComponent {...props} />
+        : null}
     </div>
   );
 }
 
-function DetailComponent({ sat }: { sat: Satellite | null }) {
+function DetailComponent(props: DetailPanelProps) {
+  const sat = props.satellite;
   if (!sat) {
     return <div className='NoSelection'>No satellite selected.</div>;
   }
 
+  const nasaLink = 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=' + encodeURIComponent(sat.id);
+
   return (
     <div className="DetailDiv">
-      <div className='DetailHeaderRow'>
-        <h2 className='DetailHeader'>{sat.name}</h2>
+      <div className='DetailTitle'>
+        <span title={'International ID (COSPAR): ' + sat.id}>{sat.name}</span>
       </div>
 
-      <div className='DetailSubHeader'>
-        <p className='DetailSubHeaderValue'>
-          <span className='label help' title='This is an international identifier assigned to artificial objects in space by the UN Committee on Space Research.'>International ID: </span>
-          {sat.id}
-          <a href={'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=' + encodeURIComponent(sat.id)} target='_blank' rel="noreferrer">NASA<BoxArrowUp />
-          </a>
-        </p>
+      <div className='DetailRow subtitle'>
+        <div className='DetailRowValue'>
+          launched {formatISODate(sat.launchDate)}, {
+            OP_STATUS_LABELS[sat.operationalStatus] +
+            (sat.decayDate ? ' at ' + formatISODate(sat.decayDate) : '')}
+        </div>
       </div>
 
-      <div className='DetailRow'>
-        <p className='DetailRowLabel'>Orbit Type: </p>
-        <p className='DetailRowValue'>{ORBIT_TYPE_CODE_TO_FULL_NAME[sat.orbitClass]}</p>
-      </div>
-
-      <div className='DetailRow'>
-        <p className='DetailRowLabel'>Status: </p>
-        <p className='DetailRowValue'>{OP_STATUS_LABELS[sat.operationalStatus] +
-          (sat.decayDate ? ' at ' + formatISODate(sat.decayDate) : '')}</p>
+      <div className='DetailRow spacer'>
+        <div className='DetailRowLabel'>Orbit type</div>
+        <div className='DetailRowValue'>
+          {ORBIT_TYPE_CODE_TO_FULL_NAME[sat.orbitClass]}
+          <InfoCircleIcon className='infoIcon' onClick={() => props.openOrbitExplainer(sat.orbitClass)} />
+          {/*(sat.orbitType ? ` (${sat.orbitType})` : '')*/}
+        </div>
       </div>
 
       <div className='DetailRow'>
-        <p className='DetailRowLabel'>Owner: </p>
-        <p className='DetailRowValue'>{OWNER_SHORT_CODE_TO_FULL[sat.owner]}</p>
+        <div className='DetailRowLabel'>Orbit period</div>
+        <div className='DetailRowValue'>
+          {formatDuration(sat.periodMinutes)}
+          {/* sat.perigeeKm + ' - ' + sat.apogeeKm */}</div>
       </div>
 
+      <div className='DetailRow spacer'>
+        <div className='DetailRowLabel'>Owner</div>
+        <div className='DetailRowValue'>{OWNER_SHORT_CODE_TO_FULL[sat.owner] || sat.owner}</div>
+      </div>
 
       <div className='DetailRow'>
-        <p className='DetailRowLabel'>Launch date: </p>
-        <p className='DetailRowValue'>{formatISODate(sat.launchDate)}</p>
+        <div className='DetailRowLabel'>Sector</div>
+        <div className='DetailRowValue'>{sat.users.join(', ') || 'unknown'}</div>
       </div>
 
       <div className='DetailRow'>
-        <p className='DetailRowLabel'>Sector: </p>
-        {sat.users.length > 0 &&
-          <p className='DetailRowValue'>{sat.users + ' '}</p>
-        }
-        {sat.users.length === 0 &&
-          <p className='DetailRowValue'>{'Unkown'}</p>
-        }
+        <div className='DetailRowLabel'>Purpose</div>
+        <div className='DetailRowValue'>
+          {sat.purpose.join(', ') || 'unknown'}
+          {sat.detailedPurpose ? <>
+            <br />
+            <span className='comments'>{sat.detailedPurpose}</span>
+          </> : null}</div>
       </div>
-
 
       <div className='DetailRow'>
-        <p className='DetailRowLabel'>Purpose: </p>
-        {sat.purpose.length > 0 &&
-          <p className='DetailRowValue'>{sat.purpose + ' '}</p>
-        }
-        {sat.purpose.length === 0 &&
-          <p className='DetailRowValue'>{'Unkown'}</p>
-        }
+        <div className='DetailRowLabel'>More info</div>
+        <div className='DetailRowValue'>
+          {[nasaLink, ...sat.sources].map((link, i) => <SourceLink key={`Source ${i}`} link={link} />)}
+          {sat.comments ? <>
+            <br />
+            <span className='comments'>{sat.comments}</span>
+          </> : null}
+        </div>
       </div>
-
     </div>
+  );
+}
+
+function SourceLink({ link }: { link: string }) {
+  let label = 'External link';
+  try {
+    label = new URL(link).hostname.toLowerCase();
+    if (label.endsWith('.nasa.gov')) {
+      label = 'NASA';
+    }
+    else if (label.startsWith('www.')) {
+      label = label.substr(4);
+    }
+  } catch (e) { }
+
+  return (
+    <a
+      className='sourceLink'
+      href={link}
+      target='_blank'
+      rel='noreferrer'>
+      {label}&nbsp;<BoxArrowUp />
+    </a>
   );
 }
 
@@ -119,5 +142,5 @@ const OP_STATUS_LABELS: Record<OperationalStatus, string> = {
   STANDBY: 'operational',
   NON_OP: 'non-operational',
   DECAYED: 'decayed',
-  UNKNOWN: 'unknown',
+  UNKNOWN: 'unknown status',
 };

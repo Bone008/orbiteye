@@ -40,6 +40,7 @@ export async function fetchSatellitesAsync(): Promise<Satellite[]> {
     // Protect against messy default values for arrays
     users: Array.isArray(raw.users) ? raw.users.map(u => u ? u.trim() : '') : [],
     purpose: Array.isArray(raw.purpose) ? raw.purpose : [],
+    sources: Array.isArray(raw.sources) ? raw.sources : [],
 
     tle: tleMap.get(raw.id),
   })).filter(sat =>
