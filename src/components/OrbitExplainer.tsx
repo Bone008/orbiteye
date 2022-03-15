@@ -13,8 +13,33 @@ import MEOImg from '../assets/Meo.png';
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import { Satellite } from '../model/satellite';
+import { DefaultValues } from '../util/util';
 
-export default function OrbitExplainer() {
+
+export type OrbitExplainerSlideName = Exclude<"Overview" | Satellite["orbitClass"], "">;
+
+export interface OrbitExplainerProps {
+  initialSlide?: OrbitExplainerSlideName
+}
+
+const defaultProps: DefaultValues<OrbitExplainerProps> = {
+  initialSlide: "Overview",
+}
+
+export default function OrbitExplainer(__props: OrbitExplainerProps) {
+  const props: Required<OrbitExplainerProps> = { ...defaultProps, ...__props };
+
+  const slideNums: Record<OrbitExplainerSlideName, number> = {
+    "Overview": 0,
+    "Elliptical": 1,
+    "LEO": 2,
+    "MEO": 3,
+    "GEO": 4,
+  }
+
+  const initialSlide = slideNums[props.initialSlide];
+
   return (
     <Swiper
       slidesPerView={1}
@@ -23,6 +48,7 @@ export default function OrbitExplainer() {
       pagination={{
         clickable: true,
       }}
+      initialSlide={initialSlide}
       navigation={true}
       modules={[Pagination, Navigation]}
       className="OrbitExplainerSwiper"

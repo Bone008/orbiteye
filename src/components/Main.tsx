@@ -4,10 +4,10 @@ import Timeline from './Timeline';
 import ViewContainer from './ViewContainer';
 import RightSidePanel from './RightSidePanel';
 import Modal from 'react-modal';
-import OrbitExplainer from './OrbitExplainer';
+import OrbitExplainer, { OrbitExplainerSlideName } from './OrbitExplainer';
 import { FilterSettings } from '../model/filter_settings';
 import { useEffect, useMemo, useState } from 'react';
-import { Satellite } from '../model/satellite';
+import { OrbitClass, Satellite } from '../model/satellite';
 import { fetchSatellitesAsync, fetchWorldMapAsync, WorldMapJSON } from '../model/data_loader';
 import ReactModal from 'react-modal';
 import { XIcon } from './Icons';
@@ -20,7 +20,7 @@ export function Main() {
   const [filterSettings, setFilterSettings] = useState(DEFAULT_FILTER_SETTINGS);
   const [selectedSatellite, setSelectedSatellite] = useState<Satellite | null>(null);
   const [worldJson, setWorldJson] = useState<WorldMapJSON>({ type: "", name: "", crs: [""], features: [] })
-  const [orbitExplainerOpen, setOrbitExplainerOpen] = useState(false);
+  const [orbitExplainerState, setOrbitExplainerState] = useState<false | undefined | OrbitExplainerSlideName>(false);
 
   const updateSelected = (newSatellite: Satellite | null) => {
     if (newSatellite !== selectedSatellite) {
@@ -51,23 +51,28 @@ export function Main() {
   // Modal library requires this for accessibility
   ReactModal.setAppElement("#root");
 
+  const openOrbitExplainer = (orbitPage?: OrbitClass) => {
+    if (orbitPage) setOrbitExplainerState(orbitPage as OrbitExplainerSlideName);
+    else setOrbitExplainerState(undefined);
+  }
+
   return (
     <div className={`App ${isHomePage ? "expanded" : ""}`}>
       <div className="mainView">
         <div className='mapView'>
           <ViewContainer filteredSatellites={filteredSatellites} onUpdateFilter={setFilterSettings} selectedSatellite={selectedSatellite} setSelectedSatellite={updateSelected} worldJson={worldJson} />
         </div >
-        <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} selectedSatellite={selectedSatellite} openOrbitExplainer={() => setOrbitExplainerOpen(true)} />
+        <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} selectedSatellite={selectedSatellite} openOrbitExplainer={openOrbitExplainer} />
       </div >
       <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
 
       <Modal
-        isOpen={orbitExplainerOpen}
-        onRequestClose={() => setOrbitExplainerOpen(false)}
+        isOpen={orbitExplainerState !== false}
+        onRequestClose={() => setOrbitExplainerState(false)}
         contentLabel="Orbit Type Explainer Modal"
       >
-        <XIcon onClick={() => setOrbitExplainerOpen(false)} height="2em" width="2em" style={{ position: "absolute", right: "5px", top: "5px", zIndex: 2 }} />
-        <OrbitExplainer />
+        <XIcon onClick={() => setOrbitExplainerState(false)} height="2em" width="2em" style={{ position: "absolute", right: "5px", top: "5px", zIndex: 2 }} />
+        <OrbitExplainer initialSlide={orbitExplainerState as OrbitExplainerSlideName | undefined} />
       </Modal>
     </div>
   );
