@@ -180,7 +180,7 @@ export const fromIsoA3ToSatCat: Record<string, string> =
   //ISS: "International Space Station",
   ITA: "IT",
   //ITSO: "International Telecommunications Satellite Organization (INTELSAT)",
-  JPN: "Japan",
+  JPN: "JPN",
   KAZ: "KAZ",
   KEN: "KEN",
   LAO: "LAOS",
