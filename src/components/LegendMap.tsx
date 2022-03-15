@@ -33,12 +33,12 @@ export default function LegendMap(props: LegendProps) {
     const legendStep = 50
     const h = deltah / (legendStep + 1)
     const legendArray = Array((legendStep + 2))
-    const sizeRect = (props.height - 4 * margin) / (legendStep + 1)
+    const sizeRect = (props.height - 5 * margin) / (legendStep + 1)
 
     // Legend title
     mapLegend.append("text")
       .attr("transform", "rotate(-90)")
-      .attr("x", margin - props.height / 2)
+      .attr("x", 1.5 * margin - props.height / 2)
       .attr("y", -3)
       .style("text-anchor", "middle")
       .text("Number of satellite")
