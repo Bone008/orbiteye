@@ -143,7 +143,7 @@ export default function FilterPanel(props: FilterPanelProps) {
 
   return (
     <div className="FilterPanel">
-      <Link to="/"> <h1 className='headerName'>OrbitEye</h1> </Link>
+      <Link to="/" className='headerName'> <h1>OrbitEye</h1> </Link>
       <p className='SatCountText'>Matches: {props.filteredSatellites.length} of {props.allSatellites.length} satellites.</p>
       <label className='FilterRowDiv'>
         <div>
