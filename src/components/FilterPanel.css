@@ -51,8 +51,14 @@
   margin: 1em 0em 1em 0em;
 }
 
-/*Project name at top*/
-.headerName {
+/* Project name at top */
+a.headerName {
+  /* Ignore default a tag styles */
+  text-decoration: inherit;
+  color: inherit;
+}
+
+a.headerName > h1 {
   background: transparent;
   position: relative;
   color: white;

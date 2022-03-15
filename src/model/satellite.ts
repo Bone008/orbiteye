@@ -115,8 +115,8 @@ export const ACTIVE_OPERATIONAL_STATUS_SET = new Set<OperationalStatus>([
 export const ALL_ORBIT_CLASSES = [
   'LEO', 'MEO', 'GEO', 'Elliptical'
 ] as const;
-/** Orbit's high-level categorization. */
-export type OrbitClass = typeof ALL_ORBIT_CLASSES[number];
+/** Orbit's high-level categorization. Empty string ^= uncategorized */
+export type OrbitClass = typeof ALL_ORBIT_CLASSES[number] | '';
 
 
 export const LEO_ORBIT_TYPES = [

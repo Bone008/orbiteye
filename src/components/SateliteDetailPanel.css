@@ -4,11 +4,13 @@
 }
 
 .DetailDiv{
-  padding-bottom: 1em;
+  padding: 1em 0em 1em 0em;
   height: fit-content;
   color: white;
+  padding: 0 1em 1em 1em;
 }
 
+/*Button style*/
 .DetailButton{
   cursor: pointer;
   height: 40px;
@@ -23,30 +25,55 @@
   background-color: #304948;
 }
 
+/*Satelite name style*/
+.DetailHeaderRow{
+  display: flex;
+  margin: 0 0 -1em 0;
+  align-items: center;
+}
+
+.DetailHeader{
+  flex: 1 1 0;
+  margin: 0.5em 0 0 0;
+}
+
+.DetailSubHeader{
+  display: flex;
+  align-items: center;
+}
+
+.DetailSubHeaderValue{
+  font-size: small;
+  flex: 1 1 0;
+}
+
+.DetailSubHeaderValue a{
+  padding-left: 0.5em;
+  color: lightblue
+}
+
+
+/*Row style*/
 .DetailRow{
   text-align: left;
   display: flex;
-  height: 2em;
+  margin: 0em 0 -1em 0;
+  align-items: center;
 }
 
 .DetailRowLabel{
   color: white;
-  opacity: 0.8;
   padding-left:1em;
-
+  width: 35%;
+  font-weight: bold;
 }
 
 .DetailRowValue{
   color: white;
-  font-weight: bold;
   padding-left:0.5em;
 }
 
-.DetailRow a {
-  color: white;
-  padding-top: 15px;
-}
-
+/*No selected sat style*/
 .NoSelection {
   margin: 1em 0;
   font-style: italic;
@@ -56,12 +83,4 @@
 
 .help {
   cursor: help;
-}
-
-.MainDetailPanel a {
-  color: lightblue
-}
-
-.DetailDiv {
-  padding: 0 1em 1em 1em;
 }

@@ -6,6 +6,7 @@ import { FilterProps, FilterSettings, SetFilterCallback } from '../model/filter_
 import Select, { MultiValue, Props as SelectProps } from "react-select";
 import { OWNER_SHORT_CODE_TO_FULL, ORBIT_TYPE_CODE_TO_FULL_NAME, } from '../model/mapping';
 import { InfoCircleIcon } from './Icons'
+import { Link } from 'react-router-dom';
 
 
 export interface FilterPanelProps {
@@ -142,7 +143,7 @@ export default function FilterPanel(props: FilterPanelProps) {
 
   return (
     <div className="FilterPanel">
-      <h1 className='headerName'>OrbitEye</h1>
+      <Link to="/" className='headerName'> <h1>OrbitEye</h1> </Link>
       <p className='SatCountText'>Matches: {props.filteredSatellites.length} of {props.allSatellites.length} satellites.</p>
       <label className='FilterRowDiv'>
         <div>

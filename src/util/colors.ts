@@ -6,4 +6,5 @@ export const COLOR_PALETTE_ORBITS: Record<OrbitClass, string> = {
   'MEO': '#00e3ff',
   'GEO': '#e1562c',
   'Elliptical': '#00b25d',
+  '': '#999999',
 };

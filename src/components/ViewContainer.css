@@ -22,7 +22,7 @@
   grid-template-rows: 5fr 5fr 1fr;
 
   color: white;
-  background-color: black;
+  background-color: #222624;
 }
 
 .optionBlockContainer.uncollapsible {
@@ -97,6 +97,11 @@
 
 .optionTitle {
   font-size: large;
+  display: flex;
+}
+
+.optionBlock .optionTitle .icon {
+  margin-right: 10px;
 }
 
 .optionDescription {
@@ -123,23 +128,25 @@
 .optionTabContainer {
   display: flex;
   justify-content: space-evenly;
-
-  background-color: black;
+  
+  background-color: #222624;
 }
 
-.optionTab{
+.optionTab {
   /* Ignore default a tag styles */
   text-decoration: inherit;
-
+  
   flex-grow: 1;
-
+  
   display: flex;
   align-items: center;
   justify-content: center;
   
   color: rgba(255, 255, 255, 0.66);
-  border-bottom: 2px solid #222;
-  background-color: #222922;
+}
+
+.optionTab .icon {
+  margin-right: 10px;
 }
 
 .optionTab:hover {
@@ -148,14 +155,15 @@
   border-bottom-color: #111;
 }
 
-.optionTab.selected {
-  color: white;
-  background-color: black;
-  border-bottom-color: white;
+/* Highlight Selected */
+.optionTab, .optionBlock {
+  border-bottom: 2px solid transparent;
 }
 
-.optionTab .icon {
-  margin-right: 10px;
+.optionTab.selected, .optionBlock.selected {
+  color: white;
+  background-color: black;
+  border-bottom: 2px solid white;
 }
 
 
@@ -174,8 +182,4 @@
 
 .__Decay_img::before {
   background-image: url(../assets/ModeDecay.png);
-}
-
-.mapView {
-  background-color: red;
 }

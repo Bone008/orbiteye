@@ -64,10 +64,7 @@ export function groundTraceSync(sat: Satellite, stepMS: number = _MS_IN_A_MINUTE
  * @returns A list of Vector3 points outlining the orbit
  */
 export function getOrbitECI(sat: Satellite, N: number = 300): Vector3[] {
-  if (sat.id in orbitECICache) {
-    console.log(`got from cache for ${sat.id}`, orbitECICache[sat.id]);
-    return orbitECICache[sat.id];
-  }
+  if (sat.id in orbitECICache) return orbitECICache[sat.id];
 
 
   if (!sat.tle) throw Error(`TLE doesn't exist for satellite ${sat.id}`);
