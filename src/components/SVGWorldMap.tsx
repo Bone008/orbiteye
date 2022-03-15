@@ -304,17 +304,15 @@ export default function WorldMap(reqProps: WorldMapProps) {
   return (
     <div className="WorldMap">
       <div id="tooltip"></div>
-      <div>
-        <svg ref={svgRef}
-          viewBox={`0 0 ${width}, ${height}`}
-          preserveAspectRatio="xMidYMid meet"
-          className='worldMapSVG'
-        >
-          <g className="mapLayer"></g>
-          <g className="assoMap"></g>
-          <g className="assoMapText"></g>
-        </svg>
-      </div>
+      <svg ref={svgRef}
+        viewBox={`0 0 ${width}, ${height}`}
+        preserveAspectRatio="xMidYMid meet"
+        className='worldMapSVG'
+      >
+        <g className="mapLayer"></g>
+        <g className="assoMap"></g>
+        <g className="assoMapText"></g>
+      </svg>
       <LegendMap satelliteNumber={nbSatellitePerCountry} width={85} height={200} colorScale={colorScale} max={max} min={min}></LegendMap>
     </div>
   );
