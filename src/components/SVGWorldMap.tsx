@@ -83,15 +83,15 @@ export default function WorldMap(reqProps: WorldMapProps) {
     //Computing the number of satellite per country within the filtered satellites dataset
     //const nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => 1), d => d.owner);
 
-  /*     const array = Array.from(nbSatellitePerCountry)
-      const max = d3.max(array, d => d[1]) as number
-      const min = d3.min(array, d => d[1]) as number
-  
-      // Color scale
-      const colorScale = d3.scaleLinear<string>()
-          .range(["lightgreen", "green", "darkgreen", "orange"])
-          // More dynamic in low numbers
-          .domain([min, min + (max - min) / 15, min + (max - min) / 2, max]) */
+    /*     const array = Array.from(nbSatellitePerCountry)
+        const max = d3.max(array, d => d[1]) as number
+        const min = d3.min(array, d => d[1]) as number
+    
+        // Color scale
+        const colorScale = d3.scaleLinear<string>()
+            .range(["lightgreen", "green", "darkgreen", "orange"])
+            // More dynamic in low numbers
+            .domain([min, min + (max - min) / 15, min + (max - min) / 2, max]) */
 
     // Mouse over -> tooltip appears and opacity changes on the country
     function mouseOver(e: any, d: any) {
@@ -140,7 +140,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
     }
 
     const mapLayer = d3.select(svgRef.current).select("g.mapLayer")
-      //.attr("transform", "translate(10, -20)")
+    //.attr("transform", "translate(10, -20)")
 
     // Creating the path to make the map
     const groupMap = mapLayer.selectAll("path")
@@ -152,7 +152,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .attr("d", d => pathGenerator(d))
       .attr("stroke", "grey")
       .attr("stroke-width", "0.1px")
-      .style("cursor", "pointer")
+      //.style("cursor", "pointer")
       // Some mouse interactions
       .on('mouseover', mouseOver)
       .on('mousemove', mouseMove)
@@ -243,7 +243,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .join('path')
       .attr("stroke", "grey")
       .attr("stroke-width", "0.1px")
-      .style("cursor", "pointer")
+      //.style("cursor", "pointer")
       .on('mouseover', (e, d) => {
         mouseOver2(e, d)
         d3.select(e.srcElement)
@@ -282,10 +282,10 @@ export default function WorldMap(reqProps: WorldMapProps) {
     groupAssoLabel
       .join('text')
       .style("text-anchor", "middle")
-      .style("font-size", 2 * sizeCircle / 3)
+      .style("font-size", (2 * sizeCircle / 3 - 1) + 'px')
       .attr("class", "assoLabel")
       .attr('fill', "black")
-      .style("cursor", "pointer")
+      .style("cursor", "default")
       .on('mouseover', mouseOver2)
       .on('mousemove', mouseMove2)
       .on('mouseout', mouseOut2)
