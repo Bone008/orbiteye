@@ -8,8 +8,7 @@
 
 .worldMapSVG {
   width: 100%;
-  height: 100%;
-  
+  height: 100%;  
   padding: 0;
   background-color: rgb(218, 238, 255);
 }
@@ -34,6 +33,11 @@
   padding: 0.2em;  
   background-color: rgba(173, 216, 230, 0.3);
   border-top: solid 1px rgb(117, 117, 117); 
+}
+
+.assoLabel {
+  pointer-events: none;
+  background-color: aqua;
 }
 
 

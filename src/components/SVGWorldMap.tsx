@@ -283,13 +283,17 @@ export default function WorldMap(reqProps: WorldMapProps) {
     groupAssoLabel
       .join('text')
       .style("text-anchor", "middle")
-      .style("font-size", "10px")
+      .style("font-size", "9px")
       .attr("class", "assoLabel")
-      .attr('fill', "light")
-      .style("cursor", "default")
-      .on('mouseover', mouseOver2)
-      .on('mousemove', mouseMove2)
-      .on('mouseout', mouseOut2)
+      .attr('fill', (d, _) => {
+        const countOfSatellite = nbSatellitePerCountry.get(d)
+
+        // If undefined/unknown, we put it in black for better reading
+        if (!countOfSatellite) return "grey"
+
+        // Otherwise we put it in a color scale
+        return "rgb(240, 240, 240)"
+      })
       .attr("x", function (_, i) {
         return shiftX(i)
       })
