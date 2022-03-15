@@ -256,6 +256,12 @@ export default function WorldMap(reqProps: WorldMapProps) {
           .style("stroke", "grey")
       })
       .attr('d', radialData)
+      .attr("transform", function (_, i) {
+        if (i % 2) return "translate(" + shiftX(i) + "," + shiftY() + ")"
+        return "translate(" + shiftX(i) + "," + marginTop + ")"
+      })
+      .transition()
+      .duration(800)
       .style("fill", (d, _) => {
         const countOfSatellite = nbSatellitePerCountry.get(d)
 
@@ -264,10 +270,6 @@ export default function WorldMap(reqProps: WorldMapProps) {
 
         // Otherwise we put it in a color scale
         return colorScale(countOfSatellite)
-      })
-      .attr("transform", function (_, i) {
-        if (i % 2) return "translate(" + shiftX(i) + "," + shiftY() + ")"
-        return "translate(" + shiftX(i) + "," + marginTop + ")"
       });
 
     const assoMapLabel = d3.select(svgRef.current)
