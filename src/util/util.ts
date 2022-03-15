@@ -7,3 +7,11 @@ export type DefaultValues<T> = Required<Pick<T, OptionalKeys<T>>>;
 export function formatISODate(date: Date | undefined | null, defaultValue = ''): string {
   return date?.toISOString().substring(0, 10) || defaultValue;
 }
+
+/** Formats a duration as hours and minutes, for example "3:07 h". */
+export function formatDuration(durationInMinutes: number, suffix = ' h'): string {
+  const hourPart = Math.floor(durationInMinutes / 60);
+  const minPart = Math.floor(durationInMinutes % 60);
+  const minPrefix = minPart < 10 ? '0' : '';
+  return hourPart + ':' + minPrefix + minPart + suffix;
+}

@@ -14,7 +14,7 @@ export interface FilterPanelProps {
   filteredSatellites: Satellite[];
   filterSettings: FilterSettings;
   onUpdateFilter: SetFilterCallback;
-  openOrbitExplainer: () => void;
+  openOrbitExplainer: (orbitPage?: OrbitClass) => void;
 }
 
 /** Data representation of a single option in one of the filter dropdowns. */
@@ -160,7 +160,7 @@ export default function FilterPanel(props: FilterPanelProps) {
         </div>
       </label>
       <label className='FilterRowDiv'>
-        <p className='FilterNameTag withInfo'><span>Orbit Type</span> <InfoCircleIcon className='infoIcon' onClick={props.openOrbitExplainer} /></p>
+        <p className='FilterNameTag withInfo'><span>Orbit Type</span> <InfoCircleIcon className='infoIcon' onClick={() => props.openOrbitExplainer()} /></p>
         <Select
           {...commonSelectProps}
           formatOptionLabel={labelFormatter}

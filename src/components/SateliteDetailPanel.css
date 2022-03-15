@@ -1,50 +1,78 @@
-.MainDetailPanel, .DetailButton{
-  width: inherit;
-  background: transparent;
+.MainDetailPanel{
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  text-align: left;
 }
 
 .DetailDiv{
-  padding-bottom: 1em;
-  height: fit-content;
+  overflow: hidden auto;
+  padding: 0.5em 0;
+  line-height: 130%;
   color: white;
 }
 
 .DetailButton{
+  width: inherit;
   cursor: pointer;
   height: 40px;
-  border-color: transparent;
+  border: none;
   background-color: #294644;
   color: white;
   width: 100%;
   padding: 1em;
 }
 
-.DetailButton:hover{
+.DetailButton:hover, .DetailButton:focus {
   background-color: #304948;
 }
 
+.DetailTitle {
+  padding: 0.2em 16px;
+  font-size: 120%;
+  font-weight: bold;
+  text-align: center;
+}
+
 .DetailRow{
-  text-align: left;
+  padding: 0.2em 16px;
   display: flex;
-  height: 2em;
+}
+
+.DetailRow.spacer{
+  margin-top: 0.8em;
+}
+
+.DetailRow.subtitle {
+  padding-top: 0;
+  text-align: center;
+  font-style: italic;
+  font-weight: lighter;
+  font-size: 90%;
 }
 
 .DetailRowLabel{
+  flex: 0 0 90px;
+  padding-right: 8px;
+  font-size: 90%;
   color: white;
-  opacity: 0.8;
-  padding-left:1em;
-
+  opacity: 0.7;
 }
 
 .DetailRowValue{
+  flex-grow: 1;
   color: white;
-  font-weight: bold;
-  padding-left:0.5em;
 }
 
-.DetailRow a {
-  color: white;
-  padding-top: 15px;
+.DetailRow .sourceLink {
+  margin-right: 8px;
+  display: inline-block;
+  font-size: 90%;
+}
+
+.DetailRow .comments {
+  font-size: 90%;
+  font-style: italic;
 }
 
 .NoSelection {
@@ -52,6 +80,7 @@
   font-style: italic;
   color: white;
   opacity: 0.8;
+  text-align: center;
 }
 
 .help {
@@ -60,8 +89,4 @@
 
 .MainDetailPanel a {
   color: lightblue
-}
-
-.DetailDiv {
-  padding: 0 1em 1em 1em;
 }
