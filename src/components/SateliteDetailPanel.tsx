@@ -19,18 +19,19 @@ export default function SateliteDetailPanel(props: DetailPanelProps) {
     props.setShowDetail(!props.showDetail)
   };
 
-  const Arrow = () => {
+  const ButtonDirection = () => {
     if (props.showDetail) {
-      return <ChevronDownIcon />
+      return (<button type="button" className='DetailButton' onClick={openDetails}>Hide satellite details <ChevronDownIcon />
+      </button>)
     } else {
-      return <ChevronUpIcon />
+      return (<button type="button" className='DetailButton' onClick={openDetails}>See satellite details <ChevronUpIcon />
+      </button>)
     }
   }
 
   return (
     <div className='MainDetailPanel'>
-      <button type="button" className='DetailButton' onClick={openDetails}>See satellite details {Arrow()}
-      </button>
+      {ButtonDirection()}
       <div className="detailsTest">
         {props.showDetail ?
           <DetailComponent sat={props.satellite} />
