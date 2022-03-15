@@ -1,11 +1,14 @@
 .WorldMap {
   height: 100%;
+  width: 100%;
   padding: 0;
+  position: relative; /* To anchor the legend at the correct container. */
   background-color: black;
 }
 
 .worldMapSVG {
   background-color: rgb(218, 238, 255);
+  padding: 0;
 }
 
 #tooltip {

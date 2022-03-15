@@ -136,6 +136,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .attr("stroke", "grey")
       .attr("stroke-width", "0.1px")
       .style("cursor", "pointer")
+      .attr("transform", "translate(0, -20)")
       // Some mouse interactions
       .on('mouseover', mouseOver)
       .on('mousemove', mouseMove)
@@ -147,7 +148,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
     // Set up zoom and panning
     const zoom = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([1, 4])
-      .translateExtent([[0, 0], [width, height]])
+      .translateExtent([[0, 20], [width, height]])
       .on('zoom', e => {
         d3.select(svgRef.current).selectAll('g')
           .attr('transform', e.transform);
@@ -196,7 +197,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
     // Size of margin between hexagons
     const marginBetweenCircles = (width - 4 * sizeCircle - countArray.length * sizeCircle * 2) / (countArray.length + 1)
 
-    const marginTop = 260;
+    const marginTop = 245;
 
     // Title
     assoMap
@@ -312,15 +313,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
           <g className="assoMapText"></g>
         </svg>
       </div>
-      <LegendMap satelliteNumber={nbSatellitePerCountry} width={15} height={200} colorScale={colorScale} max={max} min={min}></LegendMap>
-      {/*       <div className="assoMapContainer">
-        <svg ref={svgRef3}
-          viewBox={`0 0 ${assoWidth}, ${assoHeight}`}
-          preserveAspectRatio="xMidYMid meet"
-        >
-          <g className="assoMap"></g>
-        </svg>
-      </div> */}
+      <LegendMap satelliteNumber={nbSatellitePerCountry} width={85} height={200} colorScale={colorScale} max={max} min={min}></LegendMap>
     </div>
   );
 }
