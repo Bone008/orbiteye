@@ -57,17 +57,33 @@ export default function WorldMap(reqProps: WorldMapProps) {
 
   const nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => 1), d => d.owner);
 
-  //console.log(d3.rollup(props.filteredSatellites, v => d3.sum(v, d => d.launchMassKg), d => d.owner))
-  //const nbSatellitePerCountry = d3.rollup(props.filteredSatellites, v => d3.sum(v, d => d.launchMassKg), d => d.owner);
-
   const array = Array.from(nbSatellitePerCountry)
   const max = d3.max(array, d => d[1]) as number
   const min = d3.min(array, d => d[1]) as number
 
+  // Color scale domain (First is for 0)
+  const colorRange = [/* "#E3D3E4",  *//* "hsl(345, 55%, 80%)" */"white", "hsl(345, 55%, 90%)", "hsl(345, 55%, 80%)", "hsl(345, 55%, 60%)", "hsl(351, 54%, 36%)"]
+  //const colorDomain = [min, min + (max - min) * 0.125, min + (max - min) * 0.25, min + (max - min) * 0.375, min + (max - min) * 0.5, min + (max - min) * 0.625, min + (max - min) * 0.75, min + (max - min) * 0.875, max]
+  //const colorRange = ["white", "#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c", "#f9d057", "#f29e2e", "#e76818", "#d7191c"]
+  //const colorRange = ["#90eb9d", "#00ccbc", "#00a6ca", "#2c7bb6"]
+  //const colorRange = ["#00a6ca", "#2c7bb6", "#d7191c"]
+  //const colorRange = ["lightgreen", "green", "#d7191c"]
+  //const colorRange = ["lightblue", "blue", "#d7191c"]
+  //const colorRange = ["hsl(275, 90%, 90%)", "hsl(275, 90%, 36%)"]
+
+
+  // Create a domain linearly to the range of colors
+  var colorDomain = colorRange.map((_, i) => {
+    if (!i) return 0.00001 // NO NULL BECAUSE OF LOG SCALE
+    return min + i * (max - min) / (colorRange.length - 1)
+  })
+
+  colorDomain = [0.00001, min, min + (max - min) * 0.125, min + (max - min) * 0.212, max]
+
   // Color scale
   const colorScale = d3.scaleLog<string>() // More dynamic in low numbers
-    .range(["#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c", "#f9d057", "#f29e2e", "#e76818", "#d7191c"])
-    .domain([min, min + (max - min) * 0.125, min + (max - min) * 0.25, min + (max - min) * 0.375, min + (max - min) * 0.5, min + (max - min) * 0.625, min + (max - min) * 0.75, min + (max - min) * 0.875, max])
+    .range(colorRange)
+    .domain(colorDomain)
 
   // Render/update world map
   useEffect(() => {
@@ -78,12 +94,22 @@ export default function WorldMap(reqProps: WorldMapProps) {
 
     // Mouse over -> tooltip appears and opacity changes on the country
     function mouseOver(e: any, d: any) {
-      const satCatCode = d.properties?.iso_a3;
-      var nbSat = nbSatellitePerCountry.get(fromIsoA3ToSatCat[satCatCode])
-      if (!nbSat) nbSat = 0
-      tooltip
-        .style('opacity', 1)
-        .text(d.properties?.name + ": " + nbSat + " satellite(s) with selected filters.")
+      const isoCode = fromIsoA3ToSatCat[d.properties?.iso_a3];
+      var nbSat = nbSatellitePerCountry.get(isoCode)
+
+      // If undefined, there is no data
+      if (!isoCode) {
+        tooltip
+          .style('opacity', 1)
+          .text(d.properties?.name + ": No data.")
+
+        // Otherwise, we show the number of satellites
+      } else {
+        if (!nbSat) nbSat = 0
+        tooltip
+          .style('opacity', 1)
+          .text(d.properties?.name + ": " + nbSat + " satellite(s) with selected filters.")
+      }
 
       d3.select(e.srcElement)
         .style("opacity", .8)
@@ -112,18 +138,20 @@ export default function WorldMap(reqProps: WorldMapProps) {
 
     // Color countries with the color scale, and in grey if unknown
     function colorCountry(d: any) {
-      const satCatCode = d.properties?.iso_a3;
-      const countOfSatellite = nbSatellitePerCountry.get(fromIsoA3ToSatCat[satCatCode])
+      const isoCode = fromIsoA3ToSatCat[d.properties?.iso_a3];
+      const countOfSatellite = nbSatellitePerCountry.get(isoCode)
 
-      // If undefined/unknown, we put it in grey
-      if (!countOfSatellite && countOfSatellite !== 0) return "lightgrey"
+      // If undefined, there is no data
+      if (!isoCode) return "rgba(211, 211, 211, 0.742)"
+
+      // If 0, we put it in first color from color scale
+      if (!countOfSatellite) return colorScale(0.00001)
 
       // Otherwise we put it in a color scale
       return colorScale(countOfSatellite)
     }
 
     const mapLayer = d3.select(svgRef.current).select("g.mapLayer")
-    //.attr("transform", "translate(10, -20)")
 
     // Creating the path to make the map
     const groupMap = mapLayer.selectAll("path")
@@ -265,8 +293,8 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .style("fill", (d, _) => {
         const countOfSatellite = nbSatellitePerCountry.get(d)
 
-        // If undefined/unknown, we put it in grey
-        if (!countOfSatellite) return "lightgray"
+        // If undefined/unknown, we put it in first color from color scale
+        if (!countOfSatellite) return colorScale(0)
 
         // Otherwise we put it in a color scale
         return colorScale(countOfSatellite)
@@ -279,7 +307,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .selectAll('text')
       .data(countArray)
 
-    //text for asso map with updates
+    // ID Text for asso map with updates
     groupAssoLabel
       .join('text')
       .style("text-anchor", "middle")
@@ -288,10 +316,10 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .attr('fill', (d, _) => {
         const countOfSatellite = nbSatellitePerCountry.get(d)
 
-        // If undefined/unknown, we put it in black for better reading
+        // If undefined/unknown, we put it in dark for better reading
         if (!countOfSatellite) return "grey"
 
-        // Otherwise we put it in a color scale
+        // Otherwise we put it in light color
         return "rgb(240, 240, 240)"
       })
       .attr("x", function (_, i) {
@@ -317,7 +345,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
         <g className="assoMap"></g>
         <g className="assoMapText"></g>
       </svg>
-      <LegendMap satelliteNumber={nbSatellitePerCountry} width={85} height={200} colorScale={colorScale} max={max} min={min}></LegendMap>
+      <LegendMap satelliteNumber={nbSatellitePerCountry} width={85} height={200} colorDomain={colorDomain} colorRange={colorRange} max={max} min={min}></LegendMap>
     </div>
   );
 }

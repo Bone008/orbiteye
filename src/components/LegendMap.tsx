@@ -7,9 +7,10 @@ export type LegendProps =
     satelliteNumber: d3.InternMap<string, number>,
     width: number,
     height: number,
-    colorScale: d3.ScaleLinear<string, string>,
     min: number,
-    max: number
+    max: number,
+    colorRange: string[],
+    colorDomain: number[]
   }
 
 export default function LegendMap(props: LegendProps) {
@@ -23,11 +24,10 @@ export default function LegendMap(props: LegendProps) {
     const margin = 10
     const deltah = props.max - props.min
 
-    const colorScale = d3.scaleLinear<string>() ///CHange scale color / round number
-      //.range(["darkblue", "green", "lightgreen", "orange", "darkblue", "green", "lightgreen", "orange", "yellow"])
-      .range(["#2c7bb6", "#00a6ca", "#00ccbc", "#90eb9d", "#ffff8c", "#f9d057", "#f29e2e", "#e76818", "#d7191c"])
+    const colorScale = d3.scaleLinear<string>()
+      .range(props.colorRange)
       // More dynamic in low numbers
-      .domain([props.min, props.min + deltah * 0.125, props.min + deltah * 0.25, props.min + deltah * 0.375, props.min + deltah * 0.5, props.min + deltah * 0.625, props.min + deltah * 0.75, props.min + deltah * 0.875, props.max])
+      .domain(props.colorDomain)
 
     const marginLeft = 6
     const legendStep = 50
@@ -54,8 +54,8 @@ export default function LegendMap(props: LegendProps) {
       .transition()
       .duration(800)
       .style("fill", function (_, i) {
+        if (!i) return colorScale(0)
         return colorScale(props.min + Math.floor(i * h));
-
       })
       .attr("y", function (_, i) {
         return margin + i * sizeRect;
@@ -87,7 +87,7 @@ export default function LegendMap(props: LegendProps) {
       } else if (nb > 10) {
         return Math.round(nb / 10) * 10
       }
-      return nb
+      return Math.round(nb)
     }
 
     // Legend text D3 with updates
@@ -96,8 +96,9 @@ export default function LegendMap(props: LegendProps) {
       .text((_, i) => {
         if (!(i * h) && i !== 0) return "";
         if (!i) return '0';
-        if (i % 10 === 5) return roundNumber(props.min + Math.floor(i * h))
-        if (i === legendStep) return props.max
+        //if (i % 10 === 5) return roundNumber(props.min + Math.floor(i * h))
+        if (i % 10 === 9) return roundNumber(props.min + Math.floor(i * h))
+        //if (i === legendStep) return props.max
         return ""//(props.min + Math.floor(i * h))
       })
       .transition()
