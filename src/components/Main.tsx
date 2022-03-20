@@ -11,7 +11,8 @@ import { OrbitClass, Satellite } from '../model/satellite';
 import { fetchSatellitesAsync, fetchWorldMapAsync, WorldMapJSON } from '../model/data_loader';
 import ReactModal from 'react-modal';
 import { XIcon } from './Icons';
-import { useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import About from './About';
 
 const DEFAULT_FILTER_SETTINGS = new FilterSettings({ activeStatus: true });
 
@@ -57,23 +58,28 @@ export function Main() {
   }
 
   return (
-    <div className={`App ${isHomePage ? "expanded" : ""}`}>
-      <div className="mainView">
-        <div className='mapView'>
-          <ViewContainer filteredSatellites={filteredSatellites} onUpdateFilter={setFilterSettings} selectedSatellite={selectedSatellite} setSelectedSatellite={updateSelected} worldJson={worldJson} />
-        </div >
-        <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} selectedSatellite={selectedSatellite} openOrbitExplainer={openOrbitExplainer} />
-      </div >
-      <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
+    <Routes>
+      <Route path="about/*" element={<About />} />
+      <Route path="*" element={
+        <div className={`App ${isHomePage ? "expanded" : ""}`}>
+          <div className="mainView">
+            <div className='mapView'>
+              <ViewContainer filteredSatellites={filteredSatellites} onUpdateFilter={setFilterSettings} selectedSatellite={selectedSatellite} setSelectedSatellite={updateSelected} worldJson={worldJson} />
+            </div >
+            <RightSidePanel allSatellites={allSatellites} filteredSatellites={filteredSatellites} filterSettings={filterSettings} setFilterSettings={setFilterSettings} selectedSatellite={selectedSatellite} openOrbitExplainer={openOrbitExplainer} />
+          </div >
+          <Timeline allSatellites={allSatellites} filterSettings={filterSettings} onUpdateFilter={setFilterSettings} />
 
-      <Modal
-        isOpen={orbitExplainerState !== false}
-        onRequestClose={() => setOrbitExplainerState(false)}
-        contentLabel="Orbit Type Explainer Modal"
-      >
-        <XIcon onClick={() => setOrbitExplainerState(false)} height="2em" width="2em" style={{ position: "absolute", right: "5px", top: "5px", zIndex: 2 }} />
-        <OrbitExplainer initialSlide={orbitExplainerState as OrbitExplainerSlideName | undefined} />
-      </Modal>
-    </div>
+          <Modal
+            isOpen={orbitExplainerState !== false}
+            onRequestClose={() => setOrbitExplainerState(false)}
+            contentLabel="Orbit Type Explainer Modal"
+          >
+            <XIcon onClick={() => setOrbitExplainerState(false)} height="2em" width="2em" style={{ position: "absolute", right: "5px", top: "5px", zIndex: 2 }} />
+            <OrbitExplainer initialSlide={orbitExplainerState as OrbitExplainerSlideName | undefined} />
+          </Modal>
+        </div>
+      } />
+    </Routes>
   );
 }

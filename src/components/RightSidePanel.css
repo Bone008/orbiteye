@@ -3,7 +3,37 @@
   flex-direction: column;
   background-color: var(--right-side-light);
   width: 30vw;
+  overflow: hidden;
 }
+
+/* Project name at top */
+.RightPanel .header {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: baseline;
+}
+
+a.headerName {
+  /* Ignore default a tag styles */
+  text-decoration: inherit;
+  color: inherit;
+}
+
+a.headerName > h1 {
+  background: transparent;
+  position: relative;
+  color: white;
+  font-size: x-large;
+}
+
+a.aboutLink {
+  text-decoration: underline;
+  color: white;
+
+  font-size: medium;
+}
+
+/* The rest */
 
 .FilterPart{
   overflow: hidden auto;

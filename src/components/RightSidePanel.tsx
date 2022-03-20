@@ -4,6 +4,7 @@ import SateliteDetailPanel from './SateliteDetailPanel'
 import { useEffect, useState } from 'react'
 import { FilterSettings, SetFilterCallback } from '../model/filter_settings'
 import { OrbitClass, Satellite } from '../model/satellite'
+import { Link } from 'react-router-dom'
 
 export interface RightPanelProps {
   allSatellites: Satellite[];
@@ -27,6 +28,11 @@ export default function RightSidePanel(props: RightPanelProps) {
 
   return (
     <div className='RightPanel'>
+      <div className='header'>
+        <Link to="/" className='headerName'> <h1>OrbitEye</h1> </Link>
+        <Link to="about" className='aboutLink'>About</Link>
+      </div>
+
       <div className='FilterPart'>
         <FilterPanel allSatellites={props.allSatellites} filteredSatellites={props.filteredSatellites} filterSettings={props.filterSettings} onUpdateFilter={props.setFilterSettings} openOrbitExplainer={props.openOrbitExplainer} />
       </div>

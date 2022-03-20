@@ -1,0 +1,113 @@
+.About {
+  --nav-base: var(--wet-asphalt);
+  --nav-selected: var(--midnight-blue);
+
+  height: 100%;
+  width: 100%;
+
+  min-height: 100vh;
+
+  color: white;
+  background-color: var(--midnight-blue);
+}
+
+.About .nav {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: stretch;
+  
+}
+
+.About > .nav {
+  box-shadow: 0 -5px 10px black;
+}
+
+.About .nav h1 {
+  text-decoration: underline;
+}
+
+.About .nav a {
+  text-decoration: inherit;
+  color: white;
+  flex-grow: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--nav-base);
+  border-bottom: 2px solid transparent;
+}
+
+.About .nav a.selected {
+  background-color: var(--nav-selected);
+  border-bottom-color: white;
+}
+
+.About .nav a:hover {
+  background-color: var(--nav-selected);
+}
+
+.About .content {
+  padding: 2rem;
+}
+
+/* Individual pages */
+.DemoVideo {
+  text-align: center;
+}
+
+.ProjectOverview {
+  width: fit-content;
+  min-width: 50%;
+  margin: 0 auto;
+}
+
+.TeamMembers {
+  display: flex;
+  flex-direction: row;
+
+  --nav-selected: var(--blue-gray-700);
+  --nav-base: var(--blue-gray-600);
+}
+.TeamMembers .nav {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: stretch;
+}
+.TeamMembers .nav a {
+  padding: 0.5rem 2rem;
+  
+  border-bottom: 0;
+  border-right: 2px solid transparent;
+}
+.TeamMembers .nav a.selected {
+  border-color: white;
+}
+.TeamMembers .content {
+  flex-grow: 1;
+  padding: 1rem;
+
+  background-color: var(--nav-selected);
+
+  display: flex;
+  flex-direction: column;
+}
+.TeamMembers .content h2 {
+  margin-top: 0;
+  text-align: center;
+}
+.TeamMembers .memberInfo {
+  flex-grow: 1;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+}
+.TeamMembers .memberInfo img {
+  align-self: center;
+  margin-right: 20px;
+
+  max-width: 40%;
+}
