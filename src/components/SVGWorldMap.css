@@ -24,8 +24,8 @@
   padding: 5px;
   z-index: 10;
 
-  /* Begin off screen (will be overridden later) */
-  left: -1000px;
+  /* Begin invisible (will be overriden later) */
+  opacity: 0;
 }
 
 .assoMapContainer {
