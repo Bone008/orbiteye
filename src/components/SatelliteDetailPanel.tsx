@@ -1,4 +1,4 @@
-import './SateliteDetailPanel.css'
+import './SatelliteDetailPanel.css'
 import { SetStateAction } from 'react'
 import { ChevronDownIcon, ChevronUpIcon, InfoCircleIcon } from './Icons';
 import { OperationalStatus, OrbitClass, Satellite } from '../model/satellite';
@@ -14,7 +14,7 @@ export interface DetailPanelProps {
 }
 
 
-export default function SateliteDetailPanel(props: DetailPanelProps) {
+export default function SatelliteDetailPanel(props: DetailPanelProps) {
 
   const openDetails = () => {
     props.setShowDetail(!props.showDetail)

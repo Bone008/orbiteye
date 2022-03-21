@@ -1,6 +1,6 @@
 import './RightSidePanel.css'
 import FilterPanel from './FilterPanel'
-import SateliteDetailPanel from './SateliteDetailPanel'
+import SatelliteDetailPanel from './SatelliteDetailPanel'
 import { useEffect, useState } from 'react'
 import { FilterSettings, SetFilterCallback } from '../model/filter_settings'
 import { OrbitClass, Satellite } from '../model/satellite'
@@ -37,7 +37,7 @@ export default function RightSidePanel(props: RightPanelProps) {
         <FilterPanel allSatellites={props.allSatellites} filteredSatellites={props.filteredSatellites} filterSettings={props.filterSettings} onUpdateFilter={props.setFilterSettings} openOrbitExplainer={props.openOrbitExplainer} />
       </div>
       <div className='DetailPart'>
-        <SateliteDetailPanel satellite={props.selectedSatellite} showDetail={showDetailPanel} setShowDetail={setShowDetailPanel} openOrbitExplainer={props.openOrbitExplainer} />
+        <SatelliteDetailPanel satellite={props.selectedSatellite} showDetail={showDetailPanel} setShowDetail={setShowDetailPanel} openOrbitExplainer={props.openOrbitExplainer} />
       </div>
     </div>
   )

@@ -25,7 +25,6 @@ export function Main() {
 
   const updateSelected = (newSatellite: Satellite | null) => {
     if (newSatellite !== selectedSatellite) {
-      console.log('Selecting:', newSatellite ? newSatellite.id : null);
       setSelectedSatellite(newSatellite);
     }
   };
