@@ -118,10 +118,10 @@ const teamMemberData: TeamMemberData[] = [
     shortName: "Octave",
 
     path: "Octave",
-    name: "Octave Le Tuiller",
+    name: "Octave Le Tullier",
     img: PlaceholderImage4,
-    description: "Description here.",
-    githubURL: ""
+    description: "Interested by data and visualization, this project Orbiteye was amazing for me. I learnt a lot about d3 and TypeScript. I hope you'll enjoy our team work and discover lots of things about satellites!",
+    githubURL: "https://github.com/OctaveLT"
   },
   {
     link: "./Sahil",
