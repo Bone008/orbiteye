@@ -314,13 +314,8 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .style("font-size", "9px")
       .attr("class", "assoLabel")
       .attr('fill', (d, _) => {
-        const countOfSatellite = nbSatellitePerCountry.get(d)
-
-        // If undefined/unknown, we put it in dark for better reading
-        if (!countOfSatellite) return "grey"
-
-        // Otherwise we put it in light color
-        return "rgb(240, 240, 240)"
+        const countOfSatellite = nbSatellitePerCountry.get(d);
+        return getHighContrastText(colorScale(countOfSatellite || 0));
       })
       .attr("x", function (_, i) {
         return shiftX(i)
@@ -348,4 +343,12 @@ export default function WorldMap(reqProps: WorldMapProps) {
       <LegendMap satelliteNumber={nbSatellitePerCountry} width={85} height={200} colorDomain={colorDomain} colorRange={colorRange} max={max} min={min}></LegendMap>
     </div>
   );
+}
+
+
+// Adapted from https://css-tricks.com/css-variables-calc-rgb-enforcing-high-contrast-colors/
+function getHighContrastText(rgbString: string) {
+  const rgb = rgbString.replace(/[^\d,.]/g, '').split(',');
+  const sum = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
+  return (sum > 128) ? 'black' : 'white';
 }

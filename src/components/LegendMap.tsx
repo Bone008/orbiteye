@@ -35,6 +35,26 @@ export default function LegendMap(props: LegendProps) {
     const legendArray = Array((legendStep + 2))
     const sizeRect = (props.height - 5 * margin) / (legendStep + 1)
 
+    const svgGradient = mapLegend.append('defs').append('linearGradient')
+      .attr("id", "gradient-scale")
+      .attr("x1", "0%")
+      .attr("y1", "0%")
+      .attr("x2", "0%")
+      .attr("y2", "100%")
+
+    svgGradient.selectAll("stop")
+      .data(colorScale.range())
+      .enter().append("stop")
+      .attr("offset", (_, i) => i / (colorScale.range().length - 1))
+      .attr("stop-color", d => d);
+
+    mapLegend.append('rect')
+      .attr("fill", "url(#gradient-scale)")
+      .attr("x", 2 * marginLeft + 10)
+      .attr("y", margin)
+      .attr("width", 10)
+      .attr("height", margin + 145)
+
     // Legend title
     mapLegend.append("text")
       .attr("transform", "rotate(-90)")
@@ -43,26 +63,6 @@ export default function LegendMap(props: LegendProps) {
       .style("text-anchor", "middle")
       .text("Number of satellites")
       .style("fill", "white");
-
-    const groupLegend = mapLegend
-      .selectAll('rect')
-      .data(legendArray)
-
-    // Legend d3 with update
-    groupLegend
-      .join('rect')
-      .transition()
-      .duration(800)
-      .style("fill", function (_, i) {
-        if (!i) return colorScale(0)
-        return colorScale(props.min + Math.floor(i * h));
-      })
-      .attr("y", function (_, i) {
-        return margin + i * sizeRect;
-      })
-      .attr("x", 2 * marginLeft + 10)
-      .attr('width', 10)
-      .attr('height', sizeRect)
 
     mapLegend
       .append('rect')
@@ -101,8 +101,6 @@ export default function LegendMap(props: LegendProps) {
         //if (i === legendStep) return props.max
         return ""//(props.min + Math.floor(i * h))
       })
-      .transition()
-      .duration(800)
       .attr("y", function (_, i) { return 20.5 + i * sizeRect }) //Don't get why 13 (+ 7.5)
       .attr("x", 3 * marginLeft + 20)
       .style("fill", "white");
@@ -130,6 +128,4 @@ export default function LegendMap(props: LegendProps) {
       <g className="mapLegendText"></g>
     </svg>
   </div>
-
-
 }

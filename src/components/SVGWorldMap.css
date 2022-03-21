@@ -23,6 +23,9 @@
   border-radius: 5px;
   padding: 5px;
   z-index: 10;
+
+  /* Begin off screen (will be overridden later) */
+  left: -1000px;
 }
 
 .assoMapContainer {
