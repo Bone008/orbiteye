@@ -3,12 +3,14 @@ import './About.css';
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 
 // TODO: replace with all team member images
-import PlaceholderImage1 from "../assets/AvelinPic.jpg";
+import AvelinImg from "../assets/AvelinPic.jpg";
 import PlaceholderImage2 from "../assets/Geo.png";
 import PlaceholderImage3 from "../assets/Geo.png";
 import PlaceholderImage4 from "../assets/Geo.png";
-import PlaceholderImage5 from "../assets/Geo.png";
-import GitImage from "../assets/GitHubLight.png";
+import SahilImg from "../assets/Sahil.jpg";
+import { GitHubIcon, LinkedInIcon } from './Icons';
+import { JsxElement } from 'typescript';
+import { ReactElement } from 'react';
 
 export default function About() {
   const navClass = ({ isActive }: { isActive: boolean }) => isActive ? "selected" : "";
@@ -45,14 +47,14 @@ export default function About() {
               <Routes>
                 {teamMemberData.map(data => <Route key={data.path} path={data.path} element={
                   <>
-                    <h2>{data.name}</h2>
+                    <h2>
+                      <span style={(data.githubURL || data.linkedInURL) ? { marginRight: "0.5em" } : {}}>{data.name}</span>
+                      {data.githubURL ? <a className="social" href={data.githubURL}><GitHubIcon /></a> : null}
+                      {data.linkedInURL ? <a className="social" href={data.linkedInURL}><LinkedInIcon /></a> : null}
+                    </h2>
                     <div className="memberInfo">
-                      <img style={{ float: "left", width: '40vw' }} src={data.img} alt={data.shortName} />
-                      <div>
-                        <div style={{ padding: '0 1em 0 1em' }}>{data.description}</div>
-                        <a href={data.githubURL}>
-                          <img style={{ margin: '1em', cursor: 'pointer' }} src={GitImage} />
-                        </a></div>
+                      <img src={data.img} alt={data.shortName} />
+                      {data.description}
                     </div>
                   </>
                 } />)}
@@ -82,8 +84,9 @@ type TeamMemberData = {
   path: string; // Should always be same as link but without relative path AFAIK
   name: string;
   img: string; // Should be from an import statement!
-  description: string;
-  githubURL: string;
+  description: ReactElement | string;
+  githubURL?: string;
+  linkedInURL?: string;
 }
 const teamMemberData: TeamMemberData[] = [
   {
@@ -92,7 +95,7 @@ const teamMemberData: TeamMemberData[] = [
 
     path: "Avelin",
     name: "Ävelin Pantigoso",
-    img: PlaceholderImage1,
+    img: AvelinImg,
     description: "I am currently working towards a Msc in Interactive Media technology at KTH, and have a Bsc in Computer science and engineering. Creating art and graphic design are some of my hobbies, and I always enjoy creativity. In this project, I initially worked with ideation and creating a low-fi prototype from our ideas. Later, I worked with the UI for some of our components, and graphic design for the educational content. I also worked with UX evaluation, where I conducted some of our user tests and analyzed feedback.",
     githubURL: "https://github.com/avelinpv"
   },
@@ -132,8 +135,20 @@ const teamMemberData: TeamMemberData[] = [
 
     path: "Sahil",
     name: "Sahil Patel",
-    img: PlaceholderImage5,
-    description: "Description here.",
-    githubURL: ""
+    img: SahilImg,
+    githubURL: "https://github.com/sahilshahpatel",
+    linkedInURL: "https://linkedin.com/in/sahilshahpatel",
+    description: <>
+      I am a Computer Engineering student at the University of Illinois currently doing an exchange semester at KTH.
+      Computer graphics has long been an interest of mine, but I had not dabbled in information visualization much before this project.
+      Satellites and astronomy in general are a side interest of mine, building a tool which I myself was interested in was just a treat!
+
+      <p>
+        In this project, I contributed most to the Orbits view, built with ThreeJS through react-three-fiber. I also built the navigation
+        for both the views and the about pages. This was my first thorough React project, and I learned a lot about how the framework works
+        and how to combine my existing HTML/CSS skills with the power of React. Through other portions of this class and some work in this
+        project I was also able to learn about D3 and how to use it for powerful data-driven design.
+      </p>
+    </>,
   },
 ]

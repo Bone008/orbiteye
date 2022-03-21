@@ -7,6 +7,9 @@
 
   min-height: 100vh;
 
+  display: flex;
+  flex-direction: column;
+
   color: white;
   background-color: var(--midnight-blue);
 }
@@ -49,6 +52,7 @@
 }
 
 .About .content {
+  flex-grow: 1;
   padding: 2rem;
 }
 
@@ -93,21 +97,29 @@
 
   display: flex;
   flex-direction: column;
+
+  overflow-y: hidden;
 }
 .TeamMembers .content h2 {
   margin-top: 0;
   text-align: center;
 }
+.TeamMembers .content a.social {
+  text-decoration: inherit;
+  color: white;
+  margin: 0 5px;
+}
 .TeamMembers .memberInfo {
   flex-grow: 1;
 
-  display: flex;
-  flex-direction: row;
-  justify-content: stretch;
+  /* Force scroll instead of grow */
+  height: 0;
+  min-height: fit-content;
+  overflow-y: auto;
 }
 .TeamMembers .memberInfo img {
-  align-self: center;
-  margin-right: 20px;
-
-  max-width: 40%;
+  float: left;
+  min-width: 100px;
+  max-width: 30%;
+  margin-right: 1em;
 }
