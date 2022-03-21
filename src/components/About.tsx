@@ -3,7 +3,11 @@ import './About.css';
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 
 // TODO: replace with all team member images
-import PlaceholderImage from "../assets/Geo.png";
+import PlaceholderImage1 from "../assets/avelinPic.jpg";
+import PlaceholderImage2 from "../assets/borjaPic.jpg";
+import PlaceholderImage3 from "../assets/lukasPic.jpg";
+import PlaceholderImage4 from "../assets/octavePic.jpg";
+import PlaceholderImage5 from "../assets/sahilPic.jpg";
 
 export default function About() {
   const navClass = ({ isActive }: { isActive: boolean }) => isActive ? "selected" : "";
@@ -43,7 +47,9 @@ export default function About() {
                     <h2>{data.name}</h2>
                     <div className="memberInfo">
                       <img style={{ float: "left" }} src={data.img} alt={data.shortName} />
-                      <p>{data.description}</p>
+                    <div>
+                      <div>{data.description}</div>
+                      <a href={data.githubURL}>{data.githubURL}</a></div>
                     </div>
                   </>
                 } />)}
@@ -74,6 +80,7 @@ type TeamMemberData = {
   name: string;
   img: string; // Should be from an import statement!
   description: string;
+  githubURL: string;
 }
 const teamMemberData: TeamMemberData[] = [
   {
@@ -82,8 +89,9 @@ const teamMemberData: TeamMemberData[] = [
 
     path: "Avelin",
     name: "Ävelin Pantigoso",
-    img: PlaceholderImage,
-    description: "Description here."
+    img: PlaceholderImage1,
+    description: "Description here.",
+    githubURL: ""
   },
   {
     link: "./Borja",
@@ -91,8 +99,9 @@ const teamMemberData: TeamMemberData[] = [
 
     path: "Borja",
     name: "Borja Javierre",
-    img: PlaceholderImage,
-    description: "Description here."
+    img: PlaceholderImage2,
+    description: "Borja is a beginner in programming in JavaScript, CSS, HTML or TextScript. However, he worked in several projects in Matlab, C++ and Python. Thanks to this project, he could learn about other technolgies of the current market.",
+    githubURL: "https://github.com/jakifasty"
   },
   {
     link: "./Lukas",
@@ -100,8 +109,9 @@ const teamMemberData: TeamMemberData[] = [
 
     path: "Lukas",
     name: "Lukas Bonauer",
-    img: PlaceholderImage,
-    description: "Description here."
+    img: PlaceholderImage3,
+    description: "Description here.",
+    githubURL: ""
   },
   {
     link: "./Octave",
@@ -109,8 +119,9 @@ const teamMemberData: TeamMemberData[] = [
 
     path: "Octave",
     name: "Octave Le Tuiller",
-    img: PlaceholderImage,
-    description: "Description here."
+    img: PlaceholderImage4,
+    description: "Description here.",
+    githubURL: ""
   },
   {
     link: "./Sahil",
@@ -118,7 +129,8 @@ const teamMemberData: TeamMemberData[] = [
 
     path: "Sahil",
     name: "Sahil Patel",
-    img: PlaceholderImage,
-    description: "Description here."
+    img: PlaceholderImage5,
+    description: "Description here.",
+    githubURL: ""
   },
 ]
