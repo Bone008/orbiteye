@@ -3,11 +3,11 @@ import './About.css';
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 
 // TODO: replace with all team member images
-import PlaceholderImage1 from "../assets/avelinPic.jpg";
-import PlaceholderImage2 from "../assets/borjaPic.jpg";
-import PlaceholderImage3 from "../assets/lukasPic.jpg";
-import PlaceholderImage4 from "../assets/octavePic.jpg";
-import PlaceholderImage5 from "../assets/sahilPic.jpg";
+import PlaceholderImage1 from "../assets/AvelinPic.jpg";
+import PlaceholderImage2 from "../assets/Geo.png";
+import PlaceholderImage3 from "../assets/Geo.png";
+import PlaceholderImage4 from "../assets/Geo.png";
+import PlaceholderImage5 from "../assets/Geo.png";
 
 export default function About() {
   const navClass = ({ isActive }: { isActive: boolean }) => isActive ? "selected" : "";
@@ -90,8 +90,8 @@ const teamMemberData: TeamMemberData[] = [
     path: "Avelin",
     name: "Ävelin Pantigoso",
     img: PlaceholderImage1,
-    description: "Description here.",
-    githubURL: ""
+    description: "I am currently working towards a Msc in Interactive Media technology at KTH, and have a Bsc in Computer science and engineering. Creating art and graphic design are some of my hobbies, and I always enjoy creativity. In this project, I initially worked with ideation and creating a low-fi prototype from our ideas. Later, I worked with the UI for some of our components, and graphic design for the educational content. I also worked with UX evaluation, where I conducted some of our user tests and analyzed feedback.",
+    githubURL: "https://github.com/avelinpv"
   },
   {
     link: "./Borja",
