@@ -148,13 +148,13 @@ const teamMemberData: TeamMemberData[] = [
     description: <>
       I am a Computer Engineering student at the University of Illinois currently doing an exchange semester at KTH.
       Computer graphics has long been an interest of mine, but I had not dabbled in information visualization much before this project.
-      Satellites and astronomy in general are a side interest of mine, building a tool which I myself was interested in was just a treat!
+      Satellites and astronomy in general are a side interest of mine, so building a tool which I myself was interested in was just a treat!
 
       <p>
-        In this project, I contributed most to the Orbits view, built with ThreeJS through react-three-fiber. I also built the navigation
-        for both the views and the about pages. This was my first thorough React project, and I learned a lot about how the framework works
-        and how to combine my existing HTML/CSS skills with the power of React. Through other portions of this class and some work in this
-        project I was also able to learn about D3 and how to use it for powerful data-driven design.
+        In this project, I contributed most to the Orbits view which was built with ThreeJS through react-three-fiber. I also built the navigation
+        for both the views and the about pages. This was my first big React project, and I learned a lot about the framework and how to combine my
+        existing HTML/CSS skills with the power of React. Through other portions of this class and some work in this project I was also able to
+        learn about D3 and how to use it for powerful data-driven design.
       </p>
     </>,
   },
