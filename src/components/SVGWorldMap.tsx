@@ -84,6 +84,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
   const colorScale = d3.scaleLog<string>() // More dynamic in low numbers
     .range(colorRange)
     .domain(colorDomain)
+    .nice()
 
   // Render/update world map
   useEffect(() => {

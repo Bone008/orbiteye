@@ -2,16 +2,15 @@ import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import "./LegendMap.css"
 
-export type LegendProps =
-  {
-    satelliteNumber: d3.InternMap<string, number>,
-    width: number,
-    height: number,
-    min: number,
-    max: number,
-    colorRange: string[],
-    colorDomain: number[]
-  }
+export type LegendProps = {
+  satelliteNumber: d3.InternMap<string, number>,
+  width: number,
+  height: number,
+  min: number,
+  max: number,
+  colorRange: string[],
+  colorDomain: number[]
+}
 
 export default function LegendMap(props: LegendProps) {
   const svgRef = useRef<SVGSVGElement>(null!);
@@ -22,18 +21,19 @@ export default function LegendMap(props: LegendProps) {
       .select("g.mapLegend")
 
     const margin = 10
-    const deltah = props.max - props.min
 
     const colorScale = d3.scaleLinear<string>()
       .range(props.colorRange)
       // More dynamic in low numbers
       .domain(props.colorDomain)
+      .nice()
 
     const marginLeft = 6
     const legendStep = 50
-    const h = deltah / (legendStep + 1)
-    const legendArray = Array((legendStep + 2))
     const sizeRect = (props.height - 5 * margin) / (legendStep + 1)
+    const colorbarHeight = margin + 145;
+
+    mapLegend.selectAll("*").remove();
 
     const svgGradient = mapLegend.append('defs').append('linearGradient')
       .attr("id", "gradient-scale")
@@ -53,7 +53,7 @@ export default function LegendMap(props: LegendProps) {
       .attr("x", 2 * marginLeft + 10)
       .attr("y", margin)
       .attr("width", 10)
-      .attr("height", margin + 145)
+      .attr("height", colorbarHeight)
 
     // Legend title
     mapLegend.append("text")
@@ -77,31 +77,16 @@ export default function LegendMap(props: LegendProps) {
 
     const groupLegendText = mapLegendText
       .selectAll('text')
-      .data(legendArray)
-
-    function roundNumber(nb: number) {
-      if (nb > 1000) {
-        return Math.round(nb / 1000) * 1000
-      } else if (nb > 100) {
-        return Math.round(nb / 100) * 100
-      } else if (nb > 10) {
-        return Math.round(nb / 10) * 10
-      }
-      return Math.round(nb)
-    }
+      .data(colorScale.ticks(5));
 
     // Legend text D3 with updates
     groupLegendText
       .join('text')
-      .text((_, i) => {
-        if (!(i * h) && i !== 0) return "";
-        if (!i) return '0';
-        //if (i % 10 === 5) return roundNumber(props.min + Math.floor(i * h))
-        if (i % 10 === 9) return roundNumber(props.min + Math.floor(i * h))
-        //if (i === legendStep) return props.max
-        return ""//(props.min + Math.floor(i * h))
-      })
-      .attr("y", function (_, i) { return 20.5 + i * sizeRect }) //Don't get why 13 (+ 7.5)
+      .text(d => d)
+      // TODO: The layout here is a bit broken I think. It seems to cause the legend ticks to not match the color 
+      //  bar because they are in separate layers so their coordinates don't match up. Or maybe I just don't know
+      //  what I'm doing :) I am using this clamp below to make it look nicer at the sacrifice of pure truth
+      .attr("y", d => margin + clamp(getPercent(d, colorScale.domain()) * colorbarHeight, 10, colorbarHeight))
       .attr("x", 3 * marginLeft + 20)
       .style("fill", "white");
 
@@ -128,4 +113,17 @@ export default function LegendMap(props: LegendProps) {
       <g className="mapLegendText"></g>
     </svg>
   </div>
+}
+
+
+function getPercent(x: number, domain: number[]) {
+  const max = Math.max(...domain);
+  const min = Math.min(...domain);
+  return (x - min) / (max - min);
+}
+
+function clamp(x: number, min: number, max: number) {
+  if (min > x) return min;
+  if (max < x) return max;
+  return x;
 }
