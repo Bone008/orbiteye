@@ -14,22 +14,31 @@
   background-color: var(--midnight-blue);
 }
 
-.About .nav {
+.nav {
   display: flex;
   justify-content: space-evenly;
-  align-items: stretch;
-  
+  align-items: stretch;  
 }
 
-.About > .nav {
-  box-shadow: 0 -5px 10px black;
+.nav.nav-horizontal {
+  flex-direction: row;
 }
 
-.About .nav h1 {
-  text-decoration: underline;
+.nav.nav-vertical {
+  flex-direction: column;
 }
 
-.About .nav a {
+.nav.nav-shadow {
+  z-index: 1;
+}
+.nav.nav-horizontal.nav-shadow {
+  box-shadow: 0 5px 10px -10px black;
+}
+.nav.nav-vertical.nav-shadow {
+  box-shadow: 5px 0 10px -10px black;
+}
+
+.nav a {
   text-decoration: inherit;
   color: white;
   flex-grow: 1;
@@ -42,13 +51,24 @@
   border-bottom: 2px solid transparent;
 }
 
-.About .nav a.selected {
+.nav a.selected {
   background-color: var(--nav-selected);
   border-bottom-color: white;
 }
 
-.About .nav a:hover {
+.nav a:hover {
   background-color: var(--nav-selected);
+}
+
+.nav.nav-vertical a {
+  padding: 0.5rem 2rem;
+  
+  border-bottom: 0;
+  border-right: 2px solid transparent;
+}
+
+.nav.nav-vertical a.selected {
+  border-color: white;
 }
 
 .About .content {
@@ -73,21 +93,6 @@
 
   --nav-selected: var(--blue-gray-700);
   --nav-base: var(--blue-gray-600);
-}
-.TeamMembers .nav {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: stretch;
-}
-.TeamMembers .nav a {
-  padding: 0.5rem 2rem;
-  
-  border-bottom: 0;
-  border-right: 2px solid transparent;
-}
-.TeamMembers .nav a.selected {
-  border-color: white;
 }
 .TeamMembers .content {
   flex-grow: 1;

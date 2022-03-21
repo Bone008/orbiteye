@@ -5,6 +5,23 @@
   justify-content: stretch;
   text-align: center;
   overflow: hidden;
+
+  --nav-base: var(--wet-asphalt);
+  --nav-selected: var(--midnight-blue);
+}
+
+.App > .nav a {
+  /* De-emphasize about links on landing page */
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.App > .nav a h1 {
+  /* Keep emphasis on main title */
+  color: white;
+}
+
+.App:not(.expanded) > .nav {
+  display: none;
 }
 
 .mainView{

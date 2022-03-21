@@ -29,7 +29,7 @@ export default function RightSidePanel(props: RightPanelProps) {
   return (
     <div className='RightPanel'>
       <div className='header'>
-        <Link to="/" className='headerName'> <h1>OrbitEye</h1> </Link>
+        <Link to="/" className='headerName' title="Home"> <h1>OrbitEye</h1> </Link>
         <Link to="about" className='aboutLink'>About</Link>
       </div>
 

@@ -9,20 +9,27 @@ import PlaceholderImage3 from "../assets/Geo.png";
 import PlaceholderImage4 from "../assets/Geo.png";
 import SahilImg from "../assets/Sahil.jpg";
 import { GitHubIcon, LinkedInIcon } from './Icons';
-import { JsxElement } from 'typescript';
 import { ReactElement } from 'react';
+
+export function AboutNav() {
+  const navClass = ({ isActive }: { isActive: boolean }) => isActive ? "selected" : "";
+
+  return (
+    <div className="nav nav-horizontal nav-shadow">
+      <NavLink to="/" title="Home" className={navClass}><h1>OrbitEye</h1></NavLink>
+      <NavLink to="/about/overview" className={navClass}>Project Overview</NavLink>
+      <NavLink to="/about/demo" className={navClass}>Demo Video</NavLink>
+      <NavLink to="/about/team" className={navClass}>Team Members</NavLink>
+    </div>
+  );
+}
 
 export default function About() {
   const navClass = ({ isActive }: { isActive: boolean }) => isActive ? "selected" : "";
 
   return (
     <div className="About">
-      <div className="nav">
-        <NavLink to="/" title="Back to the visualization"><h1>OrbitEye</h1></NavLink>
-        <NavLink to="./overview" className={navClass}>Project Overview</NavLink>
-        <NavLink to="./demo" className={navClass}>Demo Video</NavLink>
-        <NavLink to="./team" className={navClass}>Team Members</NavLink>
-      </div>
+      <AboutNav />
       <Routes>
         <Route path="/overview" element={
           <div className='ProjectOverview content'>
@@ -40,7 +47,7 @@ export default function About() {
         } />
         <Route path="/team/*" element={
           <div className="TeamMembers content">
-            <div className="nav">
+            <div className="nav nav-vertical nav-shadow">
               {teamMemberData.map(data => <NavLink key={data.link} to={data.link} className={navClass}>{data.shortName}</NavLink>)}
             </div>
             <div className="content">

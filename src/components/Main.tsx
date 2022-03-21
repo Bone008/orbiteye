@@ -12,7 +12,7 @@ import { fetchSatellitesAsync, fetchWorldMapAsync, WorldMapJSON } from '../model
 import ReactModal from 'react-modal';
 import { XIcon } from './Icons';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import About from './About';
+import About, { AboutNav } from './About';
 
 const DEFAULT_FILTER_SETTINGS = new FilterSettings({ activeStatus: true });
 
@@ -62,6 +62,7 @@ export function Main() {
       <Route path="about/*" element={<About />} />
       <Route path="*" element={
         <div className={`App ${isHomePage ? "expanded" : ""}`}>
+          <AboutNav />
           <div className="mainView">
             <div className='mapView'>
               <ViewContainer filteredSatellites={filteredSatellites} onUpdateFilter={setFilterSettings} selectedSatellite={selectedSatellite} setSelectedSatellite={updateSelected} worldJson={worldJson} />
