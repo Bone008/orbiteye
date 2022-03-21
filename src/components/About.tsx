@@ -103,8 +103,11 @@ const teamMemberData: TeamMemberData[] = [
     path: "Avelin",
     name: "Ävelin Pantigoso",
     img: AvelinImg,
-    description: "I am currently working towards a Msc in Interactive Media technology at KTH, and have a Bsc in Computer science and engineering. Creating art and graphic design are some of my hobbies, and I always enjoy creativity. In this project, I initially worked with ideation and creating a low-fi prototype from our ideas. Later, I worked with the UI for some of our components, and graphic design for the educational content. I also worked with UX evaluation, where I conducted some of our user tests and analyzed feedback.",
-    githubURL: "https://github.com/avelinpv"
+    description: <>I am currently working towards a Msc in Interactive Media technology at KTH, and have a Bsc in Computer science and engineering. Creating art and graphic design are some of my hobbies, and I always enjoy creativity. Before this project I had explored computer visualization and done some web developlemt projects in Typesript, but never worked with information visualization.
+
+      <p>In this project, I initially worked with ideation and creating a low-fi prototype from our ideas. Later, I worked with the UI for some of our components, and graphic design for the educational content. I also worked with UX evaluation, where I conducted some of our user tests and analyzed feedback. In this project I have developed my knowledge in React and Typescript and their respective powers. This class and the project also taught me a lot about the visualization pipeline and how to implement it in a project. </p></>,
+    githubURL: "https://github.com/avelinpv",
+    linkedInURL: "https://www.linkedin.com/in/avelin-pantigoso/"
   },
   {
     link: "./Borja",
