@@ -8,6 +8,7 @@ import PlaceholderImage2 from "../assets/Geo.png";
 import PlaceholderImage3 from "../assets/Geo.png";
 import PlaceholderImage4 from "../assets/Geo.png";
 import PlaceholderImage5 from "../assets/Geo.png";
+import GitImage from "../assets/GitHubLight.png";
 
 export default function About() {
   const navClass = ({ isActive }: { isActive: boolean }) => isActive ? "selected" : "";
@@ -46,10 +47,12 @@ export default function About() {
                   <>
                     <h2>{data.name}</h2>
                     <div className="memberInfo">
-                      <img style={{ float: "left" }} src={data.img} alt={data.shortName} />
-                    <div>
-                      <div>{data.description}</div>
-                      <a href={data.githubURL}>{data.githubURL}</a></div>
+                      <img style={{ float: "left", width: '40vw' }} src={data.img} alt={data.shortName} />
+                      <div>
+                        <div style={{ padding: '0 1em 0 1em' }}>{data.description}</div>
+                        <a href={data.githubURL}>
+                          <img style={{ margin: '1em', cursor: 'pointer' }} src={GitImage} />
+                        </a></div>
                     </div>
                   </>
                 } />)}
