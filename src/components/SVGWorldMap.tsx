@@ -84,6 +84,7 @@ export default function WorldMap(reqProps: WorldMapProps) {
   const colorScale = d3.scaleLog<string>() // More dynamic in low numbers
     .range(colorRange)
     .domain(colorDomain)
+    .nice()
 
   // Render/update world map
   useEffect(() => {
@@ -118,10 +119,30 @@ export default function WorldMap(reqProps: WorldMapProps) {
 
     // Mouse move -> tooltip moves
     function mouseMove(e: any) {
-      tooltip
-        .style('left', (e.pageX + 10) + 'px')
-        .style('top', (e.pageY + 10) + 'px')
-        .style('opacity', 1)
+      const tooltipElt = tooltip.nodes()[0] as Element;
+      const svgBounds = svgRef.current.getBoundingClientRect();
+      const parentRect = tooltipElt.parentElement!.getBoundingClientRect();
+
+      const leftSide = e.clientX + 10 + tooltipElt.clientWidth < svgBounds.right;
+      const topSide = e.clientY + 10 + tooltipElt.clientHeight < svgBounds.bottom;
+
+      if (leftSide) {
+        tooltip.style('left', (e.clientX + 10) + 'px');
+        tooltip.style('right', '');
+      } else {
+        tooltip.style('right', (svgBounds.right - e.clientX - 10) + 'px');
+        tooltip.style('left', '');
+      }
+
+      if (topSide) {
+        tooltip.style('top', ((e.clientY - parentRect.y) + 10) + 'px');
+        tooltip.style('bottom', '');
+      } else {
+        tooltip.style('bottom', (svgBounds.bottom - e.clientY - 10) + 'px');
+        tooltip.style('top', '');
+      }
+
+      tooltip.style('opacity', 1)
     }
 
     // Mouse over -> tooltip disappears and opacity changes back to normal on the country
@@ -194,22 +215,6 @@ export default function WorldMap(reqProps: WorldMapProps) {
         .text(OWNER_SHORT_CODE_TO_FULL[d] + ": " + nbSat + " satellite(s) with selected filters.")
     }
 
-    // Mouse move -> tooltip moves
-    function mouseMove2(e: any) {
-      tooltip
-        .style('left', (e.pageX + 10) + 'px')
-        .style('top', (e.pageY - 100) + 'px')
-        .style('opacity', 1)
-    }
-
-    // Mouse over -> tooltip disappears and opacity changes back to normal on the country
-    function mouseOut2(e: any) {
-      tooltip
-        .text('')
-        .style('opacity', 0)
-        .style('left', '10000px')
-    }
-
     const assoMap = d3.select(svgRef.current)
       .select("g.assoMap")
 
@@ -276,13 +281,8 @@ export default function WorldMap(reqProps: WorldMapProps) {
           .style("opacity", .8)
           .style("stroke", "black")
       })
-      .on('mousemove', mouseMove2)
-      .on('mouseout', (e, d) => {
-        mouseOut2(e)
-        d3.select(e.srcElement)
-          .style("opacity", 1)
-          .style("stroke", "grey")
-      })
+      .on('mousemove', mouseMove)
+      .on('mouseout', mouseOut)
       .attr('d', radialData)
       .attr("transform", function (_, i) {
         if (i % 2) return "translate(" + shiftX(i) + "," + shiftY() + ")"
@@ -314,13 +314,8 @@ export default function WorldMap(reqProps: WorldMapProps) {
       .style("font-size", "9px")
       .attr("class", "assoLabel")
       .attr('fill', (d, _) => {
-        const countOfSatellite = nbSatellitePerCountry.get(d)
-
-        // If undefined/unknown, we put it in dark for better reading
-        if (!countOfSatellite) return "grey"
-
-        // Otherwise we put it in light color
-        return "rgb(240, 240, 240)"
+        const countOfSatellite = nbSatellitePerCountry.get(d);
+        return getHighContrastText(colorScale(countOfSatellite || 0));
       })
       .attr("x", function (_, i) {
         return shiftX(i)
@@ -348,4 +343,12 @@ export default function WorldMap(reqProps: WorldMapProps) {
       <LegendMap satelliteNumber={nbSatellitePerCountry} width={85} height={200} colorDomain={colorDomain} colorRange={colorRange} max={max} min={min}></LegendMap>
     </div>
   );
+}
+
+
+// Adapted from https://css-tricks.com/css-variables-calc-rgb-enforcing-high-contrast-colors/
+function getHighContrastText(rgbString: string) {
+  const rgb = rgbString.replace(/[^\d,.]/g, '').split(',');
+  const sum = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
+  return (sum > 128) ? 'black' : 'white';
 }

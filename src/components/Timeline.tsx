@@ -88,6 +88,7 @@ export default function Timeline(props: TimelineProps) {
         marks={marks}
         onChange={rangeChange}
         valueLabelDisplay="on"
+        title="Filter by launch date"
       />
     </div>
   )

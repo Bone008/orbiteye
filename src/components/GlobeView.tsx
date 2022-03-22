@@ -108,6 +108,9 @@ function SceneObjects(props: Required<GlobeViewProps> & { shownSatellites: Satel
       <Sphere ref={sphereRef} args={[props.radius, 64, 32]} rotation={new Euler(Math.PI / 2, 0, 0)} {...occludeInput}>
         <meshLambertMaterial {...texture} />
       </Sphere>
+
+      {/* Show Earth's axis of rotation */}
+      <Line points={[[0, 0, -2 * props.radius], [0, 0, 2 * props.radius]]} color={"gray"} />
       {orbits}
     </>
   );
