@@ -1,6 +1,6 @@
 import './About.css';
 
-import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
+import { NavLink, Navigate, Route, Routes, Link } from 'react-router-dom';
 
 // TODO: replace with all team member images
 import AvelinImg from "../assets/AvelinPic.jpg";
@@ -34,9 +34,40 @@ export default function About() {
         <Route path="/overview" element={
           <div className='ProjectOverview content'>
             <h2>Project Overview</h2>
-            <p>Basic summary here</p>
+            <p>
+              OrbitEye is a satellite visualizer created for the KTH course DT2212: Information Visualization. There are 3 modes:
+              Orbits view, Ground Tracks view, and Origins view. The first two focus on the spatial position of satellites and the
+              different orbit types they can take. Orbits view shows the 3D position of satellites around Earth while Ground Tracks
+              view shows what parts of the Earth's surface a satellite flies over. Origins view is a statistical view showing which
+              countries/organizations own different satellites.
+            </p>
+            <p>
+              OrbitEye is made to be exploratory, so go ahead and <Link to="/">try it out</Link>! If you want an overview first,
+              check out our <Link to="../demo">demo video</Link>. Our source code is <a href="https://github.com/bone008/orbiteye">
+                available on GitHub</a>.
+            </p>
+            <p>
+              Our data comes from the <a href="https://www.ucsusa.org/resources/satellite-database">Union of Concerned Scientists
+              </a>, <a href="https://celestrak.com/satcat/search.php">CelesTrak's SATCAT</a>, and <a href="https://celestrak.com/NORAD/elements/">
+                CelesTrak's TLE data</a>. The data used is <i>not</i> automatically updated &mdash; it is stored statically for simplicity.
+            </p>
+
             <h2>Learning Objectives</h2>
-            <p>More stuff here</p>
+            <p>
+              Through the course of this project we had a few key learning objectives:
+            </p>
+            <ul>
+              <li>Data processing with Pandas</li>
+              <li>Data visualization with D3 and ThreeJS</li>
+              <li>UI development with React</li>
+              <li>UX evaluation techniques (user testing)</li>
+              <li>Project management with GitHub Projects</li>
+            </ul>
+            <p>
+              Not all of us participated fully in every objective, but we each had the opportunity to take ownership over different
+              aspects of the project. You can read more about our individual contributes in the <Link to="../team">Team Members
+                page</Link>.
+            </p>
           </div>
         } />
         <Route path="/demo" element={
@@ -66,16 +97,16 @@ export default function About() {
                   </>
                 } />)}
 
-                <Route path="/" element={<Navigate to={teamMemberData[0].link} />} />
+                <Route path="/" element={<Navigate to={teamMemberData[0].link} replace />} />
               </Routes>
             </div>
           </div>}
         />
 
 
-        <Route path="/" element={<Navigate to="./overview" />} />
+        <Route path="/" element={<Navigate to="./overview" replace />} />
         {/* TODO: Make 404 */}
-        <Route path="*" element={<Navigate to="./overview" />} />
+        <Route path="*" element={<Navigate to="./overview" replace />} />
       </Routes>
     </div>
   );

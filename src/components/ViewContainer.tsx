@@ -107,7 +107,7 @@ export default function ViewControls(props: ViewContainerProps) {
             <Route path="/origins" element={<SVGWorldMap filteredSatellites={props.filteredSatellites} onUpdateFilter={props.onUpdateFilter} worldJson={props.worldJson} width={500} height={250} />} />
 
             {/* For unmatched paths, give ViewNotFound */}
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </div>

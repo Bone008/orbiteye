@@ -14,6 +14,11 @@
   background-color: var(--midnight-blue);
 }
 
+.About a {
+  /* Links must stand out from blue background */
+  color: lightcoral;
+}
+
 .nav {
   display: flex;
   justify-content: space-evenly;
@@ -46,6 +51,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
 
   background-color: var(--nav-base);
   border-bottom: 2px solid transparent;
@@ -84,6 +90,7 @@
 .ProjectOverview {
   width: fit-content;
   min-width: 50%;
+  max-width: 800px;
   margin: 0 auto;
 }
 
