@@ -4,7 +4,7 @@ import { NavLink, Navigate, Route, Routes, Link } from 'react-router-dom';
 
 // TODO: replace with all team member images
 import AvelinImg from "../assets/AvelinPic.jpg";
-import BorjaImg from "../assets/BorjaPic.jpg";
+import BorjaImg from "../assets/borjaPic.jpg";
 import PlaceholderImage3 from "../assets/Geo.png";
 import PlaceholderImage4 from "../assets/Geo.png";
 import SahilImg from "../assets/Sahil.jpg";
@@ -73,7 +73,7 @@ export default function About() {
         <Route path="/demo" element={
           <div className="DemoVideo content">
             <h2>Demo Video</h2>
-            <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ScMzIvxBSi4" title="Demo video on Youtube" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/FUG2TbvaDvs" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
           </div>
         } />
         <Route path="/team/*" element={
