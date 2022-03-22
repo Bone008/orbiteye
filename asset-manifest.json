@@ -1,10 +1,11 @@
 {
   "files": {
     "main.css": "./static/css/main.b8f96fd2.css",
-    "main.js": "./static/js/main.202a5194.js",
+    "main.js": "./static/js/main.5408a178.js",
     "static/js/787.104a8f9a.chunk.js": "./static/js/787.104a8f9a.chunk.js",
     "static/media/NASA-Visible-Earth-September-2004.jpg": "./static/media/NASA-Visible-Earth-September-2004.bd083e50c1368f72effe.jpg",
     "static/media/AvelinPic.jpg": "./static/media/AvelinPic.eeea40ae2a474a14ea85.jpg",
+    "static/media/borjaPic.jpg": "./static/media/borjaPic.b1240c1d28f9b12b7aae.jpg",
     "static/media/Sahil.jpg": "./static/media/Sahil.eaed29be607bde9d4694.jpg",
     "static/media/ModeGroundTracks.png": "./static/media/ModeGroundTracks.31a553daeac4a6f2339e.png",
     "static/media/orbits.png": "./static/media/orbits.38b21d674adda6b5f352.png",
@@ -17,11 +18,11 @@
     "static/media/Leo.png": "./static/media/Leo.277c7927a0578b079af2.png",
     "index.html": "./index.html",
     "main.b8f96fd2.css.map": "./static/css/main.b8f96fd2.css.map",
-    "main.202a5194.js.map": "./static/js/main.202a5194.js.map",
+    "main.5408a178.js.map": "./static/js/main.5408a178.js.map",
     "787.104a8f9a.chunk.js.map": "./static/js/787.104a8f9a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.b8f96fd2.css",
-    "static/js/main.202a5194.js"
+    "static/js/main.5408a178.js"
   ]
 }
