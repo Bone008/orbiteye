@@ -4,7 +4,7 @@ import { NavLink, Navigate, Route, Routes, Link } from 'react-router-dom';
 
 // TODO: replace with all team member images
 import AvelinImg from "../assets/AvelinPic.jpg";
-import PlaceholderImage2 from "../assets/Geo.png";
+import BorjaImg from "../assets/BorjaPic.jpg";
 import PlaceholderImage3 from "../assets/Geo.png";
 import PlaceholderImage4 from "../assets/Geo.png";
 import SahilImg from "../assets/Sahil.jpg";
@@ -146,9 +146,24 @@ const teamMemberData: TeamMemberData[] = [
 
     path: "Borja",
     name: "Borja Javierre",
-    img: PlaceholderImage2,
-    description: "Borja is a beginner in programming in JavaScript, CSS, HTML or TextScript. However, he worked in several projects in Matlab, C++ and Python. Thanks to this project, he could learn about other technolgies of the current market.",
-    githubURL: "https://github.com/jakifasty"
+    img: BorjaImg,
+    description: <>
+
+    I am a first year ICT Innovation Master student at KTH Royal Intitute of Technology. 
+    Previously I've studied Audiovisual Systems engineering. However, I started these studies in KTH
+    because I wanted to get more experience in software development while also learning concepts in innovation and entrepreneurship.
+    Thanks to it, I'm learning to program in languages like C++, Javascript, CSS, HTML or TypeScript, as it has been done in this project.
+    However, I worked in several projects in my Bachelor's degree in Matlab, Python and Java. 
+    
+    <p>My contribution to this project has been more on the User Experience evaluation, mapping of names of variables using 
+    in the datasets used, implementing buttons in the interface using HTML as well as the decision-making of the appearance of the interface 
+    given by the CSS files. To sum up, the combination of all the different programming languages, both in backend and frontend web developlemt
+    has been very challenging, as the use of D3 was the first time to be seen for me.</p>
+
+    </>,
+
+    githubURL: "https://github.com/jakifasty",
+    linkedInURL: "https://www.linkedin.com/in/borja-javierre/"
   },
   {
     link: "./Lukas",
