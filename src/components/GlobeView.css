@@ -3,3 +3,15 @@
   width: 100%;
   position: relative; /* To anchor the legend at the correct container. */
 }
+
+.nameTooltip {
+  pointer-events: none;
+  position: relative;
+  left: 12px;
+  top: 12px;
+  padding: 5px;
+  border: 1px solid rgba(255,255,255, 0.5);
+  background-color: rgba(128, 128, 128, 0.637);
+  white-space: nowrap;
+  color: white;
+}

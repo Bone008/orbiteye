@@ -1,7 +1,7 @@
 import './GlobeView.css'
 
 import { Canvas, ThreeEvent, useFrame } from '@react-three/fiber'
-import { Line, Sphere, Stars, TrackballControls, useTexture } from '@react-three/drei'
+import { Line, Sphere, Stars, TrackballControls, useTexture, Html } from '@react-three/drei'
 import { useRef, Suspense, useState, useMemo } from 'react';
 import { DefaultValues } from '../util/util';
 import { Satellite } from '../model/satellite';
@@ -122,7 +122,7 @@ function Orbit(props: OrbitProps) {
   const sat = props.satellite;
 
   const selected = sat === props.selectedSatellite;
-  const [hovered, setHovered] = useState<boolean>(false);
+  const [hoveredPoint, setHoveredPoint] = useState<THREE.Vector3 | null>(null);
   const coordinatesECI = getOrbitECI(sat);
 
   if (coordinatesECI.length === 0) {
@@ -135,15 +135,16 @@ function Orbit(props: OrbitProps) {
 
   // TODO: Opacity < 1 doesn't work properly (parts of the line appear in full opacity, others at the selected value)
   const material = {
-    color: (hovered || selected) ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray',
+    color: (hoveredPoint || selected) ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray',
     transparent: props.orbitOpacity !== 1,
     opacity: props.orbitOpacity,
-    lineWidth: (selected ? 3 : hovered ? 2 : 1) * props.orbitLineWidth,
+    lineWidth: (selected ? 3 : hoveredPoint ? 2 : 1) * props.orbitLineWidth,
   }
 
   const hoverControls = {
-    onPointerEnter: (e: ThreeEvent<PointerEvent>) => { setHovered(true); e.stopPropagation(); },
-    onPointerLeave: (e: ThreeEvent<PointerEvent>) => { setHovered(false); e.stopPropagation(); }
+    onPointerEnter: (e: ThreeEvent<PointerEvent>) => { setHoveredPoint(e.unprojectedPoint); e.stopPropagation(); },
+    onPointerLeave: (e: ThreeEvent<PointerEvent>) => { setHoveredPoint(null); e.stopPropagation(); },
+    onPointerMove: (e: ThreeEvent<PointerEvent>) => { setHoveredPoint(e.unprojectedPoint.clone()); console.log('move', e.unprojectedPoint) },
   };
 
   const onclick = (e: ThreeEvent<MouseEvent>) => {
@@ -151,5 +152,11 @@ function Orbit(props: OrbitProps) {
     props.setSelectedSatellite(sat);
   };
 
-  return <Line name={sat.id} points={coordinates} {...material} {...hoverControls} onClick={onclick} />
+  return <>
+    <Line name={sat.id} points={coordinates} {...material} {...hoverControls} onClick={onclick} />
+    {hoveredPoint ?
+      <Html position={hoveredPoint}>
+        <div className='nameTooltip'>{sat.name}</div>
+      </Html> : null}
+  </>;
 }
