@@ -187,7 +187,7 @@ const teamMemberData: TeamMemberData[] = [
           and human computer interaction courses before and I felt like this project was a nice continuation. I have worked before with classic web dev tools, however this was the first time I used TypeScript with React.
         </p>
         <p>At the beginning, I chose to work on UX and initial designs. I also built 'Origins' tab using D3.js. Finally, I conducted user-testing evaluations to get feedback of the UX of our project.
-          This project significantly enhanced my knowledge of D3.js, React, and TypeScript. All in all, OrbitEye allowed to deepen my information visualization skills and carry out a team project. I hope you'll enjoy it and discover lots of things about satellites!
+          This project significantly enhanced my knowledge of D3.js, React, and TypeScript. All in all, OrbitEye allowed me to deepen my information visualization skills and carry out a team project. I hope you'll enjoy it and discover lots of things about satellites!
         </p>
       </>,
     githubURL: "https://github.com/OctaveLT",
