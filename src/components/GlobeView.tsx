@@ -144,7 +144,7 @@ function Orbit(props: OrbitProps) {
   const hoverControls = {
     onPointerEnter: (e: ThreeEvent<PointerEvent>) => { setHoveredPoint(e.unprojectedPoint); e.stopPropagation(); },
     onPointerLeave: (e: ThreeEvent<PointerEvent>) => { setHoveredPoint(null); e.stopPropagation(); },
-    onPointerMove: (e: ThreeEvent<PointerEvent>) => { setHoveredPoint(e.unprojectedPoint.clone()); console.log('move', e.unprojectedPoint) },
+    onPointerMove: (e: ThreeEvent<PointerEvent>) => { setHoveredPoint(e.unprojectedPoint.clone()); },
   };
 
   const onclick = (e: ThreeEvent<MouseEvent>) => {
