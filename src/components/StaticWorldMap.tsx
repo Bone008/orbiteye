@@ -66,6 +66,11 @@ export default function WorldMap(__props: StaticWorldMapProps) {
   // D3 logic goes here and will run anytime an item in the second argument is modified (shallow comparison)
   const selectedSatellite = props.selectedSatellite;
   const setSelectedSatellite = props.setSelectedSatellite;
+  const updateTooltip = (x: number, y: number) => {
+    const tooltip = (document.querySelector('.nameTooltip')! as HTMLElement);
+    tooltip.parentElement!.style.left = x + "px";
+    tooltip.parentElement!.style.top = y + "px";
+  }
   useEffect(() => {
     const traceLayer = d3.select(svgRef.current).select("g.traceLayer").selectAll("path")
       .data(shownSatellites);
@@ -81,11 +86,20 @@ export default function WorldMap(__props: StaticWorldMapProps) {
         if (sat !== selectedSatellite) {
           d3.select(e.srcElement).attr("stroke-width", "2px");
         }
+
+        const tooltip = (document.querySelector('.nameTooltip')! as HTMLElement);
+        tooltip.parentElement!.style.display = "";
+        tooltip.innerText = sat.name;
+
+        updateTooltip(e.clientX, e.clientY);
       })
+      .on('mousemove', e => updateTooltip(e.clientX, e.clientY))
       .on('mouseout', (e, d) => {
         if (d !== selectedSatellite) {
           d3.select(e.srcElement).attr("stroke-width", "1px");
         }
+        const tooltip = (document.querySelector('.nameTooltip')! as HTMLElement);
+        tooltip.parentElement!.style.display = "none";
       })
       .on('click', (e: MouseEvent, sat) => {
         e.stopPropagation();
@@ -133,13 +147,16 @@ export default function WorldMap(__props: StaticWorldMapProps) {
     d3.select(svgRef.current)
       .call(zoom as any);
 
-  }, [props.filteredSatellites, selectedSatellite, setSelectedSatellite, props.traceLimit, mapProjection, shownSatellites]);
+  }, [props.filteredSatellites, selectedSatellite, setSelectedSatellite, props.traceLimit, mapProjection, shownSatellites, props.width, props.height]);
 
 
 
 
   return (
     <div className="WorldMap" style={{ padding: "0" }}>
+      <div style={{ position: "fixed", zIndex: 1, display: "none" }}>
+        <div className='nameTooltip'></div>
+      </div>
       <svg ref={svgRef}
         viewBox={`0 0 ${500}, ${250}`}
         preserveAspectRatio="xMidYMid meet"
