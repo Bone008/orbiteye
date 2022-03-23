@@ -49,6 +49,7 @@ export default function About() {
               Our data comes from the <a href="https://www.ucsusa.org/resources/satellite-database">Union of Concerned Scientists
               </a>, <a href="https://celestrak.com/satcat/search.php">CelesTrak's SATCAT</a>, and <a href="https://celestrak.com/NORAD/elements/">
                 CelesTrak's TLE data</a>. The data used is <i>not</i> automatically updated &mdash; it is stored statically for simplicity.
+              You can find the raw data <a href="https://github.com/Bone008/orbiteye/tree/main/public/data">here</a>.
             </p>
 
             <h2>Learning Objectives</h2>
