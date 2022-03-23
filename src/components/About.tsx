@@ -183,11 +183,11 @@ const teamMemberData: TeamMemberData[] = [
     img: OctaveImg,
     description:
       <>
-        <p>I am currently finishing a double-degree in Computer Science at KTH &amp; Telecom Paris (2022). I enjoy doing sports and creating websites on my free time. I discovered information informalization a year ago and I really liked it. That is the reason why I decided to take this course and to work on this amazing project. I have also done computer visualization
-          and human computer interaction courses before and I felt like this project was a nice continuation. I have worked before on classic web dev tools, however it was the first time I used TypeScript with React.
+        <p>I am currently finishing a double-degree in Computer Science at KTH &amp; Telecom Paris (2022). I enjoy doing sports and creating websites in my free time. I discovered information informalization a year ago and I really liked it. That is the reason why I decided to take this course and to work on this amazing project. I have also done computer visualization
+          and human computer interaction courses before and I felt like this project was a nice continuation. I have worked before with classic web dev tools, however this was the first time I used TypeScript with React.
         </p>
-        <p>At the beginning, I chose to work with UX and first designs. Then I contribute to the conception of the map in the 'Origin' tab using D3.js. Finally, I conduct user-testing evaluations to get feedback of the UX of our project.
-          I realized that this project was really significant to enhance my knowledge in D3, React, and TypeScript. All in all, OrbitEye allowed to deepen my information visualization skills and carry out a team project. I hope you'll enjoy it and discover lots of things about satellites!
+        <p>At the beginning, I chose to work on UX and initial designs. I also built 'Origins' tab using D3.js. Finally, I conducted user-testing evaluations to get feedback of the UX of our project.
+          This project significantly enhanced my knowledge of D3.js, React, and TypeScript. All in all, OrbitEye allowed to deepen my information visualization skills and carry out a team project. I hope you'll enjoy it and discover lots of things about satellites!
         </p>
       </>,
     githubURL: "https://github.com/OctaveLT",
