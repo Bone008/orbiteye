@@ -104,13 +104,12 @@
 .TeamMembers .content {
   flex-grow: 1;
   padding: 1rem;
-
   background-color: var(--nav-selected);
-
   display: flex;
   flex-direction: column;
 
   overflow-y: hidden;
+  text-align: justify;
 }
 .TeamMembers .content h2 {
   margin-top: 0;
@@ -123,6 +122,12 @@
 }
 .TeamMembers .memberInfo {
   flex-grow: 1;
+
+  /* Prevent text from rubbing up against scroll bar */
+  padding: 0 10px;
+
+  /* Prevent random non-scrollable horizontal scroll bar */
+  overflow-x: hidden;
 
   /* Force scroll instead of grow */
   height: 0;

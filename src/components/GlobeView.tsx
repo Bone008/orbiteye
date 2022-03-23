@@ -1,8 +1,8 @@
 import './GlobeView.css'
 
 import { Canvas, ThreeEvent, useFrame } from '@react-three/fiber'
-import { Line, Sphere, Stars, TrackballControls, useTexture, Html } from '@react-three/drei'
-import { useRef, Suspense, useState, useMemo } from 'react';
+import { Line, Sphere, Stars, TrackballControls, useTexture } from '@react-three/drei'
+import { useRef, Suspense, useMemo, useState } from 'react';
 import { DefaultValues } from '../util/util';
 import { Satellite } from '../model/satellite';
 import { getOrbitECI } from '../util/orbits';
@@ -55,6 +55,9 @@ export default function GlobeView(__props: GlobeViewProps) {
 
   return (
     <div className="GlobeView">
+      <div style={{ position: "fixed", display: "none", zIndex: 1 }}>
+        <div className="nameTooltip"></div>
+      </div>
       <Suspense fallback={null}> {/* Replaces canvas with nothing while loading */}
         <Canvas onPointerMissed={onClickNothing} style={{ width: "100%", height: "100%" }}>
           <color attach="background" args={["black"]} />
@@ -142,10 +145,16 @@ function Orbit(props: OrbitProps) {
 
   // TODO: Opacity < 1 doesn't work properly (parts of the line appear in full opacity, others at the selected value)
   const material = {
-    color: (hoveredPoint || selected) ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray',
+    color: (selected) ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray',
     transparent: props.orbitOpacity !== 1,
     opacity: props.orbitOpacity,
-    lineWidth: (selected ? 3 : hoveredPoint ? 2 : 1) * props.orbitLineWidth,
+    lineWidth: (selected ? 3 : 1) * props.orbitLineWidth,
+  }
+
+  const tooltip = (document.querySelector('.nameTooltip')! as HTMLElement);
+  const updateTooltip = (x: number, y: number) => {
+    tooltip.parentElement!.style.left = x + "px";
+    tooltip.parentElement!.style.top = y + "px";
   }
 
   const toHoveredPoint = (point: THREE.Vector3): OrbitHoveredPoint => {
@@ -156,14 +165,23 @@ function Orbit(props: OrbitProps) {
   const hoverControls = {
     onPointerEnter: (e: ThreeEvent<PointerEvent>) => {
       setHoveredPoint(toHoveredPoint(e.point));
+      tooltip.parentElement!.style.display = "";
+      updateTooltip(e.nativeEvent.clientX, e.nativeEvent.clientY);
+      tooltip.innerText = sat.name;
+
       e.stopPropagation();
     },
     onPointerLeave: (e: ThreeEvent<PointerEvent>) => {
       setHoveredPoint(null);
+      tooltip.parentElement!.style.display = "none";
+
       e.stopPropagation();
     },
     onPointerMove: (e: ThreeEvent<PointerEvent>) => {
       setHoveredPoint(toHoveredPoint(e.point));
+      updateTooltip(e.nativeEvent.clientX, e.nativeEvent.clientY);
+
+      e.stopPropagation();
     },
   };
 
@@ -178,7 +196,8 @@ function Orbit(props: OrbitProps) {
     const distance = Math.round(hoveredPoint.pointOnOrbit.length() / scale - EARTH_RADIUS_KM);
     return <>
       {orbitLine}
-      <Html position={hoveredPoint.raycastPoint}>
+      {/* TODO reimplement! */
+      /*<Html position={hoveredPoint.raycastPoint}>
         <div className='nameTooltip'>
           {sat.name}
           <br />
@@ -186,7 +205,7 @@ function Orbit(props: OrbitProps) {
           <br />
           {sat.perigeeKm.toLocaleString('en-US')} - {sat.apogeeKm.toLocaleString('en-US')} km
         </div>
-      </Html>
+      </Html>*/}
       <Line points={[[0, 0, 0], hoveredPoint.raycastPoint]} color="#ccc" />
     </>;
   }

@@ -77,7 +77,7 @@ export default function LegendMap(props: LegendProps) {
 
     const groupLegendText = mapLegendText
       .selectAll('text')
-      .data(colorScale.ticks(5));
+      .data(colorScale.ticks(Math.min(5, props.max)));
 
     // Legend text D3 with updates
     groupLegendText

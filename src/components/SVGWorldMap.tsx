@@ -119,29 +119,8 @@ export default function WorldMap(reqProps: WorldMapProps) {
 
     // Mouse move -> tooltip moves
     function mouseMove(e: any) {
-      const tooltipElt = tooltip.nodes()[0] as Element;
-      const svgBounds = svgRef.current.getBoundingClientRect();
-      const parentRect = tooltipElt.parentElement!.getBoundingClientRect();
-
-      const leftSide = e.clientX + 10 + tooltipElt.clientWidth < svgBounds.right;
-      const topSide = e.clientY + 10 + tooltipElt.clientHeight < svgBounds.bottom;
-
-      if (leftSide) {
-        tooltip.style('left', (e.clientX + 10) + 'px');
-        tooltip.style('right', '');
-      } else {
-        tooltip.style('right', (svgBounds.right - e.clientX - 10) + 'px');
-        tooltip.style('left', '');
-      }
-
-      if (topSide) {
-        tooltip.style('top', ((e.clientY - parentRect.y) + 10) + 'px');
-        tooltip.style('bottom', '');
-      } else {
-        tooltip.style('bottom', (svgBounds.bottom - e.clientY - 10) + 'px');
-        tooltip.style('top', '');
-      }
-
+      tooltip.style('left', (e.clientX + 10) + 'px');
+      tooltip.style('top', (e.clientY + 10) + 'px');
       tooltip.style('opacity', 1)
     }
 
