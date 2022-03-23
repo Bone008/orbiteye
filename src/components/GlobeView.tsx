@@ -10,6 +10,7 @@ import { Euler, Vector2 } from 'three';
 import { COLOR_PALETTE_ORBITS } from '../util/colors';
 import { smartSampleSatellites } from '../util/sampling';
 import Legend from './Legend';
+import * as d3 from 'd3';
 
 import WorldMapImg from '../assets/NASA-Visible-Earth-September-2004.jpg';
 
@@ -116,13 +117,19 @@ function SceneObjects(props: Required<GlobeViewProps> & { shownSatellites: Satel
   );
 }
 
+interface OrbitHoveredPoint {
+  /** Precise point where mouse intersected, but may be further out/in due to line width. */
+  raycastPoint: THREE.Vector3;
+  /** Closest point to raycastPoint that actually lies on the orbit, for distance calculation. */
+  pointOnOrbit: THREE.Vector3;
+}
 
 type OrbitProps = { satellite: Satellite } & Required<GlobeViewProps>;
 function Orbit(props: OrbitProps) {
   const sat = props.satellite;
 
   const selected = sat === props.selectedSatellite;
-  const [hoveredPoint, setHoveredPoint] = useState<THREE.Vector3 | null>(null);
+  const [hoveredPoint, setHoveredPoint] = useState<OrbitHoveredPoint | null>(null);
   const coordinatesECI = getOrbitECI(sat);
 
   if (coordinatesECI.length === 0) {
@@ -141,10 +148,23 @@ function Orbit(props: OrbitProps) {
     lineWidth: (selected ? 3 : hoveredPoint ? 2 : 1) * props.orbitLineWidth,
   }
 
+  const toHoveredPoint = (point: THREE.Vector3): OrbitHoveredPoint => {
+    const index = d3.minIndex(coordinates, other => point.distanceToSquared(other));
+    return { raycastPoint: point, pointOnOrbit: coordinates[index] || point };
+  };
+
   const hoverControls = {
-    onPointerEnter: (e: ThreeEvent<PointerEvent>) => { setHoveredPoint(e.unprojectedPoint); e.stopPropagation(); },
-    onPointerLeave: (e: ThreeEvent<PointerEvent>) => { setHoveredPoint(null); e.stopPropagation(); },
-    onPointerMove: (e: ThreeEvent<PointerEvent>) => { setHoveredPoint(e.unprojectedPoint.clone()); console.log('move', e.unprojectedPoint) },
+    onPointerEnter: (e: ThreeEvent<PointerEvent>) => {
+      setHoveredPoint(toHoveredPoint(e.point));
+      e.stopPropagation();
+    },
+    onPointerLeave: (e: ThreeEvent<PointerEvent>) => {
+      setHoveredPoint(null);
+      e.stopPropagation();
+    },
+    onPointerMove: (e: ThreeEvent<PointerEvent>) => {
+      setHoveredPoint(toHoveredPoint(e.point));
+    },
   };
 
   const onclick = (e: ThreeEvent<MouseEvent>) => {
@@ -152,11 +172,25 @@ function Orbit(props: OrbitProps) {
     props.setSelectedSatellite(sat);
   };
 
-  return <>
-    <Line name={sat.id} points={coordinates} {...material} {...hoverControls} onClick={onclick} />
-    {hoveredPoint ?
-      <Html position={hoveredPoint}>
-        <div className='nameTooltip'>{sat.name}</div>
-      </Html> : null}
-  </>;
+  const orbitLine = <Line name={sat.id} points={coordinates} {...material} {...hoverControls} onClick={onclick} />;
+
+  if (hoveredPoint) {
+    const distance = Math.round(hoveredPoint.pointOnOrbit.length() / scale - EARTH_RADIUS_KM);
+    return <>
+      {orbitLine}
+      <Html position={hoveredPoint.raycastPoint}>
+        <div className='nameTooltip'>
+          {sat.name}
+          <br />
+          Altitude: {distance.toLocaleString('en-US')} km
+          <br />
+          {sat.perigeeKm.toLocaleString('en-US')} - {sat.apogeeKm.toLocaleString('en-US')} km
+        </div>
+      </Html>
+      <Line points={[[0, 0, 0], hoveredPoint.raycastPoint]} color="#ccc" />
+    </>;
+  }
+  else {
+    return orbitLine;
+  }
 }
