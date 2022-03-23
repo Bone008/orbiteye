@@ -5,7 +5,7 @@ import { NavLink, Navigate, Route, Routes, Link } from 'react-router-dom';
 import AvelinImg from "../assets/AvelinPic.jpg";
 import BorjaImg from "../assets/borjaPic.jpg";
 import LukasImg from "../assets/Geo.png"; // TODO: replace with actual image
-import OctaveImg from "../assets/Geo.png"; // TODO: replace with actual image
+import OctaveImg from "../assets/octavePic.jpg";
 import SahilImg from "../assets/Sahil.jpg";
 import { GitHubIcon, LinkedInIcon } from './Icons';
 import { ReactElement } from 'react';
@@ -133,7 +133,7 @@ const teamMemberData: TeamMemberData[] = [
     path: "Avelin",
     name: "Ävelin Pantigoso",
     img: AvelinImg,
-    description: <>I am currently working towards a Msc in Interactive Media technology at KTH, and have a Bsc in Computer science and engineering. Creating art and graphic design are some of my hobbies, and I always enjoy creativity. Before this project I had explored computer visualization and done some web developlemt projects in Typesript, but never worked with information visualization.
+    description: <>I am currently working towards a Msc in Interactive Media technology at KTH, and have a Bsc in Computer science and engineering. Creating art and graphic design are some of my hobbies, and I always enjoy creativity. Before this project I had explored computer visualization and done some web development projects in Typesript, but never worked with information visualization.
 
       <p>In this project, I initially worked with ideation and creating a low-fi prototype from our ideas. Later, I worked with the UI for some of our components, and graphic design for the educational content. I also worked with UX evaluation, where I conducted some of our user tests and analyzed feedback. In this project I have developed my knowledge in React and Typescript and their respective powers. This class and the project also taught me a lot about the visualization pipeline and how to implement it in a project. </p></>,
     githubURL: "https://github.com/avelinpv",
@@ -181,8 +181,17 @@ const teamMemberData: TeamMemberData[] = [
     path: "Octave",
     name: "Octave Le Tullier",
     img: OctaveImg,
-    description: "Interested by data and visualization, this project Orbiteye was amazing for me. I learnt a lot about d3 and TypeScript. I hope you'll enjoy our team work and discover lots of things about satellites!",
-    githubURL: "https://github.com/OctaveLT"
+    description:
+      <>
+        <p>I am currently finishing a double-degree in Computer Science at KTH &amp; Telecom Paris (2022). I enjoy doing sports and creating websites on my free time. I discovered information informalization a year ago and I really liked it. That is the reason why I decided to take this course and to work on this amazing project. I have also done computer visualization
+          and human computer interaction courses before and I felt like this project was a nice continuation. I have worked before on classic web dev tools, however it was the first time I used TypeScript with React.
+        </p>
+        <p>At the beginning, I chose to work with UX and first designs. Then I contribute to the conception of the map in the 'Origin' tab using D3.js. Finally, I conduct user-testing evaluations to get feedback of the UX of our project.
+          I realized that this project was really significant to enhance my knowledge in D3, React, and TypeScript. All in all, OrbitEye allowed to deepen my information visualization skills and carry out a team project. I hope you'll enjoy it and discover lots of things about satellites!
+        </p>
+      </>,
+    githubURL: "https://github.com/OctaveLT",
+    linkedInURL: "https://www.linkedin.com/in/octave-le-tullier-10b9141b3"
   },
   {
     link: "./Sahil",

@@ -104,13 +104,12 @@
 .TeamMembers .content {
   flex-grow: 1;
   padding: 1rem;
-
   background-color: var(--nav-selected);
-
   display: flex;
   flex-direction: column;
 
   overflow-y: hidden;
+  text-align: justify;
 }
 .TeamMembers .content h2 {
   margin-top: 0;
