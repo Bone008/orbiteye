@@ -123,6 +123,12 @@
 .TeamMembers .memberInfo {
   flex-grow: 1;
 
+  /* Prevent text from rubbing up against scroll bar */
+  padding: 0 10px;
+
+  /* Prevent random non-scrollable horizontal scroll bar */
+  overflow-x: hidden;
+
   /* Force scroll instead of grow */
   height: 0;
   min-height: fit-content;
