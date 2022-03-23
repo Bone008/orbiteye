@@ -2,11 +2,10 @@ import './About.css';
 
 import { NavLink, Navigate, Route, Routes, Link } from 'react-router-dom';
 
-// TODO: replace with all team member images
 import AvelinImg from "../assets/AvelinPic.jpg";
 import BorjaImg from "../assets/borjaPic.jpg";
-import PlaceholderImage3 from "../assets/Geo.png";
-import PlaceholderImage4 from "../assets/Geo.png";
+import LukasImg from "../assets/Geo.png"; // TODO: replace with actual image
+import OctaveImg from "../assets/Geo.png"; // TODO: replace with actual image
 import SahilImg from "../assets/Sahil.jpg";
 import { GitHubIcon, LinkedInIcon } from './Icons';
 import { ReactElement } from 'react';
@@ -171,7 +170,7 @@ const teamMemberData: TeamMemberData[] = [
 
     path: "Lukas",
     name: "Lukas Bonauer",
-    img: PlaceholderImage3,
+    img: LukasImg,
     description: "Description here.",
     githubURL: ""
   },
@@ -181,7 +180,7 @@ const teamMemberData: TeamMemberData[] = [
 
     path: "Octave",
     name: "Octave Le Tullier",
-    img: PlaceholderImage4,
+    img: OctaveImg,
     description: "Interested by data and visualization, this project Orbiteye was amazing for me. I learnt a lot about d3 and TypeScript. I hope you'll enjoy our team work and discover lots of things about satellites!",
     githubURL: "https://github.com/OctaveLT"
   },
