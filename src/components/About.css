@@ -109,7 +109,6 @@
   flex-direction: column;
 
   overflow-y: hidden;
-  text-align: justify;
 }
 .TeamMembers .content h2 {
   margin-top: 0;
@@ -133,6 +132,8 @@
   height: 0;
   min-height: fit-content;
   overflow-y: auto;
+
+  line-height: 150%;
 }
 .TeamMembers .memberInfo img {
   float: left;

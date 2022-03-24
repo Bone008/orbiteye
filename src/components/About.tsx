@@ -42,14 +42,14 @@ export default function About() {
             </p>
             <p>
               OrbitEye is made to be exploratory, so go ahead and <Link to="/">try it out</Link>! If you want an overview first,
-              check out our <Link to="../demo">demo video</Link>. Our source code is <a href="https://github.com/bone008/orbiteye">
+              check out our <Link to="../demo">demo video</Link>. Our source code is <a href="https://github.com/bone008/orbiteye" target="_blank">
                 available on GitHub</a>.
             </p>
             <p>
-              Our data comes from the <a href="https://www.ucsusa.org/resources/satellite-database">Union of Concerned Scientists
-              </a>, <a href="https://celestrak.com/satcat/search.php">CelesTrak's SATCAT</a>, and <a href="https://celestrak.com/NORAD/elements/">
+              Our data comes from the <a href="https://www.ucsusa.org/resources/satellite-database" target="_blank">Union of Concerned Scientists
+              </a>, <a href="https://celestrak.com/satcat/search.php" target="_blank">CelesTrak's SATCAT</a>, and <a href="https://celestrak.com/NORAD/elements/" target="_blank">
                 CelesTrak's TLE data</a>. The data used is <i>not</i> automatically updated &mdash; it is stored statically for simplicity.
-              You can find the raw data <a href="https://github.com/Bone008/orbiteye/tree/main/public/data">here</a>.
+              You can find the raw data <a href="https://github.com/Bone008/orbiteye/tree/main/public/data" target="_blank">here</a>.
             </p>
 
             <h2>Learning Objectives</h2>
@@ -87,8 +87,8 @@ export default function About() {
                   <>
                     <h2>
                       <span style={(data.githubURL || data.linkedInURL) ? { marginRight: "0.5em" } : {}}>{data.name}</span>
-                      {data.githubURL ? <a className="social" href={data.githubURL}><GitHubIcon /></a> : null}
-                      {data.linkedInURL ? <a className="social" href={data.linkedInURL}><LinkedInIcon /></a> : null}
+                      {data.githubURL ? <a className="social" href={data.githubURL} target="_blank" title="Open GitHub profile"><GitHubIcon /></a> : null}
+                      {data.linkedInURL ? <a className="social" href={data.linkedInURL} target="_blank" title="Open LinkedIn profile"><LinkedInIcon /></a> : null}
                     </h2>
                     <div className="memberInfo">
                       <img src={data.img} alt={data.shortName} />
