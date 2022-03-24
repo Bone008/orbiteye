@@ -72,7 +72,7 @@
   left: 50%;
   transform: translate(-50%, 0);
   padding: 0.5em 1em;
-  max-width: 350px;
+  max-width: 380px;
   display: flex;
   align-items: center;
 
@@ -82,7 +82,18 @@
   text-align: left;
 }
 
-.WarnShowingLimited svg {
+.WarnShowingLimited > svg {
   flex-shrink: 0;
-  margin-right: 1em;
+}
+
+.WarnShowingLimited > span {
+  margin: 0 1em;
+}
+
+.WarnShowingLimited .closeButton {
+  pointer-events: initial;
+  margin: -7px;
+  padding: 7px;
+  cursor: pointer;
+  font-size: 150%;
 }

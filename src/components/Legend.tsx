@@ -2,8 +2,9 @@ import './Legend.css'
 
 import { COLOR_PALETTE_ORBITS } from "../util/colors";
 import { NavLink } from 'react-router-dom';
-import { ExclamationTriangleFillIcon, GlobeIcon, MapIcon } from './Icons';
+import { ExclamationTriangleFillIcon, GlobeIcon, MapIcon, XIcon } from './Icons';
 import { ORBIT_TYPE_CODE_TO_FULL_NAME } from '../model/mapping';
+import { useEffect, useState } from 'react';
 
 export type LegendProps =
   {
@@ -53,9 +54,8 @@ function SwitchMode(props: {}) {
 
 export type WarnShowingLimitedProps = { numShown: number, numTotal: number, orbitLimit: number };
 function WarnShowingLimited({ numShown, numTotal, orbitLimit }: WarnShowingLimitedProps) {
-  if (numShown >= numTotal) {
-    return null;
-  }
+  const [dismissed, setDismissed] = useState(false);
+
   let reason: string;
   if (numShown < orbitLimit) {
     reason = 'because orbital parameters are not available for all satellites';
@@ -63,10 +63,22 @@ function WarnShowingLimited({ numShown, numTotal, orbitLimit }: WarnShowingLimit
     reason = 'to avoid overloading your browser';
   }
 
+  // Show dialog again when reason changes.
+  useEffect(() => {
+    setDismissed(false);
+  }, [reason]);
+
+  if (dismissed || numShown >= numTotal) {
+    return null;
+  }
+
   return (
     <div className="WarnShowingLimited">
       <ExclamationTriangleFillIcon />
       <span>Showing only {numShown} of {numTotal} possible orbits {reason}.</span>
+      <div onClick={() => setDismissed(true)} className="closeButton" title="Dismiss">
+        <XIcon />
+      </div>
     </div>
   );
 }
