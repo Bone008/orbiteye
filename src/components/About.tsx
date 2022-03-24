@@ -4,7 +4,7 @@ import { NavLink, Navigate, Route, Routes, Link } from 'react-router-dom';
 
 import AvelinImg from "../assets/AvelinPic.jpg";
 import BorjaImg from "../assets/borjaPic.jpg";
-import LukasImg from "../assets/Geo.png"; // TODO: replace with actual image
+import LukasImg from "../assets/Lukas.jpg";
 import OctaveImg from "../assets/octavePic.jpg";
 import SahilImg from "../assets/Sahil.jpg";
 import { GitHubIcon, LinkedInIcon } from './Icons';
@@ -148,17 +148,16 @@ const teamMemberData: TeamMemberData[] = [
     name: "Borja Javierre",
     img: BorjaImg,
     description: <>
+      I am a first year ICT Innovation Master student at KTH Royal Intitute of Technology.
+      Previously I've studied Audiovisual Systems engineering. However, I started these studies in KTH
+      because I wanted to get more experience in software development while also learning concepts in innovation and entrepreneurship.
+      Thanks to it, I'm learning to program in languages like C++, Javascript, CSS, HTML or TypeScript, as it has been done in this project.
+      However, I worked in several projects in my Bachelor's degree in Matlab, Python and Java.
 
-    I am a first year ICT Innovation Master student at KTH Royal Intitute of Technology. 
-    Previously I've studied Audiovisual Systems engineering. However, I started these studies in KTH
-    because I wanted to get more experience in software development while also learning concepts in innovation and entrepreneurship.
-    Thanks to it, I'm learning to program in languages like C++, Javascript, CSS, HTML or TypeScript, as it has been done in this project.
-    However, I worked in several projects in my Bachelor's degree in Matlab, Python and Java. 
-    
-    <p>My contribution to this project has been more on the User Experience evaluation, mapping of names of variables using 
-    in the datasets used, implementing buttons in the interface using HTML as well as the decision-making of the appearance of the interface 
-    given by the CSS files. To sum up, the combination of all the different programming languages, both in backend and frontend web developlemt
-    has been very challenging, as the use of D3 was the first time to be seen for me.</p>
+      <p>My contribution to this project has been more on the User Experience evaluation, mapping of names of variables using
+        in the datasets used, implementing buttons in the interface using HTML as well as the decision-making of the appearance of the interface
+        given by the CSS files. To sum up, the combination of all the different programming languages, both in backend and frontend web developlemt
+        has been very challenging, as the use of D3 was the first time to be seen for me.</p>
 
     </>,
 
@@ -172,8 +171,19 @@ const teamMemberData: TeamMemberData[] = [
     path: "Lukas",
     name: "Lukas Bonauer",
     img: LukasImg,
-    description: "Description here.",
-    githubURL: ""
+    description: <>
+      Visualization is a key skill in a world full of endless amounts of data. While I had previously dabbled with plotting charts for various hobby and professional projects,
+      this lecture allowed me to expand my knowledge of the theoretical foundations of communicating information most effectively.
+      The free choice of a project topic allowed us to build a tool that I can be excited about even for personal use. It aligns well with my side interest
+      in astronomy and spacey stuff, and it has already taught me a lot of cool things about satellites.
+      <p>My main contributions to OrbitEye were in managing the infrastructure and dynamic interactions between components.
+        I also implemented the filtering logic and the selection of satellites, so their data can be displayed in the details panel.
+        I also wrote the data loader and helped out with the data preprocessing, as well as with the overall page layout and UI polishing.</p>
+      <p>This was the first time for me using React, after learning the ins and outs of Angular for several years. It was quite interesting to see the similarities and differences,
+        and to learn how other libraries like D3 and Three.js can be integrated into a React project.
+        I also learned about how to set up continuous deployment through GitHub Actions, which I plan on adopting for my personal projects in the future.</p>
+    </>,
+    githubURL: "https://github.com/Bone008"
   },
   {
     link: "./Octave",
@@ -184,9 +194,9 @@ const teamMemberData: TeamMemberData[] = [
     img: OctaveImg,
     description:
       <>
-        <p>I am currently finishing a double-degree in Computer Science at KTH &amp; Telecom Paris (2022). I enjoy doing sports and creating websites in my free time. I discovered information informalization a year ago and I really liked it. That is the reason why I decided to take this course and to work on this amazing project. I have also done computer visualization
-          and human computer interaction courses before and I felt like this project was a nice continuation. I have worked before with classic web dev tools, however this was the first time I used TypeScript with React.
-        </p>
+        I am currently finishing a double-degree in Computer Science at KTH &amp; Telecom Paris (2022). I enjoy doing sports and creating websites in my free time. I discovered information informalization a year ago and I really liked it. That is the reason why I decided to take this course and to work on this amazing project. I have also done computer visualization
+        and human computer interaction courses before and I felt like this project was a nice continuation. I have worked before with classic web dev tools, however this was the first time I used TypeScript with React.
+
         <p>At the beginning, I chose to work on UX and initial designs. I also built 'Origins' tab using D3.js. Finally, I conducted user-testing evaluations to get feedback of the UX of our project.
           This project significantly enhanced my knowledge of D3.js, React, and TypeScript. All in all, OrbitEye allowed me to deepen my information visualization skills and carry out a team project. I hope you'll enjoy it and discover lots of things about satellites!
         </p>
