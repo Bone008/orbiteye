@@ -168,10 +168,10 @@ function Orbit(props: OrbitProps) {
   const scale = props.radius / EARTH_RADIUS_KM;
   const coordinates = coordinatesECI.map(v => v.clone().multiplyScalar(scale));
 
-  const dashedLineRef = useRef<THREE.Line>(null!);
+  const dashedLineRef = useRef<THREE.Line>(null);
   const currentPos = useMemo(() => new Vector3(), []);
   useFrame(() => {
-    if ((hoveredPoint || selected) && coordinates.length > 0) {
+    if ((hoveredPoint || selected) && coordinates.length > 0 && dashedLineRef.current) {
       if (hoveredPoint && !selected) {
         // Use hovered point, but only while not selected.
         currentPos.copy(hoveredPoint.pointOnOrbit);
