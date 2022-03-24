@@ -5,8 +5,9 @@ import { Line, Sphere, Stars, TrackballControls, useTexture } from '@react-three
 import { useRef, Suspense, useMemo, useState, useEffect } from 'react';
 import { DefaultValues } from '../util/util';
 import { Satellite } from '../model/satellite';
-import { getOrbitECI } from '../util/orbits';
-import { Euler, Vector2 } from 'three';
+import { getOrbitECI, startTimeMS } from '../util/orbits';
+import { Euler, Vector2, Vector3 } from 'three';
+import { LineSegmentsGeometry } from 'three-stdlib';
 import { COLOR_PALETTE_ORBITS } from '../util/colors';
 import { smartSampleSatellites } from '../util/sampling';
 import Legend from './Legend';
@@ -16,6 +17,9 @@ import WorldMapImg from '../assets/NASA-Visible-Earth-September-2004.jpg';
 
 
 const EARTH_RADIUS_KM = 6371;
+
+/** Multiplier of real time to use for rotating the earth and animating the satellites' positions. */
+const SIMULATION_SPEED = 60 * 24;
 
 
 export interface GlobeViewProps {
@@ -82,7 +86,12 @@ function SceneObjects(props: Required<GlobeViewProps> & { shownSatellites: Satel
 
   // Rotate the Earth over time (at one revolution per minute)
   //  - this reduces assumption that you can look at 3D orbits to see where they fly over the surface
-  useFrame((state, delta) => { sphereRef.current.rotation.y = Date.now() / 1000 * 2 * Math.PI / 60; })
+  useFrame(() => {
+    // Note that we have to use sidereal time here (ca. 23h 56min) to avoid drift in synchronization
+    // with the orbiting satellites.
+    const revolutionFraction = getSimulationTimeMinutes() / 60 / 23.93447;
+    sphereRef.current.rotation.y = (0.5 + revolutionFraction) * 2 * Math.PI;
+  })
 
 
   const lastMouseDown = new Vector2();
@@ -114,16 +123,14 @@ function SceneObjects(props: Required<GlobeViewProps> & { shownSatellites: Satel
       </Sphere>
 
       {/* Show Earth's axis of rotation */}
-      <Line points={[[0, 0, -2 * props.radius], [0, 0, 2 * props.radius]]} color={"gray"} />
+      <Line points={[[0, 0, -3 * props.radius], [0, 0, 3 * props.radius]]} color={"gray"} />
       {orbits}
     </>
   );
 }
 
 interface OrbitHoveredPoint {
-  /** Precise point where mouse intersected, but may be further out/in due to line width. */
-  raycastPoint: THREE.Vector3;
-  /** Closest point to raycastPoint that actually lies on the orbit, for distance calculation. */
+  /** Closest point to hovered point that actually lies on the orbit, for distance calculation. */
   pointOnOrbit: THREE.Vector3;
   /** Screen space coordinates of mouse intersection. */
   clientX: number;
@@ -146,24 +153,47 @@ function Orbit(props: OrbitProps) {
       tooltipContainer.style.left = hoveredPoint.clientX + "px";
       tooltipContainer.style.top = hoveredPoint.clientY + "px";
 
-      const altitude = Math.round(hoveredPoint.pointOnOrbit.length() / scale - EARTH_RADIUS_KM);
+      const altitude = hoveredPoint.pointOnOrbit.length() / scale - EARTH_RADIUS_KM;
+      const approxAltitude = Math.round(altitude / 10) * 10;
       tooltip.innerText = '' +
         `${sat.name}\n` +
-        `Altitude: ${altitude.toLocaleString('en-US')} km\n` +
-        `${sat.perigeeKm.toLocaleString('en-US')} - ${sat.apogeeKm.toLocaleString('en-US')} km`;
+        `Altitude: ${approxAltitude.toLocaleString('en-US')} km`;
     } else {
       tooltipContainer.style.display = "none";
     }
   }, [hoveredPoint]);
 
   const coordinatesECI = getOrbitECI(sat);
-  if (coordinatesECI.length === 0) {
-    return null; // Don't try to display an orbit if there is an error
-  }
-
   // Clone (to avoid modifying cache) and scale
   const scale = props.radius / EARTH_RADIUS_KM;
   const coordinates = coordinatesECI.map(v => v.clone().multiplyScalar(scale));
+
+  const dashedLineRef = useRef<THREE.Line>(null!);
+  const currentPos = useMemo(() => new Vector3(), []);
+  useFrame(() => {
+    if ((hoveredPoint || selected) && coordinates.length > 0) {
+      if (hoveredPoint && !selected) {
+        // Use hovered point, but only while not selected.
+        currentPos.copy(hoveredPoint.pointOnOrbit);
+      } else {
+        // How far around the ellipse the satellite currently is (0-1)
+        const revolutionFraction = (getSimulationTimeMinutes() / sat.periodMinutes) % 1.0;
+
+        const numSegments = coordinates.length - 1;
+        const fractionalIndex = revolutionFraction * numSegments;
+        const i = Math.floor(fractionalIndex);
+        const lerpAlpha = fractionalIndex - i;
+        currentPos.lerpVectors(coordinates[i], coordinates[i + 1], lerpAlpha);
+      }
+
+      const lineGeometry = dashedLineRef.current.geometry as LineSegmentsGeometry;
+      lineGeometry.setPositions([currentPos.x, currentPos.y, currentPos.z, 0, 0, 0]);
+    }
+  });
+
+  if (coordinatesECI.length === 0) {
+    return null; // Don't try to display an orbit if there is an error
+  }
 
   // TODO: Opacity < 1 doesn't work properly (parts of the line appear in full opacity, others at the selected value)
   const material = {
@@ -176,7 +206,6 @@ function Orbit(props: OrbitProps) {
   const toHoveredPoint = (point: THREE.Vector3, clientX: number, clientY: number): OrbitHoveredPoint => {
     const index = d3.minIndex(coordinates, other => point.distanceToSquared(other));
     return {
-      raycastPoint: point,
       pointOnOrbit: coordinates[index] || point,
       clientX,
       clientY,
@@ -205,13 +234,21 @@ function Orbit(props: OrbitProps) {
 
   const orbitLine = <Line name={sat.id} points={coordinates} {...material} {...hoverControls} onClick={onclick} />;
 
-  if (hoveredPoint) {
+  if (hoveredPoint || selected) {
+    // Renders a dashed line pointing towards the earth. The actual point coordinates
+    // are filled in by the useFrame() callback, but we have to use some placeholder here because
+    // apparently the line dashes are calculated relative to the initial line length or sth ...
+    const dashScale = sat.orbitClass === 'LEO' ? 3 : 1;
     return <>
       {orbitLine}
-      <Line points={[hoveredPoint.raycastPoint, [0, 0, 0]]} color='white' dashed lineWidth={3} dashScale={15} />
+      <Line ref={dashedLineRef as any} points={[[dashScale, 0, 0], [0, 0, 0]]} color='#99c' dashed lineWidth={2} gapSize={0.02} dashSize={0.05} />
     </>;
   }
   else {
     return orbitLine;
   }
+}
+
+function getSimulationTimeMinutes(): number {
+  return (Date.now() - startTimeMS) / 1000 / 60 * SIMULATION_SPEED;
 }

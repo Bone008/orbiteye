@@ -7,7 +7,7 @@ const _MS_IN_A_MINUTE = 60000;
 
 // Set constant start time at load to avoid odd recalculations
 const startDate = new Date();
-const startTimeMS = startDate.getTime();
+export const startTimeMS = startDate.getTime();
 
 // Caches
 const groundTraceCache = {} as Record<Satellite["id"], LngLat[]>;
@@ -63,7 +63,7 @@ export function groundTraceSync(sat: Satellite, stepMS: number = _MS_IN_A_MINUTE
  * @param N the number of points to sample the orbit at
  * @returns A list of Vector3 points outlining the orbit
  */
-export function getOrbitECI(sat: Satellite, N: number = 300): Vector3[] {
+export function getOrbitECI(sat: Satellite, N: number = 500): Vector3[] {
   if (sat.id in orbitECICache) return orbitECICache[sat.id];
 
 

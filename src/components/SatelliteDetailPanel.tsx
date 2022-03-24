@@ -112,6 +112,11 @@ function DetailComponent(props: DetailPanelProps) {
 }
 
 function SourceLink({ link }: { link: string }) {
+  if (!link.toLowerCase().startsWith('https://') && !link.toLowerCase().startsWith('http://')) {
+    // Ignore illegal links.  
+    return null;
+  }
+
   let label = 'External link';
   try {
     label = new URL(link).hostname.toLowerCase();
@@ -119,7 +124,7 @@ function SourceLink({ link }: { link: string }) {
       label = 'NASA';
     }
     else if (label.startsWith('www.')) {
-      label = label.substr(4);
+      label = label.substring(4);
     }
   } catch (e) { }
 
