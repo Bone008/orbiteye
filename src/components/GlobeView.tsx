@@ -125,7 +125,8 @@ function SceneObjects(props: Required<GlobeViewProps> & { shownSatellites: Satel
       </Sphere>
 
       {/* Show Earth's axis of rotation */}
-      <Line points={[[0, 0, -3 * props.radius], [0, 0, 3 * props.radius]]} color={"gray"} />
+      <Line points={[[0, 0, -3 * props.radius], [0, 0, 3 * props.radius]]} color="gray" />
+      <EquatorLine radius={props.radius * 1.005} numSegments={128} color="gray" />
       {orbits}
     </>
   );
@@ -249,6 +250,18 @@ function Orbit(props: OrbitProps) {
   else {
     return orbitLine;
   }
+}
+
+function EquatorLine(props: { radius: number, numSegments: number, color: string }) {
+  const points = useMemo(() => Array.from({ length: props.numSegments + 1 }).map((_, i) => {
+    const angle = i / props.numSegments * 2 * Math.PI;
+    return new Vector3(Math.cos(angle), Math.sin(angle), 0).multiplyScalar(props.radius);
+  }), [props.radius, props.numSegments]);
+  return <Line points={points} color={props.color} dashed dashScale={props.numSegments / 2} />;
+  // return <Points>
+  //   <ringGeometry args={[0, props.radius, props.numSegments, 1]} />
+  //   <pointsMaterial color={props.color} size={0.01} />
+  // </Points>;
 }
 
 /** Determines at which angle to start the earth's rotation to make sure it is aligned with satellite orbits. */
