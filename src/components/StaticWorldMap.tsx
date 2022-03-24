@@ -154,7 +154,7 @@ export default function WorldMap(__props: StaticWorldMapProps) {
 
   return (
     <div className="WorldMap" style={{ padding: "0" }}>
-      <div style={{ position: "fixed", zIndex: 1, display: "none" }}>
+      <div style={{ position: "fixed", zIndex: 1, display: "none", pointerEvents: "none" }}>
         <div className='nameTooltip'></div>
       </div>
       <svg ref={svgRef}

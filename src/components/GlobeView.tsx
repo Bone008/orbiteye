@@ -2,19 +2,24 @@ import './GlobeView.css'
 
 import { Canvas, ThreeEvent, useFrame } from '@react-three/fiber'
 import { Line, Sphere, Stars, TrackballControls, useTexture } from '@react-three/drei'
-import { useRef, Suspense, useMemo } from 'react';
+import { useRef, Suspense, useMemo, useState, useEffect } from 'react';
 import { DefaultValues } from '../util/util';
 import { Satellite } from '../model/satellite';
-import { getOrbitECI } from '../util/orbits';
-import { Euler, Vector2 } from 'three';
+import { getOrbitECI, startTimeMS } from '../util/orbits';
+import { Euler, Vector2, Vector3 } from 'three';
+import { LineSegmentsGeometry } from 'three-stdlib';
 import { COLOR_PALETTE_ORBITS } from '../util/colors';
 import { smartSampleSatellites } from '../util/sampling';
 import Legend from './Legend';
+import * as d3 from 'd3';
 
 import WorldMapImg from '../assets/NASA-Visible-Earth-September-2004.jpg';
 
 
 const EARTH_RADIUS_KM = 6371;
+
+/** Multiplier of real time to use for rotating the earth and animating the satellites' positions. */
+const SIMULATION_SPEED = 60 * 24;
 
 
 export interface GlobeViewProps {
@@ -54,7 +59,7 @@ export default function GlobeView(__props: GlobeViewProps) {
 
   return (
     <div className="GlobeView">
-      <div style={{ position: "fixed", display: "none", zIndex: 1 }}>
+      <div style={{ position: "fixed", display: "none", zIndex: 1, pointerEvents: 'none' }}>
         <div className="nameTooltip"></div>
       </div>
       <Suspense fallback={null}> {/* Replaces canvas with nothing while loading */}
@@ -81,7 +86,12 @@ function SceneObjects(props: Required<GlobeViewProps> & { shownSatellites: Satel
 
   // Rotate the Earth over time (at one revolution per minute)
   //  - this reduces assumption that you can look at 3D orbits to see where they fly over the surface
-  useFrame((state, delta) => { sphereRef.current.rotation.y = Date.now() / 1000 * 2 * Math.PI / 60; })
+  useFrame(() => {
+    // Note that we have to use sidereal time here (ca. 23h 56min) to avoid drift in synchronization
+    // with the orbiting satellites.
+    const revolutionFraction = getSimulationTimeMinutes() / 60 / 23.93447;
+    sphereRef.current.rotation.y = (0.5 + revolutionFraction) * 2 * Math.PI;
+  })
 
 
   const lastMouseDown = new Vector2();
@@ -113,56 +123,107 @@ function SceneObjects(props: Required<GlobeViewProps> & { shownSatellites: Satel
       </Sphere>
 
       {/* Show Earth's axis of rotation */}
-      <Line points={[[0, 0, -2 * props.radius], [0, 0, 2 * props.radius]]} color={"gray"} />
+      <Line points={[[0, 0, -3 * props.radius], [0, 0, 3 * props.radius]]} color={"gray"} />
       {orbits}
     </>
   );
 }
 
+interface OrbitHoveredPoint {
+  /** Closest point to hovered point that actually lies on the orbit, for distance calculation. */
+  pointOnOrbit: THREE.Vector3;
+  /** Screen space coordinates of mouse intersection. */
+  clientX: number;
+  clientY: number;
+}
 
 type OrbitProps = { satellite: Satellite } & Required<GlobeViewProps>;
 function Orbit(props: OrbitProps) {
   const sat = props.satellite;
 
   const selected = sat === props.selectedSatellite;
+  const [hoveredPoint, setHoveredPoint] = useState<OrbitHoveredPoint | null>(null);
+
+  // update tooltip based on hovered point
+  useEffect(() => {
+    const tooltip = document.querySelector<HTMLElement>('.nameTooltip')!;
+    const tooltipContainer = tooltip.parentElement!;
+    if (hoveredPoint) {
+      tooltipContainer.style.display = "";
+      tooltipContainer.style.left = hoveredPoint.clientX + "px";
+      tooltipContainer.style.top = hoveredPoint.clientY + "px";
+
+      const altitude = hoveredPoint.pointOnOrbit.length() / scale - EARTH_RADIUS_KM;
+      const approxAltitude = Math.round(altitude / 10) * 10;
+      tooltip.innerText = '' +
+        `${sat.name}\n` +
+        `Altitude: ${approxAltitude.toLocaleString('en-US')} km`;
+    } else {
+      tooltipContainer.style.display = "none";
+    }
+  }, [hoveredPoint]);
+
   const coordinatesECI = getOrbitECI(sat);
+  // Clone (to avoid modifying cache) and scale
+  const scale = props.radius / EARTH_RADIUS_KM;
+  const coordinates = coordinatesECI.map(v => v.clone().multiplyScalar(scale));
+
+  const dashedLineRef = useRef<THREE.Line>(null!);
+  const currentPos = useMemo(() => new Vector3(), []);
+  useFrame(() => {
+    if ((hoveredPoint || selected) && coordinates.length > 0) {
+      if (hoveredPoint && !selected) {
+        // Use hovered point, but only while not selected.
+        currentPos.copy(hoveredPoint.pointOnOrbit);
+      } else {
+        // How far around the ellipse the satellite currently is (0-1)
+        const revolutionFraction = (getSimulationTimeMinutes() / sat.periodMinutes) % 1.0;
+
+        const numSegments = coordinates.length - 1;
+        const fractionalIndex = revolutionFraction * numSegments;
+        const i = Math.floor(fractionalIndex);
+        const lerpAlpha = fractionalIndex - i;
+        currentPos.lerpVectors(coordinates[i], coordinates[i + 1], lerpAlpha);
+      }
+
+      const lineGeometry = dashedLineRef.current.geometry as LineSegmentsGeometry;
+      lineGeometry.setPositions([currentPos.x, currentPos.y, currentPos.z, 0, 0, 0]);
+    }
+  });
 
   if (coordinatesECI.length === 0) {
     return null; // Don't try to display an orbit if there is an error
   }
 
-  // Clone (to avoid modifying cache) and scale
-  const scale = props.radius / EARTH_RADIUS_KM;
-  const coordinates = coordinatesECI.map(v => v.clone().multiplyScalar(scale));
-
   // TODO: Opacity < 1 doesn't work properly (parts of the line appear in full opacity, others at the selected value)
   const material = {
-    color: (selected) ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray',
+    color: (selected || hoveredPoint) ? "white" : COLOR_PALETTE_ORBITS[sat.orbitClass] || 'gray',
     transparent: props.orbitOpacity !== 1,
     opacity: props.orbitOpacity,
-    lineWidth: (selected ? 3 : 1) * props.orbitLineWidth,
+    lineWidth: (selected ? 3 : (hoveredPoint ? 2 : 1)) * props.orbitLineWidth,
   }
 
-  const tooltip = (document.querySelector('.nameTooltip')! as HTMLElement);
-  const updateTooltip = (x: number, y: number) => {
-    tooltip.parentElement!.style.left = x + "px";
-    tooltip.parentElement!.style.top = y + "px";
-  }
+  const toHoveredPoint = (point: THREE.Vector3, clientX: number, clientY: number): OrbitHoveredPoint => {
+    const index = d3.minIndex(coordinates, other => point.distanceToSquared(other));
+    return {
+      pointOnOrbit: coordinates[index] || point,
+      clientX,
+      clientY,
+    };
+  };
 
   const hoverControls = {
     onPointerEnter: (e: ThreeEvent<PointerEvent>) => {
-      tooltip.parentElement!.style.display = "";
-      updateTooltip(e.nativeEvent.clientX, e.nativeEvent.clientY);
-      tooltip.innerText = sat.name;
-
+      setHoveredPoint(toHoveredPoint(e.point, e.nativeEvent.clientX, e.nativeEvent.clientY));
       e.stopPropagation();
     },
     onPointerLeave: (e: ThreeEvent<PointerEvent>) => {
-      tooltip.parentElement!.style.display = "none";
+      setHoveredPoint(null);
       e.stopPropagation();
     },
     onPointerMove: (e: ThreeEvent<PointerEvent>) => {
-      updateTooltip(e.nativeEvent.clientX, e.nativeEvent.clientY);
+      setHoveredPoint(toHoveredPoint(e.point, e.nativeEvent.clientX, e.nativeEvent.clientY));
+      e.stopPropagation();
     },
   };
 
@@ -171,7 +232,23 @@ function Orbit(props: OrbitProps) {
     props.setSelectedSatellite(sat);
   };
 
-  return <>
-    <Line name={sat.id} points={coordinates} {...material} {...hoverControls} onClick={onclick} />
-  </>;
+  const orbitLine = <Line name={sat.id} points={coordinates} {...material} {...hoverControls} onClick={onclick} />;
+
+  if (hoveredPoint || selected) {
+    // Renders a dashed line pointing towards the earth. The actual point coordinates
+    // are filled in by the useFrame() callback, but we have to use some placeholder here because
+    // apparently the line dashes are calculated relative to the initial line length or sth ...
+    const dashScale = sat.orbitClass === 'LEO' ? 3 : 1;
+    return <>
+      {orbitLine}
+      <Line ref={dashedLineRef as any} points={[[dashScale, 0, 0], [0, 0, 0]]} color='#99c' dashed lineWidth={2} gapSize={0.02} dashSize={0.05} />
+    </>;
+  }
+  else {
+    return orbitLine;
+  }
+}
+
+function getSimulationTimeMinutes(): number {
+  return (Date.now() - startTimeMS) / 1000 / 60 * SIMULATION_SPEED;
 }
