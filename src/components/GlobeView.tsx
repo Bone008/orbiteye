@@ -23,6 +23,7 @@ const SIMULATION_SPEED = 60 * 24;
 
 
 export interface GlobeViewProps {
+  allSatellites: Satellite[];
   filteredSatellites: Satellite[],
   selectedSatellite: Satellite | null;
   setSelectedSatellite: (newSatellite: Satellite | null) => void;
@@ -86,11 +87,12 @@ function SceneObjects(props: Required<GlobeViewProps> & { shownSatellites: Satel
 
   // Rotate the Earth over time (at one revolution per minute)
   //  - this reduces assumption that you can look at 3D orbits to see where they fly over the surface
+  const initialRotationOffsetRad = useMemo(() => calculateInitialEarthRotation(props.allSatellites), [props.allSatellites]);
   useFrame(() => {
     // Note that we have to use sidereal time here (ca. 23h 56min) to avoid drift in synchronization
     // with the orbiting satellites.
     const revolutionFraction = getSimulationTimeMinutes() / 60 / 23.93447;
-    sphereRef.current.rotation.y = (0.5 + revolutionFraction) * 2 * Math.PI;
+    sphereRef.current.rotation.y = initialRotationOffsetRad + revolutionFraction * 2 * Math.PI;
   })
 
 
@@ -140,6 +142,7 @@ interface OrbitHoveredPoint {
 type OrbitProps = { satellite: Satellite } & Required<GlobeViewProps>;
 function Orbit(props: OrbitProps) {
   const sat = props.satellite;
+  const scale = props.radius / EARTH_RADIUS_KM;
 
   const selected = sat === props.selectedSatellite;
   const [hoveredPoint, setHoveredPoint] = useState<OrbitHoveredPoint | null>(null);
@@ -161,11 +164,10 @@ function Orbit(props: OrbitProps) {
     } else {
       tooltipContainer.style.display = "none";
     }
-  }, [hoveredPoint]);
+  }, [hoveredPoint, sat.name, scale]);
 
   const coordinatesECI = getOrbitECI(sat);
   // Clone (to avoid modifying cache) and scale
-  const scale = props.radius / EARTH_RADIUS_KM;
   const coordinates = coordinatesECI.map(v => v.clone().multiplyScalar(scale));
 
   const dashedLineRef = useRef<THREE.Line>(null);
@@ -249,6 +251,25 @@ function Orbit(props: OrbitProps) {
   }
 }
 
+/** Determines at which angle to start the earth's rotation to make sure it is aligned with satellite orbits. */
+function calculateInitialEarthRotation(allSatellites: Satellite[]): number {
+  // Use the orbit of a known geostationary satellite to figure out how the earth should be rotated
+  // at the global startTime. All later rotations are calculated relative to this initial timestamp.
+  // 2005-022A is located at a longitude of 89°W: https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=2005-022A
+  const calibrationSatLongDeg = -89;
+  const calibrationSat = allSatellites.find(sat => sat.id === '2005-022A');
+  if (!calibrationSat) {
+    return 0;
+  }
+  const initialPosition = getOrbitECI(calibrationSat)[0];
+  if (!initialPosition) {
+    return 0;
+  }
+  const initialAngle = Math.atan2(initialPosition.y, initialPosition.x);
+  return initialAngle - (calibrationSatLongDeg * Math.PI / 180);
+}
+
+/** Returns how much time has passed (in the accelerated simulation) since the global startTime. */
 function getSimulationTimeMinutes(): number {
   return (Date.now() - startTimeMS) / 1000 / 60 * SIMULATION_SPEED;
 }

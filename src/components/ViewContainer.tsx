@@ -11,6 +11,7 @@ import { WorldMapJSON } from '../model/data_loader';
 import { SetFilterCallback } from '../model/filter_settings';
 
 export interface ViewContainerProps {
+  allSatellites: Satellite[];
   filteredSatellites: Satellite[];
   onUpdateFilter: SetFilterCallback;
   selectedSatellite: Satellite | null;
